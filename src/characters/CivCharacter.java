@@ -47,7 +47,11 @@ public class CivCharacter {
 	}
 
 	public void addToLevel(int level) {
-		this.lvl += level;
+		int cap = 5;
+		if (!((this.lvl + level) >= cap))
+			this.lvl += level;
+		else
+			this.lvl = 5;
 	}
 	
 }
