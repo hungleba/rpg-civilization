@@ -1,7 +1,7 @@
 
 public class CivModel {
 	
-	private String[][] boardArr; 
+	private CivSelf[][] boardArr; 
 	private final int DIMENSION = 10; // the dimensions of the the map
 	private int curUnits; // the current number of units on the map
 	private CivPlayer human;
@@ -12,11 +12,11 @@ public class CivModel {
 		human = new CivPlayer();
 		computer = new CivPlayer();
 		
-		boardArr = new String[DIMENSION][DIMENSION];
+		boardArr = new CivSelf[DIMENSION][DIMENSION];
 		
 		for (int i = 0; i < DIMENSION; i++) {
 			for (int j = 0; j < DIMENSION; j++) {
-				boardArr[i][j] = "o";
+				boardArr[i][j] = new CivSelf();
 			}
 		}
 		curUnits = 0;
