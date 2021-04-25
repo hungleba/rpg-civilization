@@ -8,5 +8,14 @@ public class CivGuard extends CivCharacter{
 		movement = 1;
 		cost = 5;
 		health = 14;
+		name = "Guard";
+	}
+	
+	@Override
+	public void levelUp() {
+		if (lvl < MAX_LEVEL) {
+			lvl += 1;
+			health += 1;
+		}
 	}
 }

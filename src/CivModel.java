@@ -1,7 +1,8 @@
+import characters.CivCharacter;
 
 public class CivModel {
 	
-	private CivSelf[][] boardArr; 
+	private CivCell[][] boardArr; 
 	private final int DIMENSION = 10; // the dimensions of the the map
 	private int curUnits; // the current number of units on the map
 	private CivPlayer human;
@@ -9,14 +10,14 @@ public class CivModel {
 	
 	
 	public CivModel() {
-		human = new CivPlayer();
-		computer = new CivPlayer();
+		human = new CivPlayer("Human");
+		computer = new CivPlayer("Computer");
 		
-		boardArr = new CivSelf[DIMENSION][DIMENSION];
+		boardArr = new CivCell[DIMENSION][DIMENSION];
 		
 		for (int i = 0; i < DIMENSION; i++) {
 			for (int j = 0; j < DIMENSION; j++) {
-				boardArr[i][j] = new CivSelf();
+				boardArr[i][j] = new CivCell();
 			}
 		}
 		curUnits = 0;
@@ -27,11 +28,15 @@ public class CivModel {
 	}
 	
 	public CivPlayer getPlayer(String type) {
-		return type.equals("human") ? human : computer;
+		return type.equals("Human") ? human : computer;
 	}
 	
-	public int getPlayerCurUnits(CivPlayer player) {
-		return player.getUnitCount();
+	public int getHumanCurUnits() {
+		return human.getUnitCount();
+	}
+	
+	public int getComputerCurUnits() {
+		return computer.getUnitCount();
 	}
 	
 	public CivCountry getPlayerCountry(CivPlayer player) {
@@ -41,6 +46,15 @@ public class CivModel {
 	public void setCountry(CivPlayer player, String name) {
 		CivCountry country = new CivCountry(name);
 		player.setCountry(country);
+	}
+	
+	public CivCell getCell(int row, int col) {
+		return boardArr[row][col];
+	}
+	
+	public void updateCell(int row, int col, CivCharacter character, String player) {
+		boardArr[row][col].setCharacter(character);
+		boardArr[row][col].setPlayer(player);
 	}
 	
 	

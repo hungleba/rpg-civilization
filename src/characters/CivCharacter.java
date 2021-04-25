@@ -12,6 +12,8 @@ public class CivCharacter {
 	protected int cost;
 	protected int health;
 	protected int lvl;
+	protected String name;
+	protected static final int MAX_LEVEL = 5;
 	
 	public CivCharacter() {
 		// every character starts off at level 1
@@ -42,16 +44,15 @@ public class CivCharacter {
 		return lvl;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	public void setHealth(int health) {
 		this.health = health;
 	}
 
-	public void addToLevel(int level) {
-		int cap = 5;
-		if (!((this.lvl + level) >= cap))
-			this.lvl += level;
-		else
-			this.lvl = 5;
+	public void levelUp() {
 	}
 	
 }

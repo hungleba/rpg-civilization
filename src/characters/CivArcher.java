@@ -8,5 +8,14 @@ public class CivArcher extends CivCharacter{
 		movement = 1;
 		cost = 3;
 		health = 5;
+		name = "Archer";
+	}
+	
+	@Override
+	public void levelUp() {
+		if (lvl < MAX_LEVEL) {
+			lvl += 1;
+			attack += 1;
+		}
 	}
 }

@@ -8,5 +8,14 @@ public class CivCaptapult extends CivCharacter{
 		movement = 2;
 		cost = 7;
 		health = 10;
+		name = "Catapult";
+	}
+	
+	@Override
+	public void levelUp() {
+		if (lvl < MAX_LEVEL) {
+			lvl += 1;
+			attack += 1;
+		}
 	}
 }
