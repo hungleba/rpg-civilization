@@ -9,6 +9,7 @@ public class CivArcher extends CivCharacter{
 		cost = 3;
 		health = 5;
 		name = "Archer";
+		fixedCost = 3;
 	}
 	
 	@Override

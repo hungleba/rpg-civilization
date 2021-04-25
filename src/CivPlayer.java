@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import characters.CivCharacter;
 
@@ -9,8 +10,8 @@ public class CivPlayer {
 	private static final int INITIAL_GOLD = 10;
 	private int unitCount;
 	private CivCountry country;
-	private HashMap<String, List<CivCharacter>> unitMap;
-	private HashMap<CivCharacter, Integer> positionMap;
+	private Map<String, List<CivCharacter>> unitMap;
+	private Map<CivCharacter, Integer> positionMap;
 	private String name;
 	private int gold;
 
@@ -50,6 +51,10 @@ public class CivPlayer {
 	public void addGold(int add) {
 		gold += add;
 	}
+	
+	public Map<CivCharacter, Integer> getPositionMap() {
+		return positionMap;
+	}
 
 	public void addUnit(CivCharacter character, int row, int col) {
 		List<CivCharacter> characters = unitMap.get(character.getName());
@@ -65,7 +70,8 @@ public class CivPlayer {
 		characters.remove(character);
 		positionMap.remove(character);
 		unitCount--;
-
 	}
+	
+	
 
 }
