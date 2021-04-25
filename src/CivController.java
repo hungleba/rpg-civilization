@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,7 +96,10 @@ public class CivController {
 			return null;
 		}
 		Map<String, List<Integer>> map = new HashMap<>();
+		map.put("Attack", new ArrayList<Integer>());
+		map.put("Move", new ArrayList<Integer>());
 		
+		return null;
 	}
 	
 	public CivCharacter displayStats(int row, int col) {
