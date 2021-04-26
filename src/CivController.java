@@ -133,6 +133,7 @@ public class CivController {
 					} else {
 						handleAddUnit("Warrior", computer, i, j);
 					}
+					return;
 				}
 			}
 		}
