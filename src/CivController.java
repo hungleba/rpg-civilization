@@ -21,6 +21,8 @@ public class CivController {
 	private CivCharacter civChar;
 	private boolean isMove;
 	private boolean isSpawned;
+	private List<CivCharacter> visited;
+	private int countSpawned;
 
 	public CivController(CivModel model) {
 		this.model = model;
@@ -29,13 +31,23 @@ public class CivController {
 		civChar = null;
 		isMove = false;
 		isSpawned = false;
+		visited = new ArrayList<CivCharacter>();
+		countSpawned = 0;
 	}
 	
 	public void setSpawned() {
 		isSpawned = true;
 	}
 	
+	public void endTurn() {
+		visited = new ArrayList<CivCharacter>();
+		countSpawned = 0;
+	}
+	
 	public boolean isAbleToSpawn(String character, String playerType) {
+		if (countSpawned > 0 && playerType.equals("Human")) {
+			return false;
+		}
 		CivCharacter curChar = null;
 		if (character.equals("Archer")) {
 			curChar = new CivArcher();
@@ -194,6 +206,11 @@ public class CivController {
 				prevRow = row;
 				prevCol = col;
 				civChar = cell.getCharacter();
+				if (visited.contains(civChar)) {
+					prevRow = -1;
+					prevCol = -1;
+					civChar = null;
+				}
 			} else if (isMove && cell.getPlayer().equals("Computer")) {
 				handleAttack(prevRow, prevCol, row, col, human, civChar);
 			}	
@@ -212,19 +229,31 @@ public class CivController {
 			} else {
 				curChar.setHealth(health);
 			}
+			visited.add(civChar);
 		}
 		isMove = false;
+		prevRow = -1;
+		prevCol = -1;
+		civChar = null;
 	}
 
 	private void handleMove(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civchar) {
 		if (Math.max(Math.abs(row-prevRow), Math.abs(col-prevCol)) <= civChar.getMovement()) {
 			model.updateCell(row, col, civChar, player.getName());
 			model.updateCell(prevRow, prevCol, null, null);
+			visited.add(civchar);
 		}
 		isMove = false;
+		prevRow = -1;
+		prevCol = -1;
+		civChar = null;
 	}
 
 	private void handleAddUnit(String character, CivPlayer player, int row, int col) {
+		if (!isValidSpawnPosition(row, col, player.getName())) {
+			isSpawned = false;
+			return;
+		}
 		CivCharacter curChar = null;
 		if (character.equals("Archer")) {
 			curChar = new CivArcher();
@@ -240,6 +269,7 @@ public class CivController {
 		player.addUnit(curChar, row, col);
 		model.updateCell(row, col, curChar, player.getName());
 		isSpawned = false;
+		countSpawned += 1;
 	}
 	
 	
