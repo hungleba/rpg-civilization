@@ -1,3 +1,5 @@
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -6,6 +8,10 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -20,6 +26,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 
@@ -50,7 +57,7 @@ public class CivGUIView extends Application{
 		borderPane.setBottom(tilePane);
 		// Add contents to panes
 		addMenuBar();
-		addGridPane();
+		addGridPane(primaryStage);
 		addTilePane();
 		// Final scene
 		Scene scene = new Scene(borderPane, 1000, 700);
@@ -64,14 +71,14 @@ public class CivGUIView extends Application{
 		tilePane.getChildren().add(score);
 	}
 
-	private void addGridPane() {
+	private void addGridPane(Stage primaryStage) {
 		bigGridPane.setMaxHeight(1000);
 		bigGridPane.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
 		bigGridPane.setPadding(new Insets(8));
-		addStackPane();
+		addStackPane(primaryStage);
 	}
 
-	private void addStackPane() {
+	private void addStackPane(Stage primaryStage) {
 		for (int i = 0; i < 10; i++) {
 			GridPane innerGrid = new GridPane();
 			for (int j = 0; j < 10; j++) {
@@ -79,9 +86,14 @@ public class CivGUIView extends Application{
 				stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
 						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 				stack.setPadding(new Insets(10));
-				Circle circl = new Circle(20, Color.TRANSPARENT);
-				stack.getChildren().add(circl);
-				addEvent(stack, i, j);
+				File file = new File("src/Icons/archer_icon.png");
+				Image img = new Image(file.toURI().toString());
+				ImageView imgView = new ImageView(img);
+				imgView.setFitHeight(40);
+				imgView.setFitWidth(40);
+				imgView.setVisible(false);
+				stack.getChildren().add(imgView);
+				addEvent(stack, i, j, primaryStage);
 				innerGrid.addRow(j, stack);
 			}
 			bigGridPane.addColumn(i, innerGrid);
@@ -89,18 +101,38 @@ public class CivGUIView extends Application{
 		
 	}
 
-	private void addEvent(StackPane stack, int i, int j) {
-//		stack.setOnMouseClicked((event) -> {
-//			int[] coor = {i, j};
-//		});
+	private void addEvent(StackPane stack, int i, int j, Stage primaryStage) {
+		stack.setOnMouseClicked((event) -> {
+			if (event.getButton() == MouseButton.SECONDARY) {
+				Popup popup = new Popup();
+				// String info = getInfo(i, j);
+				String info = "This is a sample popup\nsecond line";
+				Label label = new Label(info);
+				// linear-gradient(#808080, #707070)
+				label.setStyle("\n"
+						+ "    -fx-text-fill: white;\n"
+						+ "    -fx-font-family: \"Arial Narrow\";\n"
+						+ "    -fx-font-weight: bold;\n"
+						+ "    -fx-background-color: grey;\n"
+						+ "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );");
+				popup.setX(900);
+				popup.setY(110);
+				popup.getContent().add(label);
+				popup.show(primaryStage);
+			}
+		});
 		stack.setOnMousePressed((event) -> {
-			stack.setEffect(new DropShadow());
+			if (event.getButton() != MouseButton.SECONDARY) {
+				stack.setEffect(new DropShadow());
+			}
 		});
 		stack.setOnMouseReleased((event) -> {
-			stack.setBorder(new Border(new BorderStroke(Color.WHITE, 
-					BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-			Circle hex = (Circle) stack.getChildren().get(0);
-			hex.setFill(Color.ORANGE);
+			if (event.getButton() != MouseButton.SECONDARY) {
+				stack.setBorder(new Border(new BorderStroke(Color.WHITE, 
+						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+				ImageView imgView = (ImageView) stack.getChildren().get(0);
+				imgView.setVisible(true);
+			}
 		});
 		
 	}
