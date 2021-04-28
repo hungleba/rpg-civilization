@@ -227,7 +227,7 @@ public class CivController {
 	}
 
 	private void handleAttack(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
-		// added condition if (civChar != null)
+		// added condition if (civChar != null) then do not run handleAttack
 		if (civChar != null) {
 			CivCharacter curChar = model.getCell(row, col).getCharacter();
 			if (Math.max(Math.abs(row-prevRow), Math.abs(col-prevCol)) <= civChar.getRange()) {
@@ -251,7 +251,7 @@ public class CivController {
 	}
 
 	private void handleMove(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
-		// added condition if (civChar != null)
+		// added condition if (civChar != null) then do not run handleMove
 		if (civChar != null) {
 			if (Math.max(Math.abs(row-prevRow), Math.abs(col-prevCol)) <= civChar.getMovement()) {
 				model.updateCell(row, col, civChar, player.getName());
