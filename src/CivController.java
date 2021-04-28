@@ -23,6 +23,7 @@ public class CivController {
 	private boolean isSpawned;
 	private List<CivCharacter> visited;
 	private int countSpawned;
+	private boolean isBeginOfGame;
 
 	public CivController(CivModel model) {
 		this.model = model;
@@ -33,17 +34,19 @@ public class CivController {
 		isSpawned = false;
 		visited = new ArrayList<CivCharacter>();
 		countSpawned = 0;
+		isBeginOfGame = true;
 	}
-	
+
 	public void setSpawned() {
 		isSpawned = true;
+
 	}
-	
+
 	public void endTurn() {
 		visited = new ArrayList<CivCharacter>();
 		countSpawned = 0;
 	}
-	
+
 	public boolean isAbleToSpawn(String character, String playerType) {
 		if (countSpawned > 0 && playerType.equals("Human")) {
 			return false;
@@ -55,7 +58,7 @@ public class CivController {
 			curChar = new CivCatapult();
 		} else if (character.equals("Guard")) {
 			curChar = new CivGuard();
-		} else if (character.equals("Kinight")) {
+		} else if (character.equals("Knight")) {
 			curChar = new CivKnight();
 		} else if (character.equals("Warrior")) {
 			curChar = new CivWarrior();
@@ -66,7 +69,7 @@ public class CivController {
 		}
 		return true;
 	}
-	
+
 	private boolean isValidSpawnPosition(int row, int col, String playerType) {
 		if (playerType.equals("Computer")) {
 			if (row >= 2) {
@@ -76,8 +79,10 @@ public class CivController {
 			}
 		} else {
 			if (row < DIMENSION-2) {
+
 				return false;
 			} else {
+
 				return model.getCell(row, col).getPlayer() == null;
 			}
 		}
@@ -86,8 +91,10 @@ public class CivController {
 	public boolean isGameOver() {
 		int humanUnits = model.getHumanCurUnits();
 		int compUnits = model.getComputerCurUnits();
-		if (humanUnits == 0 || compUnits == 0) {
-			return true;
+		if (isBeginOfGame == false) {
+			if (humanUnits == 0 || compUnits == 0) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -121,7 +128,7 @@ public class CivController {
 				int nextCol = newCoord%DIMENSION;
 				handleAttack(row, col, nextRow, nextCol, computer, character);
 			} else if (movement.size() != 0){
-				int newCoord = movement.get(rand.nextInt(attack.size()));
+				int newCoord = movement.get(rand.nextInt(movement.size()));
 				int nextRow = newCoord/DIMENSION;
 				int nextCol = newCoord%DIMENSION;
 				handleMove(row, col, nextRow, nextCol, computer, character);
@@ -145,13 +152,14 @@ public class CivController {
 					} else {
 						handleAddUnit("Warrior", computer, i, j);
 					}
+					isBeginOfGame = false;
 					return;
 				}
 			}
 		}
-		
+
 	}
-	
+
 	public Map<String, List<Integer>> allPossibleMoves(int row, int col, String player) {
 		CivCell cell = model.getCell(row, col);
 		if (cell.getPlayer() == null) {
@@ -183,7 +191,7 @@ public class CivController {
 		}
 		return map;
 	}
-	
+
 	public CivCharacter displayStats(int row, int col) {
 		CivCell cell = model.getCell(row, col);
 		if (cell.getCharacter() == null) {
@@ -193,7 +201,7 @@ public class CivController {
 	}
 
 	public void handleClick(int row, int col, String character) {
-		CivPlayer human = model.getPlayer("human");
+		CivPlayer human = model.getPlayer("Human");
 		CivCell cell = model.getCell(row, col);
 		if (cell.getCharacter() == null) {
 			if (isSpawned) {
@@ -206,6 +214,7 @@ public class CivController {
 				prevRow = row;
 				prevCol = col;
 				civChar = cell.getCharacter();
+				isMove = true;
 				if (visited.contains(civChar)) {
 					prevRow = -1;
 					prevCol = -1;
@@ -217,40 +226,48 @@ public class CivController {
 		}
 	}
 
-	private void handleAttack(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civchar) {
-		CivCharacter curChar = model.getCell(row, col).getCharacter();
-		if (Math.max(Math.abs(row-prevRow), Math.abs(col-prevCol)) <= civChar.getRange()) {
-			int health = curChar.getHealth()-civChar.getAttack();
-			if (health <= 0) {
-				model.updateCell(row, col, null, null);
-				player.removeUnit(curChar);
-				player.addGold(curChar.getLevel());
-				civChar.levelUp();
-			} else {
-				curChar.setHealth(health);
+	private void handleAttack(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
+		// added condition if (civChar != null)
+		if (civChar != null) {
+			CivCharacter curChar = model.getCell(row, col).getCharacter();
+			if (Math.max(Math.abs(row-prevRow), Math.abs(col-prevCol)) <= civChar.getRange()) {
+				int health = curChar.getHealth()-civChar.getAttack();
+				if (health <= 0) {
+					model.updateCell(row, col, null, null);
+					player.removeUnit(curChar);
+					player.addGold(curChar.getLevel());
+					civChar.levelUp();
+				} else {
+					curChar.setHealth(health);
+				}
+				visited.add(civChar);
 			}
-			visited.add(civChar);
+			isMove = false;
+			prevRow = -1;
+			prevCol = -1;
+			civChar = null;
 		}
-		isMove = false;
-		prevRow = -1;
-		prevCol = -1;
-		civChar = null;
+		
 	}
 
-	private void handleMove(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civchar) {
-		if (Math.max(Math.abs(row-prevRow), Math.abs(col-prevCol)) <= civChar.getMovement()) {
-			model.updateCell(row, col, civChar, player.getName());
-			model.updateCell(prevRow, prevCol, null, null);
-			visited.add(civchar);
+	private void handleMove(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
+		// added condition if (civChar != null)
+		if (civChar != null) {
+			if (Math.max(Math.abs(row-prevRow), Math.abs(col-prevCol)) <= civChar.getMovement()) {
+				model.updateCell(row, col, civChar, player.getName());
+				model.updateCell(prevRow, prevCol, null, null);
+				visited.add(civChar);
+			}
+			isMove = false;
+			prevRow = -1;
+			prevCol = -1;
+			civChar = null;
 		}
-		isMove = false;
-		prevRow = -1;
-		prevCol = -1;
-		civChar = null;
+		
 	}
 
 	private void handleAddUnit(String character, CivPlayer player, int row, int col) {
-		if (!isValidSpawnPosition(row, col, player.getName())) {
+		if (!isValidSpawnPosition(row, col, player.getName()) || !isAbleToSpawn(character, player.getName())) {
 			isSpawned = false;
 			return;
 		}
@@ -261,7 +278,7 @@ public class CivController {
 			curChar = new CivCatapult();
 		} else if (character.equals("Guard")) {
 			curChar = new CivGuard();
-		} else if (character.equals("Kinight")) {
+		} else if (character.equals("Knight")) {
 			curChar = new CivKnight();
 		} else if (character.equals("Warrior")) {
 			curChar = new CivWarrior();
@@ -269,8 +286,8 @@ public class CivController {
 		player.addUnit(curChar, row, col);
 		model.updateCell(row, col, curChar, player.getName());
 		isSpawned = false;
-		countSpawned += 1;
+		countSpawned++;
 	}
-	
-	
+
+
 }
