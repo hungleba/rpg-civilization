@@ -55,7 +55,7 @@ public class CivController {
 			curChar = new CivCatapult();
 		} else if (character.equals("Guard")) {
 			curChar = new CivGuard();
-		} else if (character.equals("Kinight")) {
+		} else if (character.equals("Knight")) {
 			curChar = new CivKnight();
 		} else if (character.equals("Warrior")) {
 			curChar = new CivWarrior();
