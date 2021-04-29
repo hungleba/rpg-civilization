@@ -35,6 +35,7 @@ public class CivTest {
 		assertEquals(controller.displayStats(3,5), null);
 		assertEquals(controller.displayStats(7,5), null);
 		
+		
 		//test spawning
 		controller.setSpawned();
 		controller.handleClick(9,6, "Archer");

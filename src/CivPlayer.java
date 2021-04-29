@@ -72,6 +72,10 @@ public class CivPlayer {
 		unitCount--;
 	}
 	
+	public void updateUnit(CivCharacter character, int row, int col) {
+		positionMap.put(character, row * DIMENSION + col);
+	}
+	
 	
 
 }

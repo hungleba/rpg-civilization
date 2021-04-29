@@ -14,7 +14,6 @@ public class CivCharacter {
 	protected int lvl;
 	protected String name;
 	protected static final int MAX_LEVEL = 5;
-	protected static int fixedCost;
 	
 	public CivCharacter() {
 		// every character starts off at level 1
@@ -35,10 +34,6 @@ public class CivCharacter {
 	
 	public int getCost() {
 		return cost;
-	}
-	
-	public static int getFixedCost() {
-		return fixedCost;
 	}
 	
 	public int getHealth() {

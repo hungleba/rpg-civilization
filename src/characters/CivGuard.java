@@ -2,14 +2,15 @@ package characters;
 
 public class CivGuard extends CivCharacter{
 	
+	public static final int FIXED_COST = 5;
+	
 	public CivGuard() {
 		attack = 0;
 		range = 0;
 		movement = 1;
-		cost = 5;
+		cost = FIXED_COST;
 		health = 14;
 		name = "Guard";
-		fixedCost = 5;
 	}
 	
 	@Override
@@ -19,4 +20,5 @@ public class CivGuard extends CivCharacter{
 			health += 2;
 		}
 	}
+
 }
