@@ -16,7 +16,7 @@ public class CivGuard extends CivCharacter{
 	public void levelUp() {
 		if (lvl < MAX_LEVEL) {
 			lvl += 1;
-			health += 1;
+			health += 2;
 		}
 	}
 }

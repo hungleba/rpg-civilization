@@ -17,6 +17,7 @@ public class CivCatapult extends CivCharacter{
 		if (lvl < MAX_LEVEL) {
 			lvl += 1;
 			attack += 1;
+			health += 1;
 		}
 	}
 }
