@@ -65,6 +65,7 @@ public class CivGUIView extends Application implements Observer{
 		currChar = new String();
 		currRow = -1;
 		currCol = -1;
+		model.addObserver(this);
 	}
 
 	
@@ -94,7 +95,7 @@ public class CivGUIView extends Application implements Observer{
 		model = (CivModel) o;
 		for (int i=0; i<DIMENSION; i++) {
 			for (int j=0; j<DIMENSION; j++) {
-				CivCell cell = model.getCell(i, j);
+				CivCell cell = model.getCell(j, i);
 				updateCell(i, j, cell);
 			}
 		}
@@ -153,11 +154,12 @@ public class CivGUIView extends Application implements Observer{
 	}
 
 	private void addEvent(StackPane stack, int i, int j, Stage primaryStage) {
+		Popup popup = new Popup();
 		stack.setOnMouseClicked((event) -> {
 			if (event.getButton() == MouseButton.SECONDARY) {
 				currRow = i;
 				currCol = j;
-				Popup popup = new Popup();
+				
 				// String info = getInfo(i, j);
 				String info = "This is a sample popup\nsecond line";
 				Label label = new Label(info);
@@ -174,9 +176,14 @@ public class CivGUIView extends Application implements Observer{
 				popup.show(primaryStage);
 			}
 		});
+		stack.setOnMouseExited((event) -> {
+			popup.hide();
+		});
 		stack.setOnMousePressed((event) -> {
-			if (event.getButton() != MouseButton.SECONDARY) {
+			if (event.getButton() == MouseButton.PRIMARY) {
 				stack.setEffect(new DropShadow());
+				controller.setSpawned();
+				controller.handleClick(j, i, "Archer");
 			}
 		});
 	}
