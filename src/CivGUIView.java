@@ -132,15 +132,12 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("archer");
 		archer.setGraphic(view);
 		charsPane.add(archer, 0, 0);
-<<<<<<< HEAD
 		archer.setOnAction((event) -> {
 			controller.setSpawned();
 			currChar = "Archer";
 		});
-=======
 		archer.setPrefHeight(48);
 		archer.setPrefWidth(120);
->>>>>>> 141e18bd4c2f1eebc55e2036a73b197d67c310ff
 	}
 	
 	private void spawnCatapultBtn(GridPane charsPane) {
