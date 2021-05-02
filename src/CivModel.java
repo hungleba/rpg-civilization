@@ -1,6 +1,9 @@
+import java.util.Observable;
+
 import characters.CivCharacter;
 
-public class CivModel {
+@SuppressWarnings("deprecation")
+public class CivModel extends Observable{
 	
 	private CivCell[][] boardArr; 
 	private final int DIMENSION = 10; // the dimensions of the the map
@@ -55,6 +58,8 @@ public class CivModel {
 	public void updateCell(int row, int col, CivCharacter character, String player) {
 		boardArr[row][col].setCharacter(character);
 		boardArr[row][col].setPlayer(player);
+		setChanged();
+		notifyObservers(null);
 	}
 	
 	
