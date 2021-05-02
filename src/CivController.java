@@ -11,6 +11,7 @@ import characters.CivCharacter;
 import characters.CivGuard;
 import characters.CivKnight;
 import characters.CivWarrior;
+import javafx.application.Platform;
 
 public class CivController {
 	private static final int MAX_UNITS = 10;
@@ -135,12 +136,47 @@ public class CivController {
 				int newCoord = attack.get(rand.nextInt(attack.size()));
 				int nextRow = newCoord / DIMENSION;
 				int nextCol = newCoord % DIMENSION;
-				handleAttack(row, col, nextRow, nextCol, computer, character);
+				//handleAttack(row, col, nextRow, nextCol, computer, character);
+				Thread taskThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								handleAttack(row, col, nextRow, nextCol, computer, character);
+							}
+						});
+					}
+				});
+
+				taskThread.start();
 			} else if (movement.size() != 0) {
 				int newCoord = movement.get(rand.nextInt(movement.size()));
 				int nextRow = newCoord / DIMENSION;
 				int nextCol = newCoord % DIMENSION;
-				handleMove(row, col, nextRow, nextCol, computer, character);
+				Thread taskThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								handleMove(row, col, nextRow, nextCol, computer, character);
+							}
+						});
+					}
+				});
+				taskThread.start();
 			}
 		}
 		int isSpawn = rand.nextInt(3);
@@ -243,6 +279,7 @@ public class CivController {
 		CivPlayer otherPlayer = model.getPlayer(model.getCell(row, col).getPlayer());
 		if (Math.max(Math.abs(row - prevRow), Math.abs(col - prevCol)) <= civChar.getRange()
 				&& !visited.contains(civChar)) {
+			System.out.println(player.getName()+"attack from "+prevRow+prevCol+" to "+row+col+" using "+civChar.getName());
 			int health = curChar.getHealth() - civChar.getAttack();
 			if (health <= 0) {
 				model.updateCell(row, col, null, null);
@@ -263,14 +300,16 @@ public class CivController {
 	}
 
 	private void handleMove(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
+		
 		if (Math.max(Math.abs(row - prevRow), Math.abs(col - prevCol)) <= civChar.getMovement()
 				&& !visited.contains(civChar)) {
+			System.out.println(player.getName()+"move from "+prevRow+prevCol+" to "+row+col+" using "+civChar.getName());
 			model.updateCell(row, col, civChar, player.getName());
 			model.updateCell(prevRow, prevCol, null, null);
-			player.updateUnit(civChar, row, col);
 			visited.add(civChar);
 			civChar.setIsMoved(true);
 		}
+		player.updateUnit(civChar, row, col);
 		isMove = false;
 		prevRow = -1;
 		prevCol = -1;
