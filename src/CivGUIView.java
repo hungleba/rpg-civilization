@@ -68,8 +68,6 @@ public class CivGUIView extends Application implements Observer{
 		currCol = -1;
 		model.addObserver(this);
 	}
-
-	
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -85,7 +83,7 @@ public class CivGUIView extends Application implements Observer{
 		addVBox();
 		addTilePane();
 		// Final scene
-		Scene scene = new Scene(borderPane, 900, 700);
+		Scene scene = new Scene(borderPane, 950, 700);
 		primaryStage.setScene(scene);
 		//Start the game
 		primaryStage.show();
@@ -114,7 +112,7 @@ public class CivGUIView extends Application implements Observer{
                 "-fx-border-insets: 2;\n" +
                 "-fx-border-width: 3;\n" +
                 "-fx-border-style: dashed;\n");
-		vbox.setPrefSize(250, 700);
+		vbox.setPrefSize(300, 700);
 		vbox.setAlignment(Pos.BOTTOM_CENTER);
 	}
 	
@@ -128,7 +126,7 @@ public class CivGUIView extends Application implements Observer{
 	}
 	
 	private void spawnArcherBtn(GridPane charsPane) {
-		Button archer = new Button("Archer");
+		Button archer = new Button("Archer (3$)");
 		ImageView view = getSpawnView("archer");
 		archer.setGraphic(view);
 		charsPane.add(archer, 0, 0);
@@ -137,11 +135,11 @@ public class CivGUIView extends Application implements Observer{
 			currChar = "Archer";
 		});
 		archer.setPrefHeight(48);
-		archer.setPrefWidth(120);
+		archer.setPrefWidth(140);
 	}
 	
 	private void spawnCatapultBtn(GridPane charsPane) {
-		Button catapult = new Button("Catapult");
+		Button catapult = new Button("Catapult (7$)");
 		ImageView view = getSpawnView("catapult");
 		catapult.setGraphic(view);
 		charsPane.add(catapult, 0, 1);
@@ -150,11 +148,11 @@ public class CivGUIView extends Application implements Observer{
 			currChar = "Catapult";
 		});
 		catapult.setPrefHeight(48);
-		catapult.setPrefWidth(120);
+		catapult.setPrefWidth(140);
 	}
 	
 	private void spawnGuardBtn(GridPane charsPane) {
-		Button guard = new Button("Guard");
+		Button guard = new Button("Guard (5$)");
 		ImageView view = getSpawnView("guard");
 		guard.setGraphic(view);
 		charsPane.add(guard, 0, 2);
@@ -163,11 +161,11 @@ public class CivGUIView extends Application implements Observer{
 			currChar = "Guard";
 		});
 		guard.setPrefHeight(48);
-		guard.setPrefWidth(120);
+		guard.setPrefWidth(140);
 	}
 	
 	private void spawnKnightBtn(GridPane charsPane) {
-		Button knight = new Button("Knight");
+		Button knight = new Button("Knight (6$)");
 		ImageView view = getSpawnView("knight");
 		knight.setGraphic(view);
 		charsPane.add(knight, 1, 0);
@@ -176,11 +174,11 @@ public class CivGUIView extends Application implements Observer{
 			currChar = "Knight";
 		});
 		knight.setPrefHeight(48);
-		knight.setPrefWidth(120);
+		knight.setPrefWidth(140);
 	}
 	
 	private void spawnWarriorBtn(GridPane charsPane) {
-		Button warrior = new Button("Warrior");
+		Button warrior = new Button("Warrior (2$)");
 		ImageView view = getSpawnView("warrior");
 		warrior.setGraphic(view);
 		charsPane.add(warrior, 1, 1);
@@ -189,7 +187,7 @@ public class CivGUIView extends Application implements Observer{
 			currChar = "Warrior";
 		});
 		warrior.setPrefHeight(48);
-		warrior.setPrefWidth(120);
+		warrior.setPrefWidth(140);
 	}
 	
 	private void addEndBtn(GridPane charsPane) {
@@ -200,7 +198,7 @@ public class CivGUIView extends Application implements Observer{
 				+ "    -fx-border-size: 1px;\n"
 				+ "    -fx-border-style: solid");
 		endBtn.setPrefHeight(48);
-		endBtn.setPrefWidth(120);
+		endBtn.setPrefWidth(140);
 		charsPane.add(endBtn, 1, 2);
 		endBtn.setOnAction((event) -> {
 			controller.endTurn("Human");
@@ -222,7 +220,7 @@ public class CivGUIView extends Application implements Observer{
 	private void addTilePane() {
 		int humanMoney = 0;
 		int computerMoney = 0;
-		Label score = new Label("Human: "+humanMoney+"$ - Computer: "+computerMoney+"$");
+		Label score = new Label("Human: $"+humanMoney+" - Computer: $"+computerMoney);
 		score.setStyle("-fx-font-size: 15px;\n"
 				+"		-fx-padding: 7px;\n");
 		tilePane.getChildren().add(score);
@@ -270,7 +268,7 @@ public class CivGUIView extends Application implements Observer{
 				String info = "This is a sample popup\nsecond line";
 				Label label = new Label(info);
 				label.setPadding(new Insets(5));
-				label.setMinWidth(230);
+				label.setMinWidth(280);
 				// linear-gradient(#808080, #707070)
 				label.setStyle("\n"
 						+ "    -fx-text-fill: white;\n"
