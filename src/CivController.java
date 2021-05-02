@@ -47,6 +47,13 @@ public class CivController {
 		visited = new ArrayList<CivCharacter>();
 		countSpawned = 0;
 		model.getPlayer("Human").addGold(2);
+		Map<String, List<CivCharacter>> unitMap = model.getPlayer("Human").getUnitMap();
+		for (String name: unitMap.keySet()) {
+			List<CivCharacter> list = unitMap.get(name);
+			for (CivCharacter character: list) {
+				character.setIsMoved(false);
+			}
+		}
 	}
 
 	public boolean isAbleToSpawn(String character, String playerType) {
@@ -164,7 +171,13 @@ public class CivController {
 			}
 		}
 		model.getPlayer("Computer").addGold(2);
-
+		Map<String, List<CivCharacter>> unitMap = model.getPlayer("Computer").getUnitMap();
+		for (String name: unitMap.keySet()) {
+			List<CivCharacter> list = unitMap.get(name);
+			for (CivCharacter character: list) {
+				character.setIsMoved(false);
+			}
+		}
 	}
 
 	public Map<String, List<Integer>> allPossibleMoves(int row, int col, String player) {
@@ -244,6 +257,7 @@ public class CivController {
 				curChar.setHealth(health);
 			}
 			visited.add(civChar);
+			civChar.setIsMoved(true);
 		}
 		isMove = false;
 		prevRow = -1;
@@ -259,6 +273,7 @@ public class CivController {
 			model.updateCell(prevRow, prevCol, null, null);
 			player.updateUnit(civChar, row, col);
 			visited.add(civChar);
+			civChar.setIsMoved(true);
 		}
 		isMove = false;
 		prevRow = -1;

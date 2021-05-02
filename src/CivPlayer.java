@@ -55,6 +55,10 @@ public class CivPlayer {
 	public Map<CivCharacter, Integer> getPositionMap() {
 		return positionMap;
 	}
+	
+	public Map<String, List<CivCharacter>> getUnitMap() {
+		return unitMap;
+	}
 
 	public void addUnit(CivCharacter character, int row, int col) {
 		List<CivCharacter> characters = unitMap.get(character.getName());
@@ -74,8 +78,6 @@ public class CivPlayer {
 	
 	public void updateUnit(CivCharacter character, int row, int col) {
 		positionMap.put(character, row * DIMENSION + col);
-	}
-	
-	
+	}	
 
 }

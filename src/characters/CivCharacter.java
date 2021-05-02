@@ -13,10 +13,12 @@ public class CivCharacter {
 	protected int health;
 	protected int lvl;
 	protected String name;
+	protected boolean isMoved;
 	protected static final int MAX_LEVEL = 5;
 	
 	public CivCharacter() {
 		// every character starts off at level 1
+		isMoved = false;
 		lvl = 1;
 	}
 	
@@ -44,6 +46,10 @@ public class CivCharacter {
 		return lvl;
 	}
 	
+	public boolean getIsMoved() {
+		return isMoved;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -53,6 +59,10 @@ public class CivCharacter {
 	}
 
 	public void levelUp() {
+	}
+	
+	public void setIsMoved(boolean value) {
+		isMoved = value;
 	}
 	
 }

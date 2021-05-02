@@ -63,7 +63,7 @@ public class CivGUIView extends Application implements Observer{
 		bigGridPane = new GridPane();
 		vbox = new VBox();
 		tilePane = new TilePane();
-		currChar = new String();
+		currChar = null;
 		currRow = -1;
 		currCol = -1;
 		model.addObserver(this);
@@ -128,6 +128,10 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("archer");
 		archer.setGraphic(view);
 		charsPane.add(archer, 0, 0);
+		archer.setOnAction((event) -> {
+			controller.setSpawned();
+			currChar = "Archer";
+		});
 	}
 	
 	private void spawnCatapultBtn(GridPane charsPane) {
@@ -135,6 +139,10 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("catapult");
 		catapult.setGraphic(view);
 		charsPane.add(catapult, 0, 1);
+		catapult.setOnAction((event) -> {
+			controller.setSpawned();
+			currChar = "Catapult";
+		});
 	}
 	
 	private void spawnGuardBtn(GridPane charsPane) {
@@ -142,6 +150,10 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("guard");
 		guard.setGraphic(view);
 		charsPane.add(guard, 0, 2);
+		guard.setOnAction((event) -> {
+			controller.setSpawned();
+			currChar = "Guard";
+		});
 	}
 	
 	private void spawnKnightBtn(GridPane charsPane) {
@@ -149,6 +161,10 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("knight");
 		knight.setGraphic(view);
 		charsPane.add(knight, 1, 0);
+		knight.setOnAction((event) -> {
+			controller.setSpawned();
+			currChar = "Knight";
+		});
 	}
 	
 	private void spawnWarriorBtn(GridPane charsPane) {
@@ -156,6 +172,10 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("warrior");
 		warrior.setGraphic(view);
 		charsPane.add(warrior, 1, 1);
+		warrior.setOnAction((event) -> {
+			controller.setSpawned();
+			currChar = "Warrior";
+		});
 	}
 	
 	private ImageView getSpawnView(String character) {
@@ -232,8 +252,7 @@ public class CivGUIView extends Application implements Observer{
 		stack.setOnMousePressed((event) -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				stack.setEffect(new DropShadow());
-				controller.setSpawned();
-				controller.handleClick(j, i, "Archer");
+				controller.handleClick(j, i, currChar);
 			}
 		});
 	}
