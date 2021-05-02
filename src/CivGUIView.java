@@ -220,8 +220,13 @@ public class CivGUIView extends Application implements Observer{
 	}
 
 	private void addTilePane() {
-		Label score = new Label("Here to show score");
+		int humanMoney = 0;
+		int computerMoney = 0;
+		Label score = new Label("Human: "+humanMoney+"$ - Computer: "+computerMoney+"$");
+		score.setStyle("-fx-font-size: 15px;\n"
+				+"		-fx-padding: 7px;\n");
 		tilePane.getChildren().add(score);
+		tilePane.setPrefHeight(100);
 	}
 
 	private void addGridPane(Stage primaryStage) {
@@ -264,14 +269,16 @@ public class CivGUIView extends Application implements Observer{
 				// String info = getInfo(i, j);
 				String info = "This is a sample popup\nsecond line";
 				Label label = new Label(info);
+				label.setPadding(new Insets(5));
+				label.setMinWidth(230);
 				// linear-gradient(#808080, #707070)
 				label.setStyle("\n"
 						+ "    -fx-text-fill: white;\n"
-						+ "    -fx-font-family: \"Arial Narrow\";\n"
+						+ "    -fx-font-family: \"Courier New\";\n"
 						+ "    -fx-font-weight: bold;\n"
-						+ "    -fx-background-color: grey;\n"
+						+ "    -fx-background-color: #b5651d;\n"
 						+ "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );");
-				popup.setX(primaryStage.getX()+650);
+				popup.setX(primaryStage.getX()+655);
 				popup.setY(primaryStage.getY()+55);
 				popup.getContent().add(label);
 				popup.show(primaryStage);
@@ -279,6 +286,10 @@ public class CivGUIView extends Application implements Observer{
 		});
 		stack.setOnMouseExited((event) -> {
 			popup.hide();
+		});
+		
+		stack.setOnMouseReleased((event) -> {
+			stack.setEffect(null);
 		});
 		stack.setOnMousePressed((event) -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
