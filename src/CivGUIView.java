@@ -2,6 +2,7 @@ import java.io.File;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -78,17 +79,66 @@ public class CivGUIView extends Application{
 	private void addVBox() {
 		GridPane charsPane = new GridPane();
 		addCharsPane(charsPane);
-		vbox.getChildren().add(charsPane);
+		vbox.getChildren().add(0, charsPane);
 		vbox.setStyle("-fx-border-color: red;\n" +
                 "-fx-border-insets: 5;\n" +
                 "-fx-border-width: 3;\n" +
                 "-fx-border-style: dashed;\n");
 		vbox.setPrefSize(250, 700);
+		vbox.setAlignment(Pos.BOTTOM_CENTER);
 	}
 	
 	private void addCharsPane(GridPane charsPane) {
+		spawnArcherBtn(charsPane);
+		spawnCatapultBtn(charsPane);
+		spawnGuardBtn(charsPane);
+		spawnKnightBtn(charsPane);
+		spawnWarriorBtn(charsPane);
+	}
+	
+	private void spawnArcherBtn(GridPane charsPane) {
 		Button archer = new Button("Archer");
-		charsPane.getChildren().add(archer);
+		ImageView view = getSpawnView("archer");
+		archer.setGraphic(view);
+		charsPane.add(archer, 0, 0);
+	}
+	
+	private void spawnCatapultBtn(GridPane charsPane) {
+		Button catapult = new Button("Catapult");
+		ImageView view = getSpawnView("catapult");
+		catapult.setGraphic(view);
+		charsPane.add(catapult, 0, 1);
+	}
+	
+	private void spawnGuardBtn(GridPane charsPane) {
+		Button guard = new Button("Guard");
+		ImageView view = getSpawnView("guard");
+		guard.setGraphic(view);
+		charsPane.add(guard, 0, 2);
+	}
+	
+	private void spawnKnightBtn(GridPane charsPane) {
+		Button knight = new Button("Knight");
+		ImageView view = getSpawnView("knight");
+		knight.setGraphic(view);
+		charsPane.add(knight, 1, 0);
+	}
+	
+	private void spawnWarriorBtn(GridPane charsPane) {
+		Button warrior = new Button("Warrior");
+		ImageView view = getSpawnView("warrior");
+		warrior.setGraphic(view);
+		charsPane.add(warrior, 1, 1);
+	}
+	
+	private ImageView getSpawnView(String character) {
+		String url = "src/Icons/" + character +"_icon.png";
+		File file = new File(url);
+		Image img = new Image(file.toURI().toString());
+		ImageView imgView = new ImageView(img);
+		imgView.setFitHeight(40);
+		imgView.setFitWidth(40);
+		return imgView;
 	}
 
 	private void addTilePane() {
