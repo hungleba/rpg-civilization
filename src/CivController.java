@@ -11,6 +11,7 @@ import characters.CivCharacter;
 import characters.CivGuard;
 import characters.CivKnight;
 import characters.CivWarrior;
+import javafx.application.Platform;
 
 public class CivController {
 	private static final int MAX_UNITS = 10;
@@ -22,7 +23,6 @@ public class CivController {
 	private boolean isMove;
 	private boolean isSpawned;
 	private List<CivCharacter> visited;
-	private int countSpawned;
 	private boolean isBeginOfGame;
 
 	public CivController(CivModel model) {
@@ -33,7 +33,6 @@ public class CivController {
 		isMove = false;
 		isSpawned = false;
 		visited = new ArrayList<CivCharacter>();
-		countSpawned = 0;
 		isBeginOfGame = true;
 	}
 
@@ -45,9 +44,8 @@ public class CivController {
 	public void endTurn(String player) {
 		isBeginOfGame = false;
 		visited = new ArrayList<CivCharacter>();
-		countSpawned = 0;
 		model.getPlayer(player).addGold(2);
-		Map<String, List<CivCharacter>> unitMap = model.getPlayer("Human").getUnitMap();
+		Map<String, List<CivCharacter>> unitMap = model.getPlayer(player).getUnitMap();
 		for (String name: unitMap.keySet()) {
 			List<CivCharacter> list = unitMap.get(name);
 			for (CivCharacter character: list) {
@@ -57,9 +55,6 @@ public class CivController {
 	}
 
 	public boolean isAbleToSpawn(String character, String playerType) {
-		if (countSpawned > 0 && playerType.equals("Human")) {
-			return false;
-		}
 		CivCharacter curChar = null;
 		if (character.equals("Archer")) {
 			curChar = new CivArcher();
@@ -124,7 +119,7 @@ public class CivController {
 		CivPlayer computer = model.getPlayer("Computer");
 		Map<CivCharacter, Integer> positionMap = computer.getPositionMap();
 		Random rand = new Random();
-		for (CivCharacter character : positionMap.keySet()) {
+		for (CivCharacter character: positionMap.keySet()) {
 			int coord = positionMap.get(character);
 			int row = coord / DIMENSION;
 			int col = coord % DIMENSION;
@@ -147,9 +142,6 @@ public class CivController {
 		if (computer.getUnitCount() == 0) {
 			isSpawn = 1;
 		}
-		if (isSpawn == 0 || computer.getGold() < CivWarrior.FIXED_COST) {
-			return;
-		}
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < DIMENSION; j++) {
 				if (isValidSpawnPosition(i, j, "Computer")) {
@@ -161,10 +153,9 @@ public class CivController {
 						handleAddUnit("Guard", computer, i, j);
 					} else if (computer.getGold() >= CivArcher.FIXED_COST) {
 						handleAddUnit("Archer", computer, i, j);
-					} else {
+					} else if (computer.getGold() < CivWarrior.FIXED_COST) {
 						handleAddUnit("Warrior", computer, i, j);
 					}
-					return;
 				}
 			}
 		}
@@ -175,6 +166,7 @@ public class CivController {
 				character.setIsMoved(false);
 			}
 		}
+		endTurn("Computer");
 	}
 
 	public Map<String, List<Integer>> allPossibleMoves(int row, int col, String player) {
@@ -297,7 +289,6 @@ public class CivController {
 		}
 		player.addUnit(curChar, row, col);
 		isSpawned = false;
-		countSpawned++;
 		visited.add(curChar);
 		model.updateCell(row, col, curChar, player.getName());
 	}

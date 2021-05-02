@@ -6,6 +6,7 @@ import java.util.Observer;
 
 import characters.CivCharacter;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -92,7 +93,11 @@ public class CivGUIView extends Application implements Observer{
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		model = (CivModel) o;
+		
+	}
+	
+	public void dizme() {
+		//model = (CivModel) o;
 		for (int i=0; i<DIMENSION; i++) {
 			for (int j=0; j<DIMENSION; j++) {
 				CivCell cell = model.getCell(j, i);
@@ -204,7 +209,6 @@ public class CivGUIView extends Application implements Observer{
 		endBtn.setOnAction((event) -> {
 			controller.endTurn("Human");
 			controller.computerMove();
-			controller.endTurn("Computer");
 			if (controller.isGameOver()) {
 				displayAlertWinner();
 			}
@@ -242,7 +246,7 @@ public class CivGUIView extends Application implements Observer{
 		Label score = new Label("Human: $"+humanMoney+" - Computer: $"+computerMoney);
 		score.setStyle("-fx-font-size: 15px;\n"
 				+"		-fx-padding: 7px;\n");
-		tilePane.getChildren().clear();;
+		tilePane.getChildren().clear();
 		tilePane.getChildren().add(score);
 		tilePane.setPrefHeight(100);
 	}
