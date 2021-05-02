@@ -106,9 +106,12 @@ public class CivGUIView extends Application implements Observer{
 	private void addVBox() {
 		GridPane charsPane = new GridPane();
 		addCharsPane(charsPane);
+		charsPane.setHgap(10);
+		charsPane.setVgap(10);
+		charsPane.setPadding(new Insets(5));
 		vbox.getChildren().add(0, charsPane);
-		vbox.setStyle("-fx-border-color: red;\n" +
-                "-fx-border-insets: 5;\n" +
+		vbox.setStyle("-fx-border-color: black;\n" +
+                "-fx-border-insets: 2;\n" +
                 "-fx-border-width: 3;\n" +
                 "-fx-border-style: dashed;\n");
 		vbox.setPrefSize(250, 700);
@@ -121,6 +124,7 @@ public class CivGUIView extends Application implements Observer{
 		spawnGuardBtn(charsPane);
 		spawnKnightBtn(charsPane);
 		spawnWarriorBtn(charsPane);
+		addEndBtn(charsPane);
 	}
 	
 	private void spawnArcherBtn(GridPane charsPane) {
@@ -128,6 +132,8 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("archer");
 		archer.setGraphic(view);
 		charsPane.add(archer, 0, 0);
+		archer.setPrefHeight(48);
+		archer.setPrefWidth(120);
 	}
 	
 	private void spawnCatapultBtn(GridPane charsPane) {
@@ -135,6 +141,8 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("catapult");
 		catapult.setGraphic(view);
 		charsPane.add(catapult, 0, 1);
+		catapult.setPrefHeight(48);
+		catapult.setPrefWidth(120);
 	}
 	
 	private void spawnGuardBtn(GridPane charsPane) {
@@ -142,6 +150,8 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("guard");
 		guard.setGraphic(view);
 		charsPane.add(guard, 0, 2);
+		guard.setPrefHeight(48);
+		guard.setPrefWidth(120);
 	}
 	
 	private void spawnKnightBtn(GridPane charsPane) {
@@ -149,6 +159,8 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("knight");
 		knight.setGraphic(view);
 		charsPane.add(knight, 1, 0);
+		knight.setPrefHeight(48);
+		knight.setPrefWidth(120);
 	}
 	
 	private void spawnWarriorBtn(GridPane charsPane) {
@@ -156,6 +168,20 @@ public class CivGUIView extends Application implements Observer{
 		ImageView view = getSpawnView("warrior");
 		warrior.setGraphic(view);
 		charsPane.add(warrior, 1, 1);
+		warrior.setPrefHeight(48);
+		warrior.setPrefWidth(120);
+	}
+	
+	private void addEndBtn(GridPane charsPane) {
+		Button endBtn = new Button("End Button");
+		endBtn.setStyle("-fx-font-size: 15px;\n"
+				+ "    -fx-padding: 1px;\n"
+				+ "    -fx-background-color: red;\n"
+				+ "    -fx-border-size: 1px;\n"
+				+ "    -fx-border-style: solid");
+		endBtn.setPrefHeight(48);
+		endBtn.setPrefWidth(120);
+		charsPane.add(endBtn, 1, 2);
 	}
 	
 	private ImageView getSpawnView(String character) {
