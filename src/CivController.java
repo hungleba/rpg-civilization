@@ -229,7 +229,6 @@ public class CivController {
 	}
 
 	private void handleAttack(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
-		// added condition if (civChar != null) then do not run handleAttack
 		CivCharacter curChar = model.getCell(row, col).getCharacter();
 		CivPlayer otherPlayer = model.getPlayer(model.getCell(row, col).getPlayer());
 		if (Math.max(Math.abs(row - prevRow), Math.abs(col - prevCol)) <= civChar.getRange()
@@ -254,7 +253,6 @@ public class CivController {
 	}
 
 	private void handleMove(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
-		// added condition if (civChar != null) then do not run handleMove
 		if (Math.max(Math.abs(row - prevRow), Math.abs(col - prevCol)) <= civChar.getMovement()
 				&& !visited.contains(civChar)) {
 			model.updateCell(row, col, civChar, player.getName());
@@ -287,10 +285,10 @@ public class CivController {
 			curChar = new CivWarrior();
 		}
 		player.addUnit(curChar, row, col);
-		model.updateCell(row, col, curChar, player.getName());
 		isSpawned = false;
 		countSpawned++;
 		visited.add(curChar);
+		model.updateCell(row, col, curChar, player.getName());
 	}
 
 }

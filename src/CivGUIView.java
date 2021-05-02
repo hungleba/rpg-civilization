@@ -1,4 +1,6 @@
 import java.io.File;
+import java.util.Observable;
+import java.util.Observer;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -30,8 +32,12 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 
-public class CivGUIView extends Application{
-
+@SuppressWarnings("deprecation")
+public class CivGUIView extends Application implements Observer{
+	
+	private static final int DIMENSION = 10;
+	private CivModel model;
+	private CivController controller;
 	private BorderPane borderPane;
 	private GridPane bigGridPane;
 	private MenuBar menuBar;
@@ -42,12 +48,16 @@ public class CivGUIView extends Application{
 	}
 
 	public CivGUIView() {
+		model = new CivModel();
+		controller = new CivController(model);
 		borderPane = new BorderPane();
 		menuBar = new MenuBar();
 		bigGridPane = new GridPane();
 		tilePane = new TilePane();
 	}
 
+	
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("CIV");
@@ -65,6 +75,14 @@ public class CivGUIView extends Application{
 		//Start the game
 		primaryStage.show();
 	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		model = (CivModel) model;
+		for (int i = 0)
+		// TODO Auto-generated method stub
+		
+	}
 
 	private void addTilePane() {
 		Label score = new Label("Here to show score");
@@ -79,9 +97,9 @@ public class CivGUIView extends Application{
 	}
 
 	private void addStackPane(Stage primaryStage) {
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < DIMENSION; i++) {
 			GridPane innerGrid = new GridPane();
-			for (int j = 0; j < 10; j++) {
+			for (int j = 0; j < DIMENSION; j++) {
 				StackPane stack = new StackPane();
 				stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
 						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
