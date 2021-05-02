@@ -99,6 +99,7 @@ public class CivGUIView extends Application implements Observer{
 				updateCell(i, j, cell);
 			}
 		}
+		addTilePane();
 	}
 
 	private void addVBox() {
@@ -236,11 +237,12 @@ public class CivGUIView extends Application implements Observer{
 	}
 
 	private void addTilePane() {
-		int humanMoney = 0;
-		int computerMoney = 0;
+		int humanMoney = model.getPlayer("Human").getGold();
+		int computerMoney = model.getPlayer("Computer").getGold();
 		Label score = new Label("Human: $"+humanMoney+" - Computer: $"+computerMoney);
 		score.setStyle("-fx-font-size: 15px;\n"
 				+"		-fx-padding: 7px;\n");
+		tilePane.getChildren().clear();;
 		tilePane.getChildren().add(score);
 		tilePane.setPrefHeight(100);
 	}
@@ -321,12 +323,12 @@ public class CivGUIView extends Application implements Observer{
 		} else {
 			message += "Type: " + character.getName() + "\n";
 			message += "Attack: " + String.valueOf(character.getAttack()) + "\n";
-			message += "Range: " + String.valueOf(character.getRange()) + "\n";
-			message += "Movement: " + String.valueOf(character.getMovement()) + "\n";
+			message += "Attack Range: " + String.valueOf(character.getRange()) + "\n";
+			message += "Movement Range: " + String.valueOf(character.getMovement()) + "\n";
 			message += "Health: " + String.valueOf(character.getHealth()) + "\n";
-			message += "Level: " + String.valueOf(character.getLevel()) + "\n";
-			message += "Max Allowed Level: " + String.valueOf(CivCharacter.getMaxLevel()) + "\n";
-			message += "Is This Piece Move/Attack: " + String.valueOf(character.getIsMoved()) + "\n";
+			message += "Current Level: " + String.valueOf(character.getLevel()) + "\n";
+			message += "Max Level: " + String.valueOf(CivCharacter.getMaxLevel()) + "\n";
+			message += "Is This Piece Moved " + String.valueOf(character.getIsMoved()) + "\n";
 		}
 		return message;
 	}
