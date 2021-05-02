@@ -5,6 +5,7 @@ import java.util.Observer;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -13,7 +14,6 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -25,9 +25,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -40,8 +39,12 @@ public class CivGUIView extends Application implements Observer{
 	private CivController controller;
 	private BorderPane borderPane;
 	private GridPane bigGridPane;
+	private VBox vbox;
 	private MenuBar menuBar;
 	private TilePane tilePane;
+	private String currChar;
+	private int currRow;
+	private int currCol;
 
 	public static void main(String[] args) {
 		Application.launch();
@@ -53,7 +56,11 @@ public class CivGUIView extends Application implements Observer{
 		borderPane = new BorderPane();
 		menuBar = new MenuBar();
 		bigGridPane = new GridPane();
+		vbox = new VBox();
 		tilePane = new TilePane();
+		currChar = new String();
+		currRow = -1;
+		currCol = -1;
 	}
 
 	
@@ -63,14 +70,16 @@ public class CivGUIView extends Application implements Observer{
 		primaryStage.setTitle("CIV");
 		// Configure border pane structure
 		borderPane.setTop(menuBar);
-		borderPane.setCenter(bigGridPane);
+		borderPane.setLeft(bigGridPane);
+		borderPane.setRight(vbox);
 		borderPane.setBottom(tilePane);
 		// Add contents to panes
 		addMenuBar();
 		addGridPane(primaryStage);
+		addVBox();
 		addTilePane();
 		// Final scene
-		Scene scene = new Scene(borderPane, 1000, 700);
+		Scene scene = new Scene(borderPane, 900, 700);
 		primaryStage.setScene(scene);
 		//Start the game
 		primaryStage.show();
@@ -84,13 +93,29 @@ public class CivGUIView extends Application implements Observer{
 		
 	}
 
+	private void addVBox() {
+		GridPane charsPane = new GridPane();
+		addCharsPane(charsPane);
+		vbox.getChildren().add(charsPane);
+		vbox.setStyle("-fx-border-color: red;\n" +
+                "-fx-border-insets: 5;\n" +
+                "-fx-border-width: 3;\n" +
+                "-fx-border-style: dashed;\n");
+		vbox.setPrefSize(250, 700);
+	}
+	
+	private void addCharsPane(GridPane charsPane) {
+		Button archer = new Button("Archer");
+		charsPane.getChildren().add(archer);
+	}
+
 	private void addTilePane() {
 		Label score = new Label("Here to show score");
 		tilePane.getChildren().add(score);
 	}
 
 	private void addGridPane(Stage primaryStage) {
-		bigGridPane.setMaxHeight(1000);
+		bigGridPane.setMaxWidth(630);
 		bigGridPane.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
 		bigGridPane.setPadding(new Insets(8));
 		addStackPane(primaryStage);
@@ -122,6 +147,8 @@ public class CivGUIView extends Application implements Observer{
 	private void addEvent(StackPane stack, int i, int j, Stage primaryStage) {
 		stack.setOnMouseClicked((event) -> {
 			if (event.getButton() == MouseButton.SECONDARY) {
+				currRow = i;
+				currCol = j;
 				Popup popup = new Popup();
 				// String info = getInfo(i, j);
 				String info = "This is a sample popup\nsecond line";
