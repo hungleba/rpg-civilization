@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -39,7 +40,6 @@ import javafx.stage.Stage;
 public class CivGUIView extends Application implements Observer{
 	
 	private static final int DIMENSION = 10;
-	private static final Map<String, Image> iconsMap = getIcons();
 	private CivModel model;
 	private CivController controller;
 	private BorderPane borderPane;
@@ -50,6 +50,7 @@ public class CivGUIView extends Application implements Observer{
 	private String currChar;
 	private int currRow;
 	private int currCol;
+	
 
 	public static void main(String[] args) {
 		Application.launch();
@@ -71,7 +72,7 @@ public class CivGUIView extends Application implements Observer{
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setTitle("CIV");
+		primaryStage.setTitle("Civilization");
 		// Configure border pane structure
 		borderPane.setTop(menuBar);
 		borderPane.setCenter(bigGridPane);
@@ -98,7 +99,6 @@ public class CivGUIView extends Application implements Observer{
 				updateCell(i, j, cell);
 			}
 		}
-		
 	}
 
 	private void addVBox() {
@@ -127,7 +127,7 @@ public class CivGUIView extends Application implements Observer{
 	
 	private void spawnArcherBtn(GridPane charsPane) {
 		Button archer = new Button("Archer (3$)");
-		ImageView view = getSpawnView("archer");
+		ImageView view = getSpawnView("Archer");
 		archer.setGraphic(view);
 		charsPane.add(archer, 0, 0);
 		archer.setOnAction((event) -> {
@@ -140,7 +140,7 @@ public class CivGUIView extends Application implements Observer{
 	
 	private void spawnCatapultBtn(GridPane charsPane) {
 		Button catapult = new Button("Catapult (7$)");
-		ImageView view = getSpawnView("catapult");
+		ImageView view = getSpawnView("Catapult");
 		catapult.setGraphic(view);
 		charsPane.add(catapult, 0, 1);
 		catapult.setOnAction((event) -> {
@@ -153,7 +153,7 @@ public class CivGUIView extends Application implements Observer{
 	
 	private void spawnGuardBtn(GridPane charsPane) {
 		Button guard = new Button("Guard (5$)");
-		ImageView view = getSpawnView("guard");
+		ImageView view = getSpawnView("Guard");
 		guard.setGraphic(view);
 		charsPane.add(guard, 0, 2);
 		guard.setOnAction((event) -> {
@@ -166,7 +166,7 @@ public class CivGUIView extends Application implements Observer{
 	
 	private void spawnKnightBtn(GridPane charsPane) {
 		Button knight = new Button("Knight (6$)");
-		ImageView view = getSpawnView("knight");
+		ImageView view = getSpawnView("Knight");
 		knight.setGraphic(view);
 		charsPane.add(knight, 1, 0);
 		knight.setOnAction((event) -> {
@@ -179,7 +179,7 @@ public class CivGUIView extends Application implements Observer{
 	
 	private void spawnWarriorBtn(GridPane charsPane) {
 		Button warrior = new Button("Warrior (2$)");
-		ImageView view = getSpawnView("warrior");
+		ImageView view = getSpawnView("Warrior");
 		warrior.setGraphic(view);
 		charsPane.add(warrior, 1, 1);
 		warrior.setOnAction((event) -> {
@@ -204,10 +204,28 @@ public class CivGUIView extends Application implements Observer{
 			controller.endTurn("Human");
 			controller.computerMove();
 			controller.endTurn("Computer");
+			if (controller.isGameOver()) {
+				displayAlertWinner();
+			}
 		});
 	}
 	
+	private void displayAlertWinner() {
+		String message = "You won!";
+		if (controller.determineWinner() == null) {
+			message = "Draw!";
+		} else if (controller.determineWinner().equals("Computer")) {
+			message = "You lost";
+		}
+		Alert a = new Alert(Alert.AlertType.INFORMATION);
+		a.setTitle("Message");
+		a.setContentText(message);
+		a.setHeaderText("Civilization");
+		a.showAndWait();
+	}
+
 	private ImageView getSpawnView(String character) {
+		character = character.toLowerCase();
 		String url = "src/Icons/" + character +"_icon.png";
 		File file = new File(url);
 		Image img = new Image(file.toURI().toString());
@@ -242,11 +260,7 @@ public class CivGUIView extends Application implements Observer{
 				stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
 						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 				stack.setPadding(new Insets(10));
-				File file = new File("src/icons/archer_icon.png");
-				Image img = new Image(file.toURI().toString());
-				ImageView imgView = new ImageView(img);
-				imgView.setFitHeight(40);
-				imgView.setFitWidth(40);
+				ImageView imgView = getSpawnView("Archer");
 				imgView.setVisible(false);
 				stack.getChildren().add(imgView);
 				addEvent(stack, i, j, primaryStage);
@@ -264,8 +278,7 @@ public class CivGUIView extends Application implements Observer{
 				currRow = i;
 				currCol = j;
 				
-				// String info = getInfo(i, j);
-				String info = "This is a sample popup\nsecond line";
+				String info = getStatsInfo(j, i);
 				Label label = new Label(info);
 				label.setPadding(new Insets(5));
 				label.setMinWidth(280);
@@ -290,11 +303,32 @@ public class CivGUIView extends Application implements Observer{
 			stack.setEffect(null);
 		});
 		stack.setOnMousePressed((event) -> {
-			if (event.getButton() == MouseButton.PRIMARY) {
+			if (event.getButton() == MouseButton.PRIMARY && !controller.isGameOver()) {
 				stack.setEffect(new DropShadow());
 				controller.handleClick(j, i, currChar);
+				if (controller.isGameOver()) {
+					displayAlertWinner();
+				}
 			}
 		});
+	}
+
+	private String getStatsInfo(int row, int col) {
+		CivCharacter character = controller.displayStats(row, col);
+		String message = "";
+		if (character == null) {
+			message += "No information on this cell!";
+		} else {
+			message += "Type: " + character.getName() + "\n";
+			message += "Attack: " + String.valueOf(character.getAttack()) + "\n";
+			message += "Range: " + String.valueOf(character.getRange()) + "\n";
+			message += "Movement: " + String.valueOf(character.getMovement()) + "\n";
+			message += "Health: " + String.valueOf(character.getHealth()) + "\n";
+			message += "Level: " + String.valueOf(character.getLevel()) + "\n";
+			message += "Max Allowed Level: " + String.valueOf(CivCharacter.getMaxLevel()) + "\n";
+			message += "Is This Piece Move/Attack: " + String.valueOf(character.getIsMoved()) + "\n";
+		}
+		return message;
 	}
 
 	private void addMenuBar() {
@@ -318,11 +352,7 @@ public class CivGUIView extends Application implements Observer{
 			}
 			CivCharacter character = cell.getCharacter();
 			String name = character.getName();
-			Image img = iconsMap.get(name);
-			ImageView imgView = new ImageView(img);
-			imgView.setFitHeight(40);
-			imgView.setFitWidth(40);
-			imgView.setVisible(true);
+			ImageView imgView = getSpawnView(name);
 			stack.getChildren().clear();
 			stack.getChildren().add(imgView);
 			stack.setBackground(new Background(new BackgroundFill(color, new CornerRadii(0), Insets.EMPTY)));;
@@ -331,26 +361,6 @@ public class CivGUIView extends Application implements Observer{
 			imgView.setVisible(false);
 			stack.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));;
 		}
-	}
-	
-	private static Map<String, Image> getIcons(){
-		Map<String, Image> mapIcons = new HashMap<>();
-		File file_archer = new File("src/icons/archer_icon.png");
-		Image img_archer = new Image(file_archer.toURI().toString());
-		mapIcons.put("Archer", img_archer);
-		File file_catapult = new File("src/icons/catapult_icon.png");
-		Image img_catapult = new Image(file_catapult.toURI().toString());
-		mapIcons.put("Catapult", img_catapult);
-		File file_guard = new File("src/icons/guard_icon.png");
-		Image img_guard = new Image(file_guard.toURI().toString());
-		mapIcons.put("Guard", img_guard);
-		File file_knight = new File("src/icons/knight_icon.png");
-		Image img_knight = new Image(file_knight.toURI().toString());
-		mapIcons.put("Knight", img_knight);
-		File file_warrior = new File("src/icons/warrior_icon.png");
-		Image img_warrior = new Image(file_warrior.toURI().toString());
-		mapIcons.put("Warrior", img_warrior);
-		return mapIcons;
 	}
 
 }

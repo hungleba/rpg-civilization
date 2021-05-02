@@ -54,6 +54,10 @@ public class CivCharacter {
 		return name;
 	}
 	
+	public static int getMaxLevel() {
+		return MAX_LEVEL;
+	}
+	
 	public void setHealth(int health) {
 		this.health = health;
 	}

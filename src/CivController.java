@@ -47,8 +47,6 @@ public class CivController {
 		visited = new ArrayList<CivCharacter>();
 		countSpawned = 0;
 		model.getPlayer(player).addGold(2);
-		System.out.println(player);
-		System.out.println(model.getPlayer(player).getGold());
 		Map<String, List<CivCharacter>> unitMap = model.getPlayer("Human").getUnitMap();
 		for (String name: unitMap.keySet()) {
 			List<CivCharacter> list = unitMap.get(name);
@@ -226,7 +224,6 @@ public class CivController {
 			if (isSpawned) {
 				handleAddUnit(character, human, row, col);
 			} else if (isMove) {
-				System.out.println("jjjj");
 				handleMove(prevRow, prevCol, row, col, human, civChar);
 			}
 		} else {
@@ -252,7 +249,6 @@ public class CivController {
 				otherPlayer.removeUnit(curChar);
 				player.addGold(curChar.getLevel());
 				civChar.levelUp();
-				System.out.println(civChar.getLevel());
 			} else {
 				curChar.setHealth(health);
 			}
