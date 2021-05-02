@@ -1,7 +1,10 @@
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import characters.CivCharacter;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -35,6 +38,7 @@ import javafx.stage.Stage;
 public class CivGUIView extends Application implements Observer{
 	
 	private static final int DIMENSION = 10;
+	private static final Map<String, Image> iconsMap = getIcons();
 	private CivModel model;
 	private CivController controller;
 	private BorderPane borderPane;
@@ -70,7 +74,7 @@ public class CivGUIView extends Application implements Observer{
 		primaryStage.setTitle("CIV");
 		// Configure border pane structure
 		borderPane.setTop(menuBar);
-		borderPane.setLeft(bigGridPane);
+		borderPane.setCenter(bigGridPane);
 		borderPane.setRight(vbox);
 		borderPane.setBottom(tilePane);
 		// Add contents to panes
@@ -87,9 +91,13 @@ public class CivGUIView extends Application implements Observer{
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		model = (CivModel) model;
-		for (int i = 0)
-		// TODO Auto-generated method stub
+		model = (CivModel) o;
+		for (int i=0; i<DIMENSION; i++) {
+			for (int j=0; j<DIMENSION; j++) {
+				CivCell cell = model.getCell(i, j);
+				updateCell(i, j, cell);
+			}
+		}
 		
 	}
 
@@ -129,7 +137,7 @@ public class CivGUIView extends Application implements Observer{
 				stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
 						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 				stack.setPadding(new Insets(10));
-				File file = new File("src/Icons/archer_icon.png");
+				File file = new File("src/icons/archer_icon.png");
 				Image img = new Image(file.toURI().toString());
 				ImageView imgView = new ImageView(img);
 				imgView.setFitHeight(40);
@@ -160,8 +168,8 @@ public class CivGUIView extends Application implements Observer{
 						+ "    -fx-font-weight: bold;\n"
 						+ "    -fx-background-color: grey;\n"
 						+ "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );");
-				popup.setX(900);
-				popup.setY(110);
+				popup.setX(primaryStage.getX()+650);
+				popup.setY(primaryStage.getY()+55);
 				popup.getContent().add(label);
 				popup.show(primaryStage);
 			}
@@ -171,15 +179,6 @@ public class CivGUIView extends Application implements Observer{
 				stack.setEffect(new DropShadow());
 			}
 		});
-		stack.setOnMouseReleased((event) -> {
-			if (event.getButton() != MouseButton.SECONDARY) {
-				stack.setBorder(new Border(new BorderStroke(Color.WHITE, 
-						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-				ImageView imgView = (ImageView) stack.getChildren().get(0);
-				imgView.setVisible(true);
-			}
-		});
-		
 	}
 
 	private void addMenuBar() {
@@ -190,6 +189,48 @@ public class CivGUIView extends Application implements Observer{
 		file.getItems().add(newGame);
 		// Menu bar
 		menuBar.getMenus().add(file);
+	}
+	
+	private void updateCell(int x, int y, CivCell cell) {
+		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
+		StackPane stack = (StackPane) rowPane.getChildren().get(y);
+		String player = cell.getPlayer();
+		if (player != null) {
+			Color color = Color.WHITE;
+			if (player.equals("Computer")) {
+				color = Color.AQUA;
+			}
+			CivCharacter character = cell.getCharacter();
+			String name = character.getName();
+			Image img = iconsMap.get(name);
+			ImageView imgView = new ImageView(img);
+			imgView.setFitHeight(40);
+			imgView.setFitWidth(40);
+			imgView.setVisible(true);
+			stack.getChildren().clear();
+			stack.getChildren().add(imgView);
+			stack.setBackground(new Background(new BackgroundFill(color, new CornerRadii(0), Insets.EMPTY)));;
+		}
+	}
+	
+	private static Map<String, Image> getIcons(){
+		Map<String, Image> mapIcons = new HashMap<>();
+		File file_archer = new File("src/icons/archer_icon.png");
+		Image img_archer = new Image(file_archer.toURI().toString());
+		mapIcons.put("Archer", img_archer);
+		File file_catapult = new File("src/icons/catapult_icon.png");
+		Image img_catapult = new Image(file_catapult.toURI().toString());
+		mapIcons.put("Catapult", img_catapult);
+		File file_guard = new File("src/icons/guard_icon.png");
+		Image img_guard = new Image(file_guard.toURI().toString());
+		mapIcons.put("Guard", img_guard);
+		File file_knight = new File("src/icons/knight_icon.png");
+		Image img_knight = new Image(file_knight.toURI().toString());
+		mapIcons.put("Knight", img_knight);
+		File file_warrior = new File("src/icons/warrior_icon.png");
+		Image img_warrior = new Image(file_warrior.toURI().toString());
+		mapIcons.put("Warrior", img_warrior);
+		return mapIcons;
 	}
 
 }
