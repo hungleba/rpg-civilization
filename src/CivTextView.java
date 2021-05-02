@@ -78,7 +78,7 @@ public class CivTextView {
 					action =  sc.nextLine();
 					break;
 				case "end": 
-					controller.endTurn();
+					controller.endTurn("Human");
 					isEndTurn = true;
 					break;
 				case "attack": 
@@ -237,7 +237,7 @@ public class CivTextView {
 
 			//COMPUTER'S TURN
 			controller.computerMove();
-			controller.endTurn();
+			controller.endTurn("Computer");
 			System.out.println("Here is the board after the computer's move: ");
 			printBoard();
 			System.out.println();

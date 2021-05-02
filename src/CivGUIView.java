@@ -202,6 +202,11 @@ public class CivGUIView extends Application implements Observer{
 		endBtn.setPrefHeight(48);
 		endBtn.setPrefWidth(120);
 		charsPane.add(endBtn, 1, 2);
+		endBtn.setOnAction((event) -> {
+			controller.endTurn("Human");
+			controller.computerMove();
+			controller.endTurn("Computer");
+		});
 	}
 	
 	private ImageView getSpawnView(String character) {
@@ -312,6 +317,10 @@ public class CivGUIView extends Application implements Observer{
 			stack.getChildren().clear();
 			stack.getChildren().add(imgView);
 			stack.setBackground(new Background(new BackgroundFill(color, new CornerRadii(0), Insets.EMPTY)));;
+		} else {
+			ImageView imgView = (ImageView) stack.getChildren().get(0);
+			imgView.setVisible(false);
+			stack.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));;
 		}
 	}
 	

@@ -42,11 +42,13 @@ public class CivController {
 
 	}
 
-	public void endTurn() {
+	public void endTurn(String player) {
 		isBeginOfGame = false;
 		visited = new ArrayList<CivCharacter>();
 		countSpawned = 0;
-		model.getPlayer("Human").addGold(2);
+		model.getPlayer(player).addGold(2);
+		System.out.println(player);
+		System.out.println(model.getPlayer(player).getGold());
 		Map<String, List<CivCharacter>> unitMap = model.getPlayer("Human").getUnitMap();
 		for (String name: unitMap.keySet()) {
 			List<CivCharacter> list = unitMap.get(name);
@@ -148,7 +150,6 @@ public class CivController {
 			isSpawn = 1;
 		}
 		if (isSpawn == 0 || computer.getGold() < CivWarrior.FIXED_COST) {
-			model.getPlayer("Computer").addGold(2);
 			return;
 		}
 		for (int i = 0; i < 2; i++) {
@@ -165,12 +166,10 @@ public class CivController {
 					} else {
 						handleAddUnit("Warrior", computer, i, j);
 					}
-					model.getPlayer("Computer").addGold(2);
 					return;
 				}
 			}
 		}
-		model.getPlayer("Computer").addGold(2);
 		Map<String, List<CivCharacter>> unitMap = model.getPlayer("Computer").getUnitMap();
 		for (String name: unitMap.keySet()) {
 			List<CivCharacter> list = unitMap.get(name);
@@ -227,6 +226,7 @@ public class CivController {
 			if (isSpawned) {
 				handleAddUnit(character, human, row, col);
 			} else if (isMove) {
+				System.out.println("jjjj");
 				handleMove(prevRow, prevCol, row, col, human, civChar);
 			}
 		} else {
