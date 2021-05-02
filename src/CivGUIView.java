@@ -280,8 +280,7 @@ public class CivGUIView extends Application implements Observer{
 				currRow = i;
 				currCol = j;
 				
-				// String info = getInfo(i, j);
-				String info = "This is a sample popup\nsecond line";
+				String info = getStatsInfo(j, i);
 				Label label = new Label(info);
 				label.setPadding(new Insets(5));
 				label.setMinWidth(230);
@@ -314,6 +313,24 @@ public class CivGUIView extends Application implements Observer{
 				}
 			}
 		});
+	}
+
+	private String getStatsInfo(int row, int col) {
+		CivCharacter character = controller.displayStats(row, col);
+		String message = "";
+		if (character == null) {
+			message += "No information on this cell!";
+		} else {
+			message += "Type: " + character.getName() + "\n";
+			message += "Attack: " + String.valueOf(character.getAttack()) + "\n";
+			message += "Range: " + String.valueOf(character.getRange()) + "\n";
+			message += "Movement: " + String.valueOf(character.getMovement()) + "\n";
+			message += "Health: " + String.valueOf(character.getHealth()) + "\n";
+			message += "Level: " + String.valueOf(character.getLevel()) + "\n";
+			message += "Max Allowed Level: " + String.valueOf(CivCharacter.getMaxLevel()) + "\n";
+			message += "Is This Piece Move/Attack: " + String.valueOf(character.getIsMoved()) + "\n";
+		}
+		return message;
 	}
 
 	private void addMenuBar() {
