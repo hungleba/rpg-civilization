@@ -7,7 +7,6 @@ public class CivModel extends Observable{
 	
 	private CivCell[][] boardArr; 
 	private final int DIMENSION = 10; // the dimensions of the the map
-	private int curUnits; // the current number of units on the map
 	private CivPlayer human;
 	private CivPlayer computer;
 	
@@ -23,11 +22,6 @@ public class CivModel extends Observable{
 				boardArr[i][j] = new CivCell();
 			}
 		}
-		curUnits = 0;
-	}
-	
-	public int getCurUnits() {
-		return curUnits;
 	}
 	
 	public CivPlayer getPlayer(String type) {
@@ -42,7 +36,7 @@ public class CivModel extends Observable{
 		return computer.getUnitCount();
 	}
 	
-	public CivCountry getPlayerCountry(CivPlayer player) {
+	public String getPlayerCountry(CivPlayer player) {
 		return player.getCountry();
 	}
 	

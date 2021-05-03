@@ -10,6 +10,7 @@ public class CivTest {
 	 */
 	@Test
 	void testController() {
+		System.out.println("TEST 1:");
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
 		CivPlayer human = model.getPlayer("Human");
@@ -48,6 +49,8 @@ public class CivTest {
 		controller.handleClick(8,7, "Warrior");
 		tempChar = model.getCell(8,7).getCharacter();
 		assertEquals(controller.displayStats(8,7), null);	
+		
+		System.out.println("\n\n");
 	}
 	
 	
@@ -56,15 +59,27 @@ public class CivTest {
 	 */
 	@Test
 	void testController2() {
+		System.out.println("TEST 2:");
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
 		CivPlayer human = model.getPlayer("Human");
 		CivPlayer computer = model.getPlayer("Computer");
 		
+		model.setCountry(computer, "ITALY");
+		model.setCountry(human, "FRANCE");
+		assertEquals(model.getPlayerCountry(computer), "ITALY");
+		
 		controller.setSpawned();
 		controller.handleClick(9,8, "Catapult");
 		controller.handleClick(9,8, "Catapult");
 		assertEquals(controller.getIsMoved(), true);
+		controller.setSpawned();
+		controller.handleClick(8,8, "Warrior");
+		controller.endTurn("Human");
 		
+		
+		
+		
+		System.out.println("\n\n");
 	}
 }

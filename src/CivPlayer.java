@@ -32,8 +32,8 @@ public class CivPlayer {
 		this.country = country;
 	}
 
-	public CivCountry getCountry() {
-		return country;
+	public String getCountry() {
+		return country.getName();
 	}
 
 	public int getUnitCount() {
