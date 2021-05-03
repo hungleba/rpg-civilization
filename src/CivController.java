@@ -99,6 +99,10 @@ public class CivController {
 		return false;
 	}
 
+	public boolean isGameBegin() {
+		return isBeginOfGame;
+	}
+	
 	public String determineWinner() {
 		int humanUnits = model.getHumanCurUnits();
 		int compUnits = model.getComputerCurUnits();
@@ -145,29 +149,34 @@ public class CivController {
 			return;
 		}
 		int countSpawn = 0;
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < DIMENSION; j++) {
-				if (countSpawn >= numSpawn || computer.getGold() < CivWarrior.FIXED_COST) {
-					endTurn("Computer");
-					return;
-				}
-				if (isValidSpawnPosition(i, j, "Computer")) {
-					countSpawn++;
-					if (isAbleToSpawn("Catapult", "Computer")) {
-						handleAddUnit("Catapult", computer, i, j);
-					} else if (isAbleToSpawn("Knight", "Computer")) {
-						handleAddUnit("Knight", computer, i, j);
-					} else if (isAbleToSpawn("Guard", "Computer")) {
-						handleAddUnit("Guard", computer, i, j);
-					} else if (isAbleToSpawn("Archer", "Computer")) {
-						handleAddUnit("Archer", computer, i, j);
-					} else if (isAbleToSpawn("Warrior", "Computer")) {
-						handleAddUnit("Warrior", computer, i, j);
+		while (countSpawn < numSpawn && computer.getGold() >= CivWarrior.FIXED_COST) {
+			int r = rand.nextInt(2);
+			int c = rand.nextInt(DIMENSION);
+			while (model.getCell(r, c).getPlayer() != null) {
+				if (c == DIMENSION-1) {
+					if (r == 0) {
+						r = 1;
+						c = 0;
 					} else {
-						countSpawn--;
+						r = 0;
+						c = 0;
 					}
+				} else {
+					c += 1;
 				}
 			}
+			if (isAbleToSpawn("Catapult", "Computer")) {
+				handleAddUnit("Catapult", computer, r, c);
+			} else if (isAbleToSpawn("Knight", "Computer")) {
+				handleAddUnit("Knight", computer, r, c);
+			} else if (isAbleToSpawn("Guard", "Computer")) {
+				handleAddUnit("Guard", computer, r, c);
+			} else if (isAbleToSpawn("Archer", "Computer")) {
+				handleAddUnit("Archer", computer, r, c);
+			} else {
+				handleAddUnit("Warrior", computer, r, c);
+			}
+			countSpawn++;
 		}
 		Map<String, List<CivCharacter>> unitMap = model.getPlayer("Computer").getUnitMap();
 		for (String name: unitMap.keySet()) {

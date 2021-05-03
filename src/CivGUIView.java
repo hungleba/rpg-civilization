@@ -1,14 +1,14 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
 import characters.CivCharacter;
-import javafx.animation.Interpolator;
-import javafx.animation.RotateTransition;
-import javafx.animation.StrokeTransition;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 
@@ -21,14 +21,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.effect.Bloom;
-import javafx.scene.effect.ColorInput;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
-import javafx.scene.effect.Lighting;
 import javafx.scene.effect.SepiaTone;
-import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -41,13 +36,14 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+import javafx.stage.WindowEvent;
 
 
 @SuppressWarnings("deprecation")
@@ -62,14 +58,27 @@ public class CivGUIView extends Application implements Observer{
 	private MenuBar menuBar;
 	private TilePane tilePane;
 	private String currChar;
-	private boolean isFirstClick;
 
 	public static void main(String[] args) {
-		Application.launch();
+		launch();
 	}
 
 	public CivGUIView() {
-		model = new CivModel();
+		File file = new File("save_game.dat");
+		/*if (file.exists()) {
+			try {
+				model = new CivModel("save_game.dat");
+			} catch (FileNotFoundException e) {
+				System.out.println("Can not find the saved game!");
+			} catch (ClassNotFoundException e) {
+				System.out.println("Can not load the board for the game!");
+			} catch (IOException e) {
+				System.out.println("Can not load the game!");
+			}
+
+		} else {*/
+			model = new CivModel();
+		//}
 		controller = new CivController(model);
 		borderPane = new BorderPane();
 		menuBar = new MenuBar();
@@ -77,7 +86,6 @@ public class CivGUIView extends Application implements Observer{
 		vbox = new VBox();
 		tilePane = new TilePane();
 		currChar = null;
-		isFirstClick = true;
 		model.addObserver(this);
 	}
 	
@@ -90,7 +98,7 @@ public class CivGUIView extends Application implements Observer{
 		borderPane.setRight(vbox);
 		borderPane.setBottom(tilePane);
 		// Add contents to panes
-		addMenuBar();
+		addMenuBar(primaryStage);
 		addGridPane(primaryStage);
 		addVBox();
 		addTilePane();
@@ -99,6 +107,20 @@ public class CivGUIView extends Application implements Observer{
 		Scene scene = new Scene(borderPane, 950, 700);
 		primaryStage.setScene(scene);
 		//Start the game
+		/*primaryStage.setOnCloseRequest((WindowEvent we) -> {
+			if (!controller.isGameOver() && controller.isGameBegin()) {
+				try {
+					ObjectOutputStream oos = new ObjectOutputStream(
+							new FileOutputStream("save_game.dat"));
+					oos.writeObject(model);
+					oos.close();
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});*/
 		primaryStage.show();
 		primaryStage.setResizable(false);
 	}
@@ -113,6 +135,7 @@ public class CivGUIView extends Application implements Observer{
 		}
 		addTilePane();
 	}
+	
 
 	private void addVBox() {
 		GridPane charsPane = new GridPane();
@@ -139,7 +162,7 @@ public class CivGUIView extends Application implements Observer{
 	}
 	
 	private void spawnArcherBtn(GridPane charsPane) {
-		Button archer = new Button("Archer (3$)");
+		Button archer = new Button("Archer ($3)");
 		ImageView view = getSpawnView("Archer");
 		archer.setGraphic(view);
 		charsPane.add(archer, 0, 0);
@@ -152,7 +175,7 @@ public class CivGUIView extends Application implements Observer{
 	}
 	
 	private void spawnCatapultBtn(GridPane charsPane) {
-		Button catapult = new Button("Catapult (7$)");
+		Button catapult = new Button("Catapult ($7)");
 		ImageView view = getSpawnView("Catapult");
 		catapult.setGraphic(view);
 		charsPane.add(catapult, 0, 1);
@@ -165,7 +188,7 @@ public class CivGUIView extends Application implements Observer{
 	}
 	
 	private void spawnGuardBtn(GridPane charsPane) {
-		Button guard = new Button("Guard (5$)");
+		Button guard = new Button("Guard ($5)");
 		ImageView view = getSpawnView("Guard");
 		guard.setGraphic(view);
 		charsPane.add(guard, 0, 2);
@@ -178,7 +201,7 @@ public class CivGUIView extends Application implements Observer{
 	}
 	
 	private void spawnKnightBtn(GridPane charsPane) {
-		Button knight = new Button("Knight (6$)");
+		Button knight = new Button("Knight ($6)");
 		ImageView view = getSpawnView("Knight");
 		knight.setGraphic(view);
 		charsPane.add(knight, 1, 0);
@@ -191,7 +214,7 @@ public class CivGUIView extends Application implements Observer{
 	}
 	
 	private void spawnWarriorBtn(GridPane charsPane) {
-		Button warrior = new Button("Warrior (2$)");
+		Button warrior = new Button("Warrior ($2)");
 		ImageView view = getSpawnView("Warrior");
 		warrior.setGraphic(view);
 		charsPane.add(warrior, 1, 1);
@@ -204,7 +227,7 @@ public class CivGUIView extends Application implements Observer{
 	}
 	
 	private void addEndBtn(GridPane charsPane) {
-		Button endBtn = new Button("End Button");
+		Button endBtn = new Button("End Turn");
 		endBtn.setStyle("-fx-font-size: 15px;\n"
 				+ "    -fx-padding: 1px;\n"
 				+ "    -fx-background-color: red;\n"
@@ -225,6 +248,8 @@ public class CivGUIView extends Application implements Observer{
 	}
 	
 	private void displayAlertWinner() {
+		File file = new File("save_game.dat");
+		file.delete();
 		String message = "You won!";
 		if (controller.determineWinner() == null) {
 			message = "Draw!";
@@ -262,7 +287,8 @@ public class CivGUIView extends Application implements Observer{
 
 	private void addGridPane(Stage primaryStage) {
 		bigGridPane.setMaxWidth(630);
-		bigGridPane.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
+		bigGridPane.setBackground(new Background(new 
+				BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
 		bigGridPane.setPadding(new Insets(8));
 		addStackPane(primaryStage);
 	}
@@ -277,6 +303,7 @@ public class CivGUIView extends Application implements Observer{
 				stack.setPadding(new Insets(10));
 				ImageView imgView = getSpawnView("Archer");
 				imgView.setVisible(false);
+				stack.getChildren().clear();
 				stack.getChildren().add(imgView);
 				addEvent(stack, i, j, primaryStage);
 				innerGrid.addRow(j, stack);
@@ -373,13 +400,13 @@ public class CivGUIView extends Application implements Observer{
 			message += "Current Level: " + String.valueOf(character.getLevel()) + "\n";
 			message += "Max Level: " + String.valueOf(CivCharacter.getMaxLevel()) + "\n";
 			if (name.equals("Human")) {
-				message += "Is This Piece Moved By You: " + String.valueOf(character.getIsMoved()) + "\n";
+				message += "Did This Piece Move/Attack: " + String.valueOf(character.getIsMoved()) + "\n";
 			}
 		}
 		return message;
 	}
 
-	private void addMenuBar() {
+	private void addMenuBar(Stage primaryStage) {
 		// MenuItems
 		MenuItem newGame = new MenuItem("New Game");
 		MenuItem gameRule = new MenuItem("Game Rule");
@@ -392,9 +419,51 @@ public class CivGUIView extends Application implements Observer{
 		// Menu bar
 		menuBar.getMenus().add(menu);
 		newGame.setOnAction((ActionEvent ae) -> {
-			
+			model = new CivModel();
+			controller = new CivController(model);
+			model.addObserver(this);
+			for (int i=0; i<DIMENSION; i++) {
+				for (int j=0; j<DIMENSION; j++) {
+					CivCell cell = model.getCell(j, i);
+					updateCell(i, j, cell);
+				}
+			}
+			addTilePane();
+			File file = new File("save_game.dat");
+			file.delete();
 		});
-		
+		gameRule.setOnAction((ActionEvent ae) -> {
+			Alert a = new Alert(Alert.AlertType.INFORMATION);
+			a.setTitle("Game Rule");
+			String message = "This game simulates Civilization game. Human and Computer both "
+					+ "start with 0 units and 10 golds. Each side can have a maximum 10 units.\n\n"
+					+ "There are 5 types of units: Archer, Catapult, Guard, Knight, Warrior. Each "
+					+ "unit has different stats and costs, starting at level 1."
+					+ "\n\nIn a single turn, a player (Human or Computer) can spawn as many "
+					+ "units as they want as long has they have enough golds to buy the units, but for "
+					+ "each of their units, they can only do at most 1 move/attack action. A newly spawned "
+					+ "unit can not attack/move in that turn.\n\nEvery time an unit A of a player kills the "
+					+ "opponent's unit, the player gains bonus gold based on the level of the opponent's unit "
+					+ "(for example, if the opponent's unit is Level 3, then the player gains 3 more golds), "
+					+ "and the unit A level up, gaining bonus health and bonus stats based "
+					+ "the type of unit A. The maximum level can be reached is Level 5.\n\n"
+					+ "After each turn, the player (Human or Computer) gains 2 more golds. The game ends when "
+					+ "one player has no units on the board, and the winner of the game is the one who still "
+					+ "has units on the board.";
+			a.setContentText(message);
+			a.setHeaderText("Civilization");
+			a.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+			a.showAndWait();
+		});
+		about.setOnAction((ActionEvent ae) -> {
+			Alert a = new Alert(Alert.AlertType.INFORMATION);
+			a.setTitle("About");
+			String message = "Anh Nguyen Phung\nHung Le Ba\nPeter Vo\nThu Tra Ly Huong";
+			a.setContentText(message);
+			a.setHeaderText("Credits");
+			a.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+			a.showAndWait();
+		});
 	}
 	
 	private void updateCell(int x, int y, CivCell cell) {
@@ -415,7 +484,8 @@ public class CivGUIView extends Application implements Observer{
 		} else {
 			ImageView imgView = (ImageView) stack.getChildren().get(0);
 			imgView.setVisible(false);
-			stack.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));;
+			stack.setBackground(new Background(new 
+					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));;
 		}
 	}
 	
