@@ -1,6 +1,10 @@
+import java.io.Serializable;
+
 import javafx.scene.paint.Color;
 
-public class CivCountry {
+public class CivCountry implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private String country;
 	private String fra = "FRANCE";
 	private String ger = "GERMANY";
@@ -29,14 +33,14 @@ public class CivCountry {
 			colors[2] = Color.YELLOW;
 			name = "ITALY";
 		} 
+		this.country = country;
 	}
 	
 	public Color[] getFlag() {
 		return colors;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
 }

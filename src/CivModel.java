@@ -1,17 +1,42 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.Observable;
 
 import characters.CivCharacter;
 
 @SuppressWarnings("deprecation")
-public class CivModel extends Observable{
+public class CivModel extends Observable implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private CivCell[][] boardArr; 
-	private final int DIMENSION = 10; // the dimensions of the the map
+	private transient final int DIMENSION = 10; // the dimensions of the the map
+	private int curUnits; // the current number of units on the map
 	private CivPlayer human;
 	private CivPlayer computer;
 	
+	public CivModel(String fileName) throws FileNotFoundException, IOException, ClassNotFoundException {
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
+		CivModel model = (CivModel) ois.readObject();
+		if (model != null) {
+			this.boardArr = model.boardArr;
+			this.curUnits = model.curUnits;
+			this.human = model.human;
+			this.computer = model.computer;
+		} else {
+			getDefaultModel();
+		}
+		ois.close();
+	}
+
 	
 	public CivModel() {
+		getDefaultModel();
+	}
+	
+	private void getDefaultModel() {
 		human = new CivPlayer("Human");
 		computer = new CivPlayer("Computer");
 		

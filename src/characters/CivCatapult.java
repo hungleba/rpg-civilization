@@ -2,6 +2,7 @@ package characters;
 
 public class CivCatapult extends CivCharacter{
 	
+	private static final long serialVersionUID = 1L;
 	public static final int FIXED_COST = 7;
 	
 	public CivCatapult() {

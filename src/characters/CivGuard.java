@@ -2,6 +2,7 @@ package characters;
 
 public class CivGuard extends CivCharacter{
 	
+	private static final long serialVersionUID = 1L;
 	public static final int FIXED_COST = 5;
 	
 	public CivGuard() {

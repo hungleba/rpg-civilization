@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -5,7 +6,9 @@ import java.util.Map;
 
 import characters.CivCharacter;
 
-public class CivPlayer {
+public class CivPlayer implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	private static final int DIMENSION = 10;
 	private static final int INITIAL_GOLD = 10;
 	private int unitCount;

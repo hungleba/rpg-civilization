@@ -1,7 +1,11 @@
 
+import java.io.Serializable;
+
 import characters.CivCharacter;
 
-public class CivCell {
+public class CivCell implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private String player;
 	private CivCharacter character;
 	
