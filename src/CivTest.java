@@ -6,7 +6,7 @@ import characters.CivCharacter;
 
 public class CivTest {
 	/**
-	 * Test method for CivControler
+	 * Test method for CivController. Basic set up.
 	 */
 	@Test
 	void testController() {
@@ -24,10 +24,14 @@ public class CivTest {
 		assertTrue(controller.isAbleToSpawn("Guard","Human"));
 		assertTrue(controller.isAbleToSpawn("Knight","Human"));
 		assertTrue(controller.isAbleToSpawn("Warrior","Human"));
+		
 		assertEquals(controller.displayStats(0, 1), null);
 		assertEquals(controller.displayStats(9, 1), null);
 		assertEquals(controller.displayStats(0, 9), null);
 		assertEquals(controller.displayStats(8, 0), null);
+		
+		// invalid character
+		assertEquals(controller.isAbleToSpawn("Tank", "Human"),false);
 		
 		// test spawning in invalid positions
 		controller.handleClick(3,5, "Archer");
@@ -41,14 +45,26 @@ public class CivTest {
 		controller.handleClick(9,6, "Archer");
 		CivCharacter tempChar = model.getCell(9,6).getCharacter();
 		assertEquals(controller.displayStats(9,6), tempChar);
-		controller.setSpawned();
 		controller.handleClick(8,7, "Warrior");
 		tempChar = model.getCell(8,7).getCharacter();
-		System.out.println(tempChar);
-		assertEquals(controller.displayStats(8,7), null);
-
-
-
+		assertEquals(controller.displayStats(8,7), null);	
+	}
+	
+	
+	/**
+	 * Test method for CivController. A random game.
+	 */
+	@Test
+	void testController2() {
+		CivModel model = new CivModel();
+		CivController controller = new CivController(model);
+		CivPlayer human = model.getPlayer("Human");
+		CivPlayer computer = model.getPlayer("Computer");
+		
+		controller.setSpawned();
+		controller.handleClick(9,8, "Catapult");
+		controller.handleClick(9,8, "Catapult");
+		assertEquals(controller.getIsMoved(), true);
 		
 	}
 }

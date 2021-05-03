@@ -64,6 +64,8 @@ public class CivController {
 			curChar = new CivKnight();
 		} else if (character.equals("Warrior")) {
 			curChar = new CivWarrior();
+		} else {
+			return false;
 		}
 		CivPlayer player = model.getPlayer(playerType);
 		if (player.getUnitCount() >= MAX_UNITS || player.getGold() < curChar.getCost()) {
