@@ -77,7 +77,15 @@ public class CivTest {
 		controller.handleClick(8,8, "Warrior");
 		controller.endTurn("Human");
 		
+		controller.computerMove();
 		
+		controller.handleClick(8, 8, "");
+		System.out.println("\nPossible moves for 8,8: " +controller.allPossibleMoves(8, 8, "Human") +"\n");
+		controller.handleClick(7, 7, "");
+		
+		controller.handleClick(9, 8, "");
+		System.out.println("\nPossible moves for 9,8: " +controller.allPossibleMoves(9, 8, "Human") +"\n");
+		controller.handleClick(7, 7, "");
 		
 		
 		System.out.println("\n\n");
