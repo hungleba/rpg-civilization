@@ -237,7 +237,7 @@ public class CivTextView {
 
 			//COMPUTER'S TURN
 			controller.computerMove();
-			controller.endTurn("Computer");
+			//controller.endTurn("Computer");
 			System.out.println("Here is the board after the computer's move: ");
 			printBoard();
 			System.out.println();

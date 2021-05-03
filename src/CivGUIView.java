@@ -1,12 +1,17 @@
 import java.io.File;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
 import characters.CivCharacter;
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
+import javafx.animation.StrokeTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.event.ActionEvent;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,7 +21,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.Bloom;
+import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
+import javafx.scene.effect.InnerShadow;
+import javafx.scene.effect.Lighting;
+import javafx.scene.effect.SepiaTone;
+import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -35,6 +47,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 
 @SuppressWarnings("deprecation")
@@ -49,9 +62,7 @@ public class CivGUIView extends Application implements Observer{
 	private MenuBar menuBar;
 	private TilePane tilePane;
 	private String currChar;
-	private int currRow;
-	private int currCol;
-	
+	private boolean isFirstClick;
 
 	public static void main(String[] args) {
 		Application.launch();
@@ -66,8 +77,7 @@ public class CivGUIView extends Application implements Observer{
 		vbox = new VBox();
 		tilePane = new TilePane();
 		currChar = null;
-		currRow = -1;
-		currCol = -1;
+		isFirstClick = true;
 		model.addObserver(this);
 	}
 	
@@ -85,10 +95,12 @@ public class CivGUIView extends Application implements Observer{
 		addVBox();
 		addTilePane();
 		// Final scene
+		
 		Scene scene = new Scene(borderPane, 950, 700);
 		primaryStage.setScene(scene);
 		//Start the game
 		primaryStage.show();
+		primaryStage.setResizable(false);
 	}
 	
 	@Override
@@ -207,10 +219,12 @@ public class CivGUIView extends Application implements Observer{
 		endBtn.setPrefWidth(140);
 		charsPane.add(endBtn, 1, 2);
 		endBtn.setOnAction((event) -> {
-			controller.endTurn("Human");
-			controller.computerMove();
-			if (controller.isGameOver()) {
-				displayAlertWinner();
+			if (!controller.isGameOver()) {
+				controller.endTurn("Human");
+				controller.computerMove();
+				if (controller.isGameOver()) {
+					displayAlertWinner();
+				}
 			}
 		});
 	}
@@ -231,7 +245,7 @@ public class CivGUIView extends Application implements Observer{
 
 	private ImageView getSpawnView(String character) {
 		character = character.toLowerCase();
-		String url = "src/Icons/" + character +"_icon.png";
+		String url = "src/icons/" + character +"_icon.png";
 		File file = new File(url);
 		Image img = new Image(file.toURI().toString());
 		ImageView imgView = new ImageView(img);
@@ -281,9 +295,6 @@ public class CivGUIView extends Application implements Observer{
 		Popup popup = new Popup();
 		stack.setOnMouseClicked((event) -> {
 			if (event.getButton() == MouseButton.SECONDARY) {
-				currRow = i;
-				currCol = j;
-				
 				String info = getStatsInfo(j, i);
 				Label label = new Label(info);
 				label.setPadding(new Insets(5));
@@ -302,18 +313,51 @@ public class CivGUIView extends Application implements Observer{
 			}
 		});
 		stack.setOnMouseExited((event) -> {
-			popup.hide();
-		});
-		
-		stack.setOnMouseReleased((event) -> {
 			stack.setEffect(null);
+			popup.hide();
+			Map<String, List<Integer>> validMoves = controller.allPossibleMoves(j, i, "Human");
+			if (validMoves != null) {
+				List<Integer> attack = validMoves.get("Attack");
+				List<Integer> move = validMoves.get("Move");
+				for (int coord : attack) {
+					int row = coord / DIMENSION;
+					int col = coord % DIMENSION;
+					removeCellEffect(col, row);
+				}
+				for (int coord : move) {
+					int row = coord / DIMENSION;
+					int col = coord % DIMENSION;
+					removeCellEffect(col, row);
+				}
+			}
 		});
+
+		/**stack.setOnMouseReleased((event) -> {
+			stack.setEffect(null);
+		});*/
 		stack.setOnMousePressed((event) -> {
 			if (event.getButton() == MouseButton.PRIMARY && !controller.isGameOver()) {
-				stack.setEffect(new DropShadow());
+				stack.setEffect(new InnerShadow());
 				controller.handleClick(j, i, currChar);
 				if (controller.isGameOver()) {
 					displayAlertWinner();
+				}
+			}
+		});
+		stack.setOnMouseEntered((event) -> {
+			Map<String, List<Integer>> validMoves = controller.allPossibleMoves(j, i, "Human");
+			if (validMoves != null) {
+				List<Integer> attack = validMoves.get("Attack");
+				List<Integer> move = validMoves.get("Move");
+				for (int coord : attack) {
+					int row = coord / DIMENSION;
+					int col = coord % DIMENSION;
+					displayCellEffect(col, row, "Attack");
+				}
+				for (int coord : move) {
+					int row = coord / DIMENSION;
+					int col = coord % DIMENSION;
+					displayCellEffect(col, row, "Move");
 				}
 			}
 		});
@@ -325,6 +369,7 @@ public class CivGUIView extends Application implements Observer{
 		if (character == null) {
 			message += "No information on this cell!";
 		} else {
+			String name = model.getCell(row, col).getPlayer();
 			message += "Type: " + character.getName() + "\n";
 			message += "Attack: " + String.valueOf(character.getAttack()) + "\n";
 			message += "Attack Range: " + String.valueOf(character.getRange()) + "\n";
@@ -332,7 +377,9 @@ public class CivGUIView extends Application implements Observer{
 			message += "Health: " + String.valueOf(character.getHealth()) + "\n";
 			message += "Current Level: " + String.valueOf(character.getLevel()) + "\n";
 			message += "Max Level: " + String.valueOf(CivCharacter.getMaxLevel()) + "\n";
-			message += "Is This Piece Moved " + String.valueOf(character.getIsMoved()) + "\n";
+			if (name.equals("Human")) {
+				message += "Is This Piece Moved By You: " + String.valueOf(character.getIsMoved()) + "\n";
+			}
 		}
 		return message;
 	}
@@ -340,11 +387,19 @@ public class CivGUIView extends Application implements Observer{
 	private void addMenuBar() {
 		// MenuItems
 		MenuItem newGame = new MenuItem("New Game");
+		MenuItem gameRule = new MenuItem("Game Rule");
+		MenuItem about = new MenuItem("About");
 		// Menu
-		Menu file = new Menu("File");
-		file.getItems().add(newGame);
+		Menu menu = new Menu("Menu");
+		menu.getItems().add(newGame);
+		menu.getItems().add(gameRule);
+		menu.getItems().add(about);
 		// Menu bar
-		menuBar.getMenus().add(file);
+		menuBar.getMenus().add(menu);
+		newGame.setOnAction((ActionEvent ae) -> {
+			
+		});
+		
 	}
 	
 	private void updateCell(int x, int y, CivCell cell) {
@@ -367,6 +422,22 @@ public class CivGUIView extends Application implements Observer{
 			imgView.setVisible(false);
 			stack.setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));;
 		}
+	}
+	
+	private void displayCellEffect(int col, int row, String type) {
+		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
+		StackPane stack = (StackPane) rowPane.getChildren().get(row);
+		if (type.equals("Attack")) {
+			stack.setEffect(new SepiaTone());
+		} else if (type.equals("Move")) {
+			stack.setEffect(new Glow());
+		}
+	}
+	
+	private void removeCellEffect(int col, int row) {
+		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
+		StackPane stack = (StackPane) rowPane.getChildren().get(row);
+		stack.setEffect(null);
 	}
 
 }
