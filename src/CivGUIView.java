@@ -65,7 +65,7 @@ public class CivGUIView extends Application implements Observer{
 
 	public CivGUIView() {
 		File file = new File("save_game.dat");
-		/*if (file.exists()) {
+		if (file.exists()) {
 			try {
 				model = new CivModel("save_game.dat");
 			} catch (FileNotFoundException e) {
@@ -75,10 +75,9 @@ public class CivGUIView extends Application implements Observer{
 			} catch (IOException e) {
 				System.out.println("Can not load the game!");
 			}
-
-		} else {*/
+		} else {
 			model = new CivModel();
-		//}
+		}
 		controller = new CivController(model);
 		borderPane = new BorderPane();
 		menuBar = new MenuBar();
@@ -106,9 +105,8 @@ public class CivGUIView extends Application implements Observer{
 		
 		Scene scene = new Scene(borderPane, 950, 700);
 		primaryStage.setScene(scene);
-		//Start the game
-		/*primaryStage.setOnCloseRequest((WindowEvent we) -> {
-			if (!controller.isGameOver() && controller.isGameBegin()) {
+		primaryStage.setOnCloseRequest((WindowEvent we) -> {
+			if (!controller.isGameOver() && !controller.isGameBegin()) {
 				try {
 					ObjectOutputStream oos = new ObjectOutputStream(
 							new FileOutputStream("save_game.dat"));
@@ -120,7 +118,8 @@ public class CivGUIView extends Application implements Observer{
 					e.printStackTrace();
 				}
 			}
-		});*/
+		});
+		//Start the game
 		primaryStage.show();
 		primaryStage.setResizable(false);
 	}
@@ -310,6 +309,12 @@ public class CivGUIView extends Application implements Observer{
 			}
 			bigGridPane.addColumn(i, innerGrid);
 		}
+		for (int i=0; i<DIMENSION; i++) {
+			for (int j=0; j<DIMENSION; j++) {
+				CivCell cell = model.getCell(j, i);
+				updateCell(i, j, cell);
+			}
+		}
 		
 	}
 
@@ -353,10 +358,6 @@ public class CivGUIView extends Application implements Observer{
 				}
 			}
 		});
-
-		/**stack.setOnMouseReleased((event) -> {
-			stack.setEffect(null);
-		});*/
 		stack.setOnMousePressed((event) -> {
 			if (event.getButton() == MouseButton.PRIMARY && !controller.isGameOver()) {
 				stack.setEffect(new InnerShadow());

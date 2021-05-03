@@ -2,6 +2,7 @@ package characters;
 
 public class CivArcher extends CivCharacter{
 	
+	private static final long serialVersionUID = 1L;
 	public static final int FIXED_COST = 3;
 	
 	public CivArcher() {

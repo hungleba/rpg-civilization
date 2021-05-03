@@ -1,11 +1,16 @@
 package characters;
+
+import java.io.Serializable;
+
 /**
  * 
  * This class represents a character in the game and contains all
  * their main attributes.
  *
  */
-public class CivCharacter {
+public class CivCharacter implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	protected int attack;
 	protected int range;
 	protected int movement;
