@@ -140,7 +140,6 @@ public class CivController {
 			isSpawn = 0;
 			numSpawn = MAX_UNITS;
 		}
-		System.out.println(isSpawn);
 		if (isSpawn > 0) {
 			endTurn("Computer");
 			return;

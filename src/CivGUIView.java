@@ -105,11 +105,6 @@ public class CivGUIView extends Application implements Observer{
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		
-	}
-	
-	public void dizme() {
-		//model = (CivModel) o;
 		for (int i=0; i<DIMENSION; i++) {
 			for (int j=0; j<DIMENSION; j++) {
 				CivCell cell = model.getCell(j, i);
