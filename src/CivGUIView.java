@@ -412,14 +412,20 @@ public class CivGUIView extends Application implements Observer{
 		MenuItem newGame = new MenuItem("New Game");
 		MenuItem gameRule = new MenuItem("Game Rule");
 		MenuItem about = new MenuItem("About");
+		Menu background = new Menu("Set Background");
+		MenuItem france = new MenuItem("France Theme");
+		MenuItem germany = new MenuItem("Germany Theme");
+		MenuItem italy = new MenuItem("Italy Theme");
 		// Menu
 		Menu menu = new Menu("Menu");
 		menu.getItems().add(newGame);
 		menu.getItems().add(gameRule);
 		menu.getItems().add(about);
+		menu.getItems().add(background);
 		// Menu bar
 		menuBar.getMenus().add(menu);
 		newGame.setOnAction((ActionEvent ae) -> {
+			model.deleteObservers();
 			model = new CivModel();
 			controller = new CivController(model);
 			model.addObserver(this);
