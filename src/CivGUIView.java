@@ -335,6 +335,7 @@ public class CivGUIView extends Application implements Observer{
 						+ "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );");
 				popup.setX(primaryStage.getX()+655);
 				popup.setY(primaryStage.getY()+55);
+				popup.getContent().clear();
 				popup.getContent().add(label);
 				popup.show(primaryStage);
 			}
@@ -391,7 +392,10 @@ public class CivGUIView extends Application implements Observer{
 		String message = "";
 		if (character == null) {
 			message += "No information on this cell!";
+			System.out.println("\nnull??????\n");
 		} else {
+			System.out.println("\\n else condition??????\n");
+
 			String name = model.getCell(row, col).getPlayer();
 			message += "Type: " + character.getName() + "\n";
 			message += "Attack: " + String.valueOf(character.getAttack()) + "\n";
@@ -420,6 +424,7 @@ public class CivGUIView extends Application implements Observer{
 		// Menu bar
 		menuBar.getMenus().add(menu);
 		newGame.setOnAction((ActionEvent ae) -> {
+			model.deleteObserver(this);
 			model = new CivModel();
 			controller = new CivController(model);
 			model.addObserver(this);
