@@ -1,4 +1,10 @@
 import static org.junit.Assert.*;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 import org.junit.jupiter.api.Test;
 
 import characters.CivCharacter;
@@ -6,10 +12,10 @@ import characters.CivCharacter;
 
 public class CivTest {
 	/**
-	 * Test method for CivController. Basic set up.
+	 * Test method for CivController and CivModel. Basic set up.
 	 */
 	@Test
-	void testController() {
+	void test1() {
 		System.out.println("TEST 1:");
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
@@ -58,10 +64,10 @@ public class CivTest {
 	
 	
 	/**
-	 * Test method for CivController. A random game.
+	 * Test method for CivController and CivModel. Human will not attack.
 	 */
 	@Test
-	void testController2() {
+	void test2() {
 		System.out.println("TEST 2:");
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
@@ -136,5 +142,38 @@ public class CivTest {
 		
 		assertTrue(controller.isGameOver());
 
+	}
+	
+	
+	
+	/**
+	 * Test method for CivController and CivModel. Load previous game.
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 * @throws ClassNotFoundException 
+	 */
+	@Test
+	void test3() throws FileNotFoundException, IOException, ClassNotFoundException {
+		System.out.println("TEST 2:");
+		CivModel model = new CivModel();
+		CivController controller = new CivController(model);
+		CivPlayer human = model.getPlayer("Human");
+		CivPlayer computer = model.getPlayer("Computer");
+		
+		// set countries
+		model.setCountry(computer, "FRANCE");
+		model.setCountry(human, "GERMANY");
+		assertEquals(model.getPlayerCountry(computer), "FRANCE");
+
+		controller.setSpawned();
+		controller.handleClick(8,9, "Knight");
+		controller.endTurn("Human");
+		
+//		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("test_save_game.dat"));
+//		oos.writeObject(model);
+//		oos.close();
+//		
+//		CivModel model2 = new CivModel("test_save_game.dat");
+//		model2.getCell(8, 9);
 	}
 }

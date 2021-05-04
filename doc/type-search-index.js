@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"<Unnamed>","l":"Civ"},{"p":"characters","l":"CivArcher"},{"p":"characters","l":"CivCatapult"},{"p":"characters","l":"CivCharacter"},{"p":"characters","l":"CivGuard"},{"p":"characters","l":"CivKnight"},{"p":"characters","l":"CivWarrior"}];updateSearchResults();
