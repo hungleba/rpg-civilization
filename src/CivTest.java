@@ -10,13 +10,15 @@ public class CivTest {
 	 */
 	@Test
 	void testController() {
+		System.out.println("TEST 1:");
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
-		CivPlayer human = model.getPlayer("Human");
-		CivPlayer computer = model.getPlayer("Computer");
 		
 		//test isGameOver()
 		assertFalse(controller.isGameOver());
+		
+		//test isGameBegin()
+		assertTrue(controller.isGameBegin());
 		
 		//test spawning mechanism
 		assertTrue(controller.isAbleToSpawn("Warrior","Human"));
@@ -30,13 +32,14 @@ public class CivTest {
 		assertEquals(controller.displayStats(0, 9), null);
 		assertEquals(controller.displayStats(8, 0), null);
 		
-		// invalid character
+		// test spawning with invalid character
 		assertEquals(controller.isAbleToSpawn("Tank", "Human"),false);
 		
 		// test spawning in invalid positions
 		controller.handleClick(3,5, "Archer");
-		controller.handleClick(7,5, "Archer");
 		assertEquals(controller.displayStats(3,5), null);
+		controller.setSpawned();
+		controller.handleClick(7,5, "Archer");
 		assertEquals(controller.displayStats(7,5), null);
 		
 		
@@ -46,8 +49,11 @@ public class CivTest {
 		CivCharacter tempChar = model.getCell(9,6).getCharacter();
 		assertEquals(controller.displayStats(9,6), tempChar);
 		controller.handleClick(8,7, "Warrior");
-		tempChar = model.getCell(8,7).getCharacter();
 		assertEquals(controller.displayStats(8,7), null);	
+		controller.handleClick(3,5, "Warrior");
+		assertEquals(controller.displayStats(3,5), null);
+		
+		System.out.println("\n");
 	}
 	
 	
@@ -56,15 +62,49 @@ public class CivTest {
 	 */
 	@Test
 	void testController2() {
+		System.out.println("TEST 2:");
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
 		CivPlayer human = model.getPlayer("Human");
 		CivPlayer computer = model.getPlayer("Computer");
 		
+		// set countries
+		assertEquals(controller.determineWinner(), null);
+
+		// human turn
 		controller.setSpawned();
 		controller.handleClick(9,8, "Catapult");
 		controller.handleClick(9,8, "Catapult");
 		assertEquals(controller.getIsMoved(), true);
+		controller.handleClick(9,9, "");
+		controller.endTurn("Human");
+		assertEquals(controller.determineWinner(), "Human");
 		
+		// computer turn
+		controller.computerMove();
+		assertFalse(controller.isGameOver());
+		
+		// human turn
+		assertEquals(controller.allPossibleMoves(5, 5, "Human"),null);
+		controller.handleClick(9, 8, "");
+		assertEquals(controller.allPossibleMoves(9, 8, "Computer"),null);
+		System.out.println("Possible moves for 9,8: " +controller.allPossibleMoves(9, 8, "Human"));
+		controller.handleClick(7, 6, "");
+		controller.endTurn("Human");
+		
+		// computer turn
+		controller.computerMove();
+		
+		controller.handleClick(7, 6, "");
+		System.out.println("Possible moves for 7,6: " +controller.allPossibleMoves(7, 6, "Human"));
+		controller.handleClick(5, 4, "");
+		controller.endTurn("Human");
+		
+		controller.computerMove();
+		assertEquals(controller.determineWinner(), "Computer");
+		
+		
+		
+	
 	}
 }

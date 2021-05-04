@@ -12,7 +12,6 @@ public class CivPlayer implements Serializable{
 	private static final int DIMENSION = 10;
 	private static final int INITIAL_GOLD = 10;
 	private int unitCount;
-	private CivCountry country;
 	private Map<String, List<CivCharacter>> unitMap;
 	private Map<CivCharacter, Integer> positionMap;
 	private String name;
@@ -29,14 +28,6 @@ public class CivPlayer implements Serializable{
 		unitCount = 0;
 		this.name = name;
 		gold = INITIAL_GOLD;
-	}
-
-	public void setCountry(CivCountry country) {
-		this.country = country;
-	}
-
-	public CivCountry getCountry() {
-		return country;
 	}
 
 	public int getUnitCount() {

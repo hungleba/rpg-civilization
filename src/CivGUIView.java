@@ -21,14 +21,22 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.Bloom;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.effect.Lighting;
 import javafx.scene.effect.SepiaTone;
+import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -126,6 +134,7 @@ public class CivGUIView extends Application implements Observer{
 	
 	@Override
 	public void update(Observable o, Object arg) {
+		model = (CivModel) o;
 		for (int i=0; i<DIMENSION; i++) {
 			for (int j=0; j<DIMENSION; j++) {
 				CivCell cell = model.getCell(j, i);
@@ -286,8 +295,7 @@ public class CivGUIView extends Application implements Observer{
 
 	private void addGridPane(Stage primaryStage) {
 		bigGridPane.setMaxWidth(630);
-		bigGridPane.setBackground(new Background(new 
-				BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
+		setBackground(model.getCountry());
 		bigGridPane.setPadding(new Insets(8));
 		addStackPane(primaryStage);
 	}
@@ -297,7 +305,7 @@ public class CivGUIView extends Application implements Observer{
 			GridPane innerGrid = new GridPane();
 			for (int j = 0; j < DIMENSION; j++) {
 				StackPane stack = new StackPane();
-				stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
+				stack.setBorder(new Border(new BorderStroke(Color.CHARTREUSE, 
 						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 				stack.setPadding(new Insets(10));
 				ImageView imgView = getSpawnView("Archer");
@@ -325,7 +333,7 @@ public class CivGUIView extends Application implements Observer{
 				String info = getStatsInfo(j, i);
 				Label label = new Label(info);
 				label.setPadding(new Insets(5));
-				label.setMinWidth(280);
+				label.setMinWidth(285);
 				// linear-gradient(#808080, #707070)
 				label.setStyle("\n"
 						+ "    -fx-text-fill: white;\n"
@@ -335,6 +343,7 @@ public class CivGUIView extends Application implements Observer{
 						+ "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );");
 				popup.setX(primaryStage.getX()+655);
 				popup.setY(primaryStage.getY()+55);
+				popup.getContent().clear();
 				popup.getContent().add(label);
 				popup.show(primaryStage);
 			}
@@ -407,25 +416,65 @@ public class CivGUIView extends Application implements Observer{
 		return message;
 	}
 
+	private void setBackground(String country) {
+		if (country == null) {
+			bigGridPane.setBackground(new Background(new 
+					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
+		} else {
+			String url = "src/flags/"+country+".png";
+			File file = new File(url);
+			Image img = new Image(file.toURI().toString());
+			bigGridPane.setBackground(new Background(new BackgroundImage(img, 
+					BackgroundRepeat.NO_REPEAT, 
+					BackgroundRepeat.NO_REPEAT, 
+					BackgroundPosition.DEFAULT, 
+					new BackgroundSize(1.0, 1.0, true, true, false, false))));
+		}
+		model.setCountry(country);
+	}
+	
+	private void setBackgroundWowFactor(Menu menu) {
+		Menu background = new Menu("Set Background");
+		MenuItem france = new MenuItem("France Theme");
+		MenuItem germany = new MenuItem("Germany Theme");
+		MenuItem italy = new MenuItem("Italy Theme");
+		MenuItem defaultTheme = new MenuItem("Default Theme");
+		background.getItems().add(france);
+		background.getItems().add(germany);
+		background.getItems().add(italy);
+		background.getItems().add(defaultTheme);
+		france.setOnAction((ActionEvent ae) -> {
+			setBackground("france");
+		});
+		germany.setOnAction((ActionEvent ae) -> {
+			setBackground("germany");
+		});
+		italy.setOnAction((ActionEvent ae) -> {
+			setBackground("italy");
+		});
+		defaultTheme.setOnAction((ActionEvent ae) -> {
+			setBackground(null);
+		});
+		menu.getItems().add(background);
+	}
+	
 	private void addMenuBar(Stage primaryStage) {
 		// MenuItems
 		MenuItem newGame = new MenuItem("New Game");
 		MenuItem gameRule = new MenuItem("Game Rule");
 		MenuItem about = new MenuItem("About");
-		Menu background = new Menu("Set Background");
-		MenuItem france = new MenuItem("France Theme");
-		MenuItem germany = new MenuItem("Germany Theme");
-		MenuItem italy = new MenuItem("Italy Theme");
+		
 		// Menu
 		Menu menu = new Menu("Menu");
 		menu.getItems().add(newGame);
 		menu.getItems().add(gameRule);
 		menu.getItems().add(about);
-		menu.getItems().add(background);
+		setBackgroundWowFactor(menu);
+		
 		// Menu bar
 		menuBar.getMenus().add(menu);
 		newGame.setOnAction((ActionEvent ae) -> {
-			model.deleteObservers();
+			model.deleteObserver(this);
 			model = new CivModel();
 			controller = new CivController(model);
 			model.addObserver(this);
@@ -436,6 +485,7 @@ public class CivGUIView extends Application implements Observer{
 				}
 			}
 			addTilePane();
+			setBackground(null);
 			File file = new File("save_game.dat");
 			file.delete();
 		});
@@ -478,9 +528,9 @@ public class CivGUIView extends Application implements Observer{
 		StackPane stack = (StackPane) rowPane.getChildren().get(y);
 		String player = cell.getPlayer();
 		if (player != null) {
-			Color color = Color.WHITE;
+			Color color = Color.AQUA;
 			if (player.equals("Computer")) {
-				color = Color.AQUA;
+				color = Color.VIOLET;
 			}
 			CivCharacter character = cell.getCharacter();
 			String name = character.getName();
@@ -492,7 +542,7 @@ public class CivGUIView extends Application implements Observer{
 			ImageView imgView = (ImageView) stack.getChildren().get(0);
 			imgView.setVisible(false);
 			stack.setBackground(new Background(new 
-					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));;
+					BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), Insets.EMPTY)));;
 		}
 	}
 	
@@ -502,7 +552,8 @@ public class CivGUIView extends Application implements Observer{
 		if (type.equals("Attack")) {
 			stack.setEffect(new SepiaTone());
 		} else if (type.equals("Move")) {
-			stack.setEffect(new Glow());
+			//TODO: Change effect
+			stack.setEffect(new BoxBlur());
 		}
 	}
 	

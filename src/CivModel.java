@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Observable;
 
 import characters.CivCharacter;
+import javafx.application.Platform;
 
 @SuppressWarnings("deprecation")
 public class CivModel extends Observable implements Serializable{
@@ -16,6 +17,7 @@ public class CivModel extends Observable implements Serializable{
 	private int curUnits; // the current number of units on the map
 	private CivPlayer human;
 	private CivPlayer computer;
+	private String country;
 	
 	public CivModel(String fileName) throws FileNotFoundException, IOException, ClassNotFoundException {
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
@@ -25,6 +27,8 @@ public class CivModel extends Observable implements Serializable{
 			this.curUnits = model.curUnits;
 			this.human = model.human;
 			this.computer = model.computer;
+			this.country = model.country;
+			this.curUnits = model.curUnits;
 		} else {
 			getDefaultModel();
 		}
@@ -39,7 +43,7 @@ public class CivModel extends Observable implements Serializable{
 	private void getDefaultModel() {
 		human = new CivPlayer("Human");
 		computer = new CivPlayer("Computer");
-		
+		curUnits = 0;
 		boardArr = new CivCell[DIMENSION][DIMENSION];
 		
 		for (int i = 0; i < DIMENSION; i++) {
@@ -47,11 +51,8 @@ public class CivModel extends Observable implements Serializable{
 				boardArr[i][j] = new CivCell();
 			}
 		}
-		curUnits = 0;
-	}
-	
-	public int getCurUnits() {
-		return curUnits;
+		
+		country = null;
 	}
 	
 	public CivPlayer getPlayer(String type) {
@@ -66,13 +67,14 @@ public class CivModel extends Observable implements Serializable{
 		return computer.getUnitCount();
 	}
 	
-	public CivCountry getPlayerCountry(CivPlayer player) {
-		return player.getCountry();
+	public String getCountry() {
+		return country;
 	}
 	
-	public void setCountry(CivPlayer player, String name) {
-		CivCountry country = new CivCountry(name);
-		player.setCountry(country);
+	public void setCountry(String country) {
+		this.country = country;
+		System.out.println(this.getCountry());
+		
 	}
 	
 	public CivCell getCell(int row, int col) {

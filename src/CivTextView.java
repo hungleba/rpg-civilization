@@ -5,6 +5,19 @@ import java.util.Scanner;
 
 import characters.CivCharacter;
 
+/**
+ * This class serves as the view for the MVC (Mode/Control/View) and let the player
+ *  interact with the game through text forms. The player can interact with the game
+ *  and play against the AI by entering a series of commands the the necessary 
+ *  information prompted by the program
+ * 
+ * @author Anh Nguyen Phung
+ * @author Hung Le Ba
+ * @author Thu Tra
+ * @author Peter Vo
+ *
+ */
+
 public class CivTextView {
 	private static CivModel model;
 	private static CivController controller;
