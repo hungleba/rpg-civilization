@@ -98,16 +98,43 @@ public class CivTest {
 		// computer turn
 		controller.computerMove();
 		
+		// human turn
 		controller.handleClick(7, 6, "");
 		System.out.println("Possible moves for 7,6: " +controller.allPossibleMoves(7, 6, "Human"));
 		controller.handleClick(5, 4, "");
 		controller.endTurn("Human");
 		
+		// computer turn
+		controller.computerMove();
+		
+		// human turn
+		controller.handleClick(5, 4, "");
+		System.out.println("Possible moves for 5,4: " +controller.allPossibleMoves(5, 4, "Human"));			
+		controller.handleClick(3, 3, "");
+		controller.endTurn("Human");
+				
+		// computer turn
+		controller.computerMove();
+		
+		// human turn
+		controller.handleClick(3, 3, "");
+		System.out.println("Possible moves for 3,3: " +controller.allPossibleMoves(3, 3, "Human"));			
+		controller.handleClick(1, 5, "");
+		controller.endTurn("Human");
+						
+		// computer turn
 		controller.computerMove();
 		assertEquals(controller.determineWinner(), "Computer");
 		
+		// human turn
+		controller.endTurn("Human");
+								
+		// computer turn
+		controller.computerMove();
+		assertEquals(controller.determineWinner(), "Computer");
+				
 		
-		
-	
+		assertTrue(controller.isGameOver());
+
 	}
 }
