@@ -8,7 +8,15 @@ import java.io.ObjectOutputStream;
 import org.junit.jupiter.api.Test;
 
 import characters.CivCharacter;
-
+/**
+ * This class serves as tests for CivController and CivModel
+ * 
+ * @author Anh Nguyen Phung
+ * @author Hung Le Ba
+ * @author Thu Tra
+ * @author Peter Vo
+ *
+ */
 
 public class CivTest {
 	/**

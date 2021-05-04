@@ -1,5 +1,4 @@
 import javafx.application.Application;
-
 /**
  * This class serves as the main class for the Civilization game. The program will
  * launch the GUI view or Text view based on command line argument. Default option is GUI view.
