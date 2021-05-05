@@ -22,7 +22,10 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.effect.Bloom;
+import javafx.scene.effect.BlurType;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.effect.Lighting;
@@ -183,7 +186,7 @@ public class CivGUIView extends Application implements Observer{
 		archer.setPrefHeight(48);
 		archer.setPrefWidth(140);
 		archer.setOnMouseClicked((event) -> {
-			highLightspawnArea();
+			highLightspawnArea(3);
 		});
 	}
 	
@@ -199,7 +202,7 @@ public class CivGUIView extends Application implements Observer{
 		catapult.setPrefHeight(48);
 		catapult.setPrefWidth(140);
 		catapult.setOnMouseClicked((event) -> {
-			highLightspawnArea();
+			highLightspawnArea(7);
 		});
 	}
 	
@@ -215,7 +218,7 @@ public class CivGUIView extends Application implements Observer{
 		guard.setPrefHeight(48);
 		guard.setPrefWidth(140);
 		guard.setOnMouseClicked((event) -> {
-			highLightspawnArea();
+			highLightspawnArea(5);
 		});
 	}
 	
@@ -231,7 +234,7 @@ public class CivGUIView extends Application implements Observer{
 		knight.setPrefHeight(48);
 		knight.setPrefWidth(140);
 		knight.setOnMouseClicked((event) -> {
-			highLightspawnArea();
+			highLightspawnArea(6);
 		});
 	}
 	
@@ -247,7 +250,7 @@ public class CivGUIView extends Application implements Observer{
 		warrior.setPrefHeight(48);
 		warrior.setPrefWidth(140);
 		warrior.setOnMouseClicked((event) -> {
-			highLightspawnArea();
+			highLightspawnArea(2);
 		});
 	}
 	
@@ -272,13 +275,16 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 	
-	private void highLightspawnArea() {
+	private void highLightspawnArea(int cost) {
+		if (model.getPlayer("Human").getGold() < cost)
+			return;
 		for (int x = 0; x < 10; x++) { // last two rows
 			for (int y = 8; y < 10; y++) { // Elements within the last two rows
 				GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x); //x-axis
 				StackPane stack = (StackPane) rowPane.getChildren().get(y); //y-axis
-				stack.setBorder(new Border(new BorderStroke(Color.RED, 
+				stack.setBorder(new Border(new BorderStroke(Color.GREY, 
 						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+				stack.setEffect(new DropShadow(BlurType.GAUSSIAN, Color.RED, 5, 0.75, 0, 0));
 				isSpawnArea = true;
 			}
 		}
@@ -291,6 +297,7 @@ public class CivGUIView extends Application implements Observer{
 				StackPane stack = (StackPane) rowPane.getChildren().get(y);
 				stack.setBorder(new Border(new BorderStroke(Color.CHARTREUSE, 
 						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+				stack.setEffect(null);
 				isSpawnArea = false;
 			}
 		}
@@ -390,6 +397,8 @@ public class CivGUIView extends Application implements Observer{
 			}
 		});
 		stack.setOnMouseExited((event) -> {
+			if (isSpawnArea)
+				return;
 			stack.setEffect(null);
 			popup.hide();
 			Map<String, List<Integer>> validMoves = controller.allPossibleMoves(j, i, "Human");
@@ -421,6 +430,8 @@ public class CivGUIView extends Application implements Observer{
 			}
 		});
 		stack.setOnMouseEntered((event) -> {
+			if (isSpawnArea)
+				return;
 			Map<String, List<Integer>> validMoves = controller.allPossibleMoves(j, i, "Human");
 			if (validMoves != null) {
 				List<Integer> attack = validMoves.get("Attack");
@@ -594,17 +605,20 @@ public class CivGUIView extends Application implements Observer{
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
 		if (type.equals("Attack")) {
-			stack.setEffect(new SepiaTone());
+			stack.setBorder(new Border(new BorderStroke(Color.RED, 
+					BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		} else if (type.equals("Move")) {
 			//TODO: Change effect
-			stack.setEffect(new BoxBlur());
+			stack.setBorder(new Border(new BorderStroke(Color.BLUE, 
+					BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		}
 	}
 	
 	private void removeCellEffect(int col, int row) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
-		stack.setEffect(null);
+		stack.setBorder(new Border(new BorderStroke(Color.CHARTREUSE, 
+				BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 	}
 
 }
