@@ -389,7 +389,6 @@ public class CivGUIView extends Application implements Observer{
 				Label label = new Label(info);
 				label.setPadding(new Insets(5));
 				label.setMinWidth(285);
-				// linear-gradient(#808080, #707070)
 				label.setStyle("\n"
 						+ "    -fx-text-fill: white;\n"
 						+ "    -fx-font-family: \"Courier New\";\n"

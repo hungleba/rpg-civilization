@@ -293,8 +293,16 @@ public class CivController {
 				civChar = cell.getCharacter();
 				isMove = true;
 			} else if (isMove && cell.getPlayer().equals("Computer")) {
+				int prevHealth = -1;
+				int currHealth = -1;
+				CivCharacter currChar = model.getCell(row, col).getCharacter();
+				if (currChar != null)
+					prevHealth = currChar.getHealth();
 				handleAttack(prevRow, prevCol, row, col, human, civChar);
-				return true;
+				if (currChar != null)
+					currHealth = currChar.getHealth();
+				if (prevHealth != currHealth && prevHealth != -1 && currHealth != -1)
+					return true;
 			}
 		}
 		return false;
