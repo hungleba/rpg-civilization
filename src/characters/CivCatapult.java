@@ -28,7 +28,7 @@ public class CivCatapult extends CivCharacter{
 	}
 	
 	/**
-	 * Change the character stats when leveling up
+	 * Update the character stats when leveling up
 	 */
 	@Override
 	public void levelUp() {
