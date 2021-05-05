@@ -627,6 +627,12 @@ public class CivGUIView extends Application implements Observer{
 		}
 	}
 
+	/**
+	 * Remove the effect of all possible moves of a specific cell
+	 * @param col 
+	 * @param row
+	 * @param type
+	 */
 	private void removeCellEffect(int col, int row, String type) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
