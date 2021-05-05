@@ -20,11 +20,11 @@ import characters.CivCharacter;
 
 public class CivTest {
 	/**
-	 * Test method for CivController and CivModel. Basic set up.
+	 * Test method for CivController and CivModel. 
 	 */
 	@Test
-	void test1() {
-		System.out.println("TEST 1:");
+	void test_controler_1() {
+		System.out.println("TEST CONTROLLER 1:");
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
 		
@@ -34,27 +34,22 @@ public class CivTest {
 		//test isGameBegin()
 		assertTrue(controller.isGameBegin());
 		
-		//test spawning mechanism
-		assertTrue(controller.isAbleToSpawn("Warrior","Human"));
-		assertTrue(controller.isAbleToSpawn("Catapult","Human"));
-		assertTrue(controller.isAbleToSpawn("Guard","Human"));
-		assertTrue(controller.isAbleToSpawn("Knight","Human"));
-		assertTrue(controller.isAbleToSpawn("Warrior","Human"));
-		
+		//test display stats
 		assertEquals(controller.displayStats(0, 1), null);
 		assertEquals(controller.displayStats(9, 1), null);
 		assertEquals(controller.displayStats(0, 9), null);
 		assertEquals(controller.displayStats(8, 0), null);
 		
-		// test spawning with invalid character
-		assertEquals(controller.isAbleToSpawn("Tank", "Human"),false);
-		
 		// test spawning in invalid positions
 		controller.handleClick(3,5, "Archer");
 		assertEquals(controller.displayStats(3,5), null);
+		model.getCountry();
 		controller.setSpawned();
 		controller.handleClick(7,5, "Archer");
 		assertEquals(controller.displayStats(7,5), null);
+		controller.setSpawned();
+		controller.handleClick(8,5, "Archerr");
+		assertEquals(controller.displayStats(8,5), null);
 		
 		
 		//test spawning
@@ -67,16 +62,23 @@ public class CivTest {
 		controller.handleClick(3,5, "Warrior");
 		assertEquals(controller.displayStats(3,5), null);
 		
-		System.out.println("\n");
+		for (int i = 0; i < 4; i++) {
+			controller.endTurn("Human");	
+		}
+		
+		controller.setSpawned();
+		controller.handleClick(9,8, "Warrior");
+		controller.handleClick(9,8, "Warrior");
 	}
+
 	
 	
 	/**
 	 * Test method for CivController and CivModel. Human will not attack.
 	 */
 	@Test
-	void test2() {
-		System.out.println("TEST 2:");
+	void test_controller_2() {
+		System.out.println("TEST CONTROLLER 2:");
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
 		CivPlayer human = model.getPlayer("Human");
@@ -87,8 +89,8 @@ public class CivTest {
 
 		// human turn
 		controller.setSpawned();
-		controller.handleClick(9,8, "Catapult");
-		controller.handleClick(9,8, "Catapult");
+		controller.handleClick(9,8, "Guard");
+		controller.handleClick(9,8, "Guard");
 		assertEquals(controller.getIsMoved(), true);
 		controller.handleClick(9,9, "");
 		controller.endTurn("Human");
@@ -143,23 +145,25 @@ public class CivTest {
 		// computer turn
 		controller.computerMove();
 		assertEquals(controller.determineWinner(), "Computer");
-				
-		
+		while (!controller.isGameOver()) {
+			controller.computerMove();
+			controller.endTurn("Computer");
+		}
 		assertTrue(controller.isGameOver());
-
 	}
 	
 	
 	
 	/**
-	 * Test method for CivController and CivModel. Load previous game.
+	 * Test methods CivModel
+	 * 
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 * @throws ClassNotFoundException 
 	 */
 	@Test
-	void test3() throws FileNotFoundException, IOException, ClassNotFoundException {
-		System.out.println("TEST 2:");
+	void test_model() throws FileNotFoundException, IOException, ClassNotFoundException {
+		System.out.println("TEST CONTROLLER 2:");
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
 		CivPlayer human = model.getPlayer("Human");
@@ -169,11 +173,19 @@ public class CivTest {
 		controller.handleClick(8,9, "Knight");
 		controller.endTurn("Human");
 		
-//		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("test_save_game.dat"));
-//		oos.writeObject(model);
-//		oos.close();
-//		
-//		CivModel model2 = new CivModel("test_save_game.dat");
-//		model2.getCell(8, 9);
+		// Test adding a model saved game with old model
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("test_save_game.dat"));
+		oos.writeObject(model);
+		oos.close();
+		
+		CivModel model2 = new CivModel("test_save_game.dat");
+		assertEquals(model2.getCell(8, 9).getPlayer(), "Human");
+		
+		// Test adding a model saved game with null game board
+		ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream("test_save_game2.dat"));
+		oos2.writeObject(null);
+		oos2.close();
+		
+		CivModel model3 = new CivModel("test_save_game2.dat");
 	}
 }
