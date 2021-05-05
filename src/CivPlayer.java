@@ -22,7 +22,9 @@ public class CivPlayer implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** the dimension of the Civilization's map */
 	private static final int DIMENSION = 10; 
+	/** the initial gold count of each player */
 	private static final int INITIAL_GOLD = 10;
+	/** current total unit count of the player */
 	private int unitCount;
 	/** map of the all the units for each type of character the player has */
 	private Map<String, List<CivCharacter>> unitMap; 

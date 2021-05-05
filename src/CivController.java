@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
 
 import characters.CivArcher;
@@ -87,6 +89,17 @@ public class CivController {
 		model.updateCell(0, 0, cell.getCharacter(), cell.getPlayer());
 	}
 
+	/**
+	 * Check if a player can spawn the given character
+	 * 
+	 * @param character the character type to be spawned
+	 * 
+	 * @param playerType type of player "Human" or "Computer"
+	 * 
+	 * @return true if the player can spawn the character, and false if
+	 * the character is invalid, the player exceeds max unit count, or is
+	 * out of gold to buy the given character
+	 */
 	private boolean isAbleToSpawn(String character, String playerType) {
 		CivCharacter curChar = null;
 		if (character.equals("Archer")) {
@@ -109,6 +122,19 @@ public class CivController {
 		return true;
 	}
 
+	/**
+	 * Check a position can be spawned by a given player. Computer spawns
+	 * the first two rows, and Human spawns the last two rows
+	 * 
+	 * @param row the row position to be spawned
+	 * 
+	 * @param col the column position to be spawned
+	 * 
+	 * @param playerType type of player "Human" or "Computer"
+	 * 
+	 * @return true if the position can be spawned by the given player, and false 
+	 * otherwise
+	 */
 	private boolean isValidSpawnPosition(int row, int col, String playerType) {
 		if (playerType.equals("Computer")) {
 			if (row >= 2) {
@@ -125,6 +151,11 @@ public class CivController {
 		}
 	}
 
+	/**
+	 * Check if the game is over (one side has no unit left)
+	 * 
+	 * @return true if the game is over and false otherwise
+	 */
 	public boolean isGameOver() {
 		int humanUnits = model.getHumanCurUnits();
 		int compUnits = model.getComputerCurUnits();
@@ -136,10 +167,21 @@ public class CivController {
 		return false;
 	}
 
+	/**
+	 * Check if the game has started already (one side has completed their turn)
+	 * 
+	 * @return true if the game is started and false otherwise
+	 */
 	public boolean isGameBegin() {
 		return isBeginOfGame;
 	}
 	
+	/**
+	 * Check for the one with more unit count
+	 * 
+	 * @return "Human" if human side has more unit count, and "Computer" if
+	 * computer side has more unit count. If tied then return null.
+	 */
 	public String determineWinner() {
 		int humanUnits = model.getHumanCurUnits();
 		int compUnits = model.getComputerCurUnits();
@@ -152,8 +194,14 @@ public class CivController {
 		}
 	}
 
-	public List<Integer> computerMove() {
-		List<Integer> attacked = new ArrayList<>();
+	/**
+	 * Represents a move from the computer
+	 * 
+	 * @return a set of positions (represented as index of the 2D board array) 
+	 * that has been attacked in this turn
+	 */
+	public Set<Integer> computerMove() {
+		Set<Integer> attacked = new HashSet<>();
 		CivPlayer computer = model.getPlayer("Computer");
 		Map<CivCharacter, Integer> positionMap = computer.getPositionMap();
 		Random rand = new Random();
@@ -165,7 +213,7 @@ public class CivController {
 			List<Integer> attack = moves.get("Attack");
 			List<Integer> movement = moves.get("Move");
 			if (attack.size() != 0) {
-				int newCoord = optimizeAttack(attack, character);
+				int newCoord = optimizeAttack(attack);
 				int nextRow = newCoord / DIMENSION;
 				int nextCol = newCoord % DIMENSION;
 				handleAttack(row, col, nextRow, nextCol, computer, character);
@@ -228,7 +276,15 @@ public class CivController {
 		return attacked;
 	}
 
-	private int optimizeAttack(List<Integer> attack, CivCharacter character) {
+	/**
+	 * Choose the optimal unit to attack. In this implementation, it is
+	 * the unit in range that has the lowest health score
+	 * 
+	 * @param attack available attack positions
+	 * 
+	 * @return position of the unit in range that has the lowest health
+	 */
+	private int optimizeAttack(List<Integer> attack) {
 		TreeMap<Integer, Integer> healthMap = new TreeMap<>();
 		for (int coord: attack) {
 			int row = coord / DIMENSION;
@@ -239,6 +295,19 @@ public class CivController {
 		return healthMap.get(healthMap.firstKey());
 	}
 	
+	/**
+	 * All possible moves (attack or move unit) from the position (row, col)
+	 * If the position is empty or the given player does not occupy that position, 
+	 * then return null
+	 * 
+	 * @param row the position to make a move from
+	 * 
+	 * @param col the column position to make a move from
+	 * 
+	 * @param player current player to make a move
+	 * 
+	 * @return a map containing appropriate positions as values for two keys: "Move" and "Attack"
+	 */
 	public Map<String, List<Integer>> allPossibleMoves(int row, int col, String player) {
 		CivCell cell = model.getCell(row, col);
 		if (cell.getPlayer() == null) {
@@ -271,6 +340,15 @@ public class CivController {
 		return map;
 	}
 
+	/**
+	 * Display stats of a cell at (row, col)
+	 * 
+	 * @param row the row position to get stats from
+	 * 
+	 * @param col the column position to get stats from
+
+	 * @return the CivCharacter that is in the cell
+	 */
 	public CivCharacter displayStats(int row, int col) {
 		CivCell cell = model.getCell(row, col);
 		if (cell.getCharacter() == null) {
@@ -279,6 +357,21 @@ public class CivController {
 		return cell.getCharacter();
 	}
 
+	/**
+	 * Handle interactions to a cell when it is clicked. Can be spawning a new character, 
+	 * moving the current character out of the cell, moving a pre-selected character into the
+	 * cell, making the current character in the cell attack another unit, or attacking 
+	 * the current unit in the cell
+	 * 
+	 * @param row the row of the clicked cell
+	 * 
+	 * @param col the column of the clicked cell
+	 * 
+	 * @param character the character that is given when clicked, in case
+	 * of spawning
+	 * 
+	 * @return true if the cell is attacked and false otherwise
+	 */
 	public boolean handleClick(int row, int col, String character) {
 		CivPlayer human = model.getPlayer("Human");
 		CivCell cell = model.getCell(row, col);
@@ -311,6 +404,22 @@ public class CivController {
 		return false;
 	}
 
+	/**
+	 * Handle interactions to a cell when it is attacked
+	 * 
+	 * @param prevRow row of the cell clicked prior to the current cell
+	 * 
+	 * @param prevCol column of the cell clicked prior to the current cell
+	 * 
+	 * @param row the row of the clicked cell
+	 * 
+	 * @param col the column of the clicked cell
+	 * 
+	 * @param player the player of the previously clicked cell (the attacker)
+	 * 
+	 * @param civChar the character of the previously clicked cell (the attacker)
+	 * 
+	 */
 	private void handleAttack(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
 		CivCharacter curChar = model.getCell(row, col).getCharacter();
 		CivPlayer otherPlayer = model.getPlayer(model.getCell(row, col).getPlayer());
@@ -335,6 +444,22 @@ public class CivController {
 
 	}
 
+	/**
+	 * Handle interactions to a cell when a unit is being moved to it
+	 * 
+	 * @param prevRow row of the cell clicked prior to the current cell
+	 * 
+	 * @param prevCol column of the cell clicked prior to the current cell
+	 * 
+	 * @param row the row of the clicked cell
+	 * 
+	 * @param col the column of the clicked cell
+	 * 
+	 * @param player the player of the previously clicked cell 
+	 * 
+	 * @param civChar the character of the previously clicked cell 
+	 * 
+	 */
 	private void handleMove(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
 		if (Math.max(Math.abs(row - prevRow), Math.abs(col - prevCol)) <= civChar.getMovement()
 				&& !civChar.getIsMoved()) {
@@ -351,6 +476,18 @@ public class CivController {
 
 	}
 
+	/**
+	 * Add unit to an empty cell and the player's team when they spawned
+	 * 
+	 * @param player the player that has spawned
+	 * 
+	 * @param civChar the character that has been spanwed
+	 * 
+	 * @param row the row of the cell to spawn on
+	 * 
+	 * @param col the column of cell to spawn on
+	 * 
+	 */
 	private void handleAddUnit(String character, CivPlayer player, int row, int col) {
 		if (!isValidSpawnPosition(row, col, player.getName()) || !isAbleToSpawn(character, player.getName())) {
 			isSpawned = false;
@@ -375,22 +512,58 @@ public class CivController {
 		model.updateCell(row, col, curChar, player.getName());
 	}
 	
+	/**
+	 * Return status of the current turn
+	 * 
+	 * @return true if a valid cell has been clicked before, false if otherwise 
+	 *
+	 */
 	public boolean getIsMoved() {
 		return isMove;
 	}
 	
+	/**
+	 * Set the current theme color
+	 * 
+	 * @param color the color to be set
+	 *
+	 */
 	public void setColor(String color) {
 		model.setColor(color);
 	}
 	
+	/**
+	 * Get the current theme color
+	 * 
+	 * @return current them color as a string
+	 *
+	 */
 	public String getColor() {
 		return model.getColor();
 	}
 	
+	/**
+	 * Get the cell at (r,c)
+	 * 
+	 * @param r the row position of the cell
+	 * 
+	 * @param c the column position of the cell
+	 * 
+	 * @return CivCell at (r,c)
+	 *
+	 */
 	public CivCell getCell(int r, int c) {
 		return model.getCell(r, c);
 	}
 	
+	/**
+	 * Get the player based on name 
+	 * 
+	 * @param player name of the player ("Human" or "Computer")
+	 * 
+	 * @return the CivPlayer of that name
+	 *
+	 */
 	public CivPlayer getPlayer(String player) {
 		return model.getPlayer(player);
 	}

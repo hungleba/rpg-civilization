@@ -25,7 +25,9 @@ import characters.CivCharacter;
 public class CivCell implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	/** represent the player (Human or Computer) that occupies this cell */
 	private String player;
+	/** represent the character that occupies this cell */
 	private CivCharacter character;
 	
 	/**

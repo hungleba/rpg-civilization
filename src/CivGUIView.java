@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 import characters.CivCharacter;
 import javafx.animation.Animation;
@@ -265,7 +266,16 @@ public class CivGUIView extends Application implements Observer{
 		endBtn.setOnAction((event) -> {
 			if (!controller.isGameOver()) {
 				controller.endTurn("Human");
-				controller.computerMove();
+				Set<Integer> attackedList = controller.computerMove();
+				int rate = attackedList.size();
+				for (Integer numb:attackedList) {
+					int j = numb / DIMENSION;
+					int i = numb % DIMENSION;
+					timeline = getTimeLineAttack(j, i, rate);
+					rate--;
+					timeline.play();
+				}
+				System.out.println(attackedList);
 				if (controller.isGameOver()) {
 					displayAlertWinner();
 				}
@@ -428,7 +438,7 @@ public class CivGUIView extends Application implements Observer{
 				stack.setEffect(new InnerShadow());
 				boolean isAttack = controller.handleClick(j, i, currChar);
 				if (isAttack) {
-					timeline = getTimeLineAttack(j, i);
+					timeline = getTimeLineAttack(j, i, 1);
 					timeline.play();
 				}
 				if (controller.isGameOver()) {
@@ -460,11 +470,11 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 	
-	private Timeline getTimeLineAttack(int row, int col) {
+	private Timeline getTimeLineAttack(int row, int col, int rate) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
-		Timeline timeline = new Timeline() ;
-		timeline.setCycleCount(66) ; // Blink 3 times, 22 cycles/blink
+		Timeline timeline = new Timeline();
+		timeline.setCycleCount(66*rate); // Blink 3 times, 22 cycles/blink
 		KeyFrame keyframe = new KeyFrame( Duration.millis(50 ),
 				(event) -> {
 					ImageView imgView = (ImageView) stack.getChildren().get(0);
