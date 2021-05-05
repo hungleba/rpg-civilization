@@ -64,13 +64,11 @@ public class CivModel extends Observable implements Serializable{
 		computer = new CivPlayer("Computer");
 		curUnits = 0;
 		boardArr = new CivCell[DIMENSION][DIMENSION];
-		
 		for (int i = 0; i < DIMENSION; i++) {
 			for (int j = 0; j < DIMENSION; j++) {
 				boardArr[i][j] = new CivCell();
 			}
 		}
-		
 		country = null;
 	}
 	

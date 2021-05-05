@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -329,6 +328,10 @@ public class CivController {
 	
 	public boolean getIsMoved() {
 		return isMove;
+	}
+	
+	public void setCountry(String country) {
+		model.setCountry(country);
 	}
 
 }

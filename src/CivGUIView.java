@@ -108,7 +108,6 @@ public class CivGUIView extends Application implements Observer{
 		addMenuBar(primaryStage);
 		addGridPane(primaryStage);
 		addVBox();
-		addTilePane();
 		// Final scene
 		
 		Scene scene = new Scene(borderPane, 950, 700);
@@ -430,7 +429,7 @@ public class CivGUIView extends Application implements Observer{
 					BackgroundPosition.DEFAULT, 
 					new BackgroundSize(1.0, 1.0, true, true, false, false))));
 		}
-		model.setCountry(country);
+		controller.setCountry(country);
 	}
 	
 	private void setBackgroundWowFactor(Menu menu) {
