@@ -17,14 +17,23 @@ import java.io.Serializable;
 public class CivCharacter implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
+	/** Attach power of the character */
 	protected int attack;
+	/** Attack range that can be reached by the character */
 	protected int range;
+	/** Range of movement of the character */
 	protected int movement;
+	/** Cost of the character */
 	protected int cost;
+	/** Health of the character (Zero health means the character is removed) */
 	protected int health;
+	/** Current level of the character */
 	protected int lvl;
+	/** Name (type) of the character */
 	protected String name;
+	/** Status of the character in a player's turn (moved/not yet moved) */
 	protected boolean isMoved;
+	/** Maximum level that can be attained by the character */
 	protected static final int MAX_LEVEL = 5;
 	
 	/**

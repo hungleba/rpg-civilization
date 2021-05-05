@@ -27,6 +27,11 @@ public class CivTextView{
 	/** CivController object that serves as the controller for this view */
 	private static CivController controller;
 
+	/**
+	 * Main method to launch the text view
+	 * @param args command-line argument
+	 *
+	 */
 	public static void main(String[] args) {
 		model = new CivModel();
 		controller = new CivController(model);
