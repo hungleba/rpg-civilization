@@ -8,10 +8,10 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * This class serves as the view for the MVC (Mode/Control/View) and let the player
- *  interact with the game through text forms. The player can interact with the game
- *  and play against the AI by entering a series of commands the the necessary 
- *  information prompted by the program
+ * This class serves as the view for the MVC (Mode/Control/View) architecture and let the 
+ * player interact with the game through text forms. The player can interact with the game
+ * and play against the AI by entering a series of commands the the necessary information
+ * prompted by the program.
  * 
  * @author Anh Nguyen Phung
  * @author Hung Le Ba
@@ -21,7 +21,10 @@ import javafx.stage.Stage;
  */
 
 public class CivTextView{
+	
+	/** CivModel object that serves as the model for this view */
 	private static CivModel model;
+	/** CivController object that serves as the controller for this view */
 	private static CivController controller;
 
 	public static void main(String[] args) {
@@ -36,19 +39,21 @@ public class CivTextView{
 		System.out.println("spawn - To spawn a new unit");
 		System.out.println("stats - To displayer the stats of a cell\n");
 
+		// while the neither sides has lost all their units
 		while(!controller.isGameOver()) {
 
 			//PLAYER'S TURN	
 			System.out.println("Enter command: ");
 			String action =  sc.nextLine();
-			boolean isEndTurn = false;
-			boolean hasClicked = false;
-			int row = 0;
-			int col = 0;
+			boolean isEndTurn = false; // check whether the turn has ended
+			boolean hasClicked = false; // check whether the player has clicked on a cell
+			int row = 0; // the row the player is currently on
+			int col = 0; // the column the player is currently on
 			while (!isEndTurn) {
-				String curRow;
-				String curCol;
+				String curRow; // the newest row coordinate being clicked on
+				String curCol; // the newest column coordinate being clicked on
 				switch (action) {
+				// if the user click a cell
 				case "click":
 					//prompting the user the coordination
 					System.out.println("\nEnter row: ");
@@ -89,14 +94,19 @@ public class CivTextView{
 					row = Integer.valueOf(curRow);
 					System.out.println("\nHere is the lastest board: ");
 					printBoard();
+					
+					// prompt the user to enter new command
 					System.out.println("\nEnter command: ");
 					action =  sc.nextLine();
 					break;
+				// if the user end their turn
 				case "end": 
 					controller.endTurn("Human");
 					isEndTurn = true;
 					break;
+				// if the user attack a cell
 				case "attack": 
+					// user can only attack if the cell they has clicked on a cell and that cell is occupied by their units
 					if (hasClicked && model.getCell(Integer.valueOf(row), Integer.valueOf(col)).getPlayer() != null) {
 						Map<String, List<Integer>> tempMap = controller.allPossibleMoves(Integer.valueOf(row), Integer.valueOf(col), "Human");
 						System.out.println("\nPossible moves for ATTACK" + ": ");
@@ -119,11 +129,15 @@ public class CivTextView{
 					
 					System.out.println("\nHere is the lastest board: ");
 					printBoard();
+					
+					// prompt the user to enter new command
 					System.out.println("\nEnter command: ");
 					action =  sc.nextLine();
 					hasClicked = false;
 					break;
+				// if the user want to move a unit to a new cell
 				case "move":
+					// user can only move if the cell they has clicked on a cell and that cell is occupied by their units
 					if (hasClicked && model.getCell(Integer.valueOf(row), Integer.valueOf(col)).getPlayer() != null) {
 						Map<String, List<Integer>> tempMap = controller.allPossibleMoves(Integer.valueOf(row), Integer.valueOf(col), "Human");
 						System.out.println("\nPossible moves for MOVE" + ": ");
@@ -144,12 +158,15 @@ public class CivTextView{
 						System.out.println("You have clicked on empty cell => CAN'T MOVE");
 					}
 
-					printBoard();
 					System.out.println("\nHere is the lastest board: ");
+					printBoard();
+					
+					// prompt the user to enter new command
 					System.out.println("\nEnter command: ");
 					action =  sc.nextLine();
 					hasClicked = false;
 					break;
+				// if the user wants to spawn a new unit
 				case "spawn": 
 					//prompting the user the coordination
 					System.out.println("\nEnter row: ");
@@ -191,11 +208,15 @@ public class CivTextView{
 							controller.handleClick(Integer.valueOf(curRow), Integer.valueOf(curCol), character);
 							System.out.println("Here is the lastest board: ");
 							printBoard();
+							
+							// prompt the user to enter new command
 							System.out.println("Enter command: ");
 							action =  sc.nextLine();
 							isValidCell = true;
 						} else if (model.getCell(Integer.valueOf(curRow), Integer.valueOf(curCol)).getPlayer().equals("Computer")) {
+							// prompt the user again if the cell they chose to spawn at is occupied by their opponent
 							System.out.println("Coordinates occupied by opponent");
+							// prompt new command
 							System.out.println("Enter row: ");
 							curRow = sc.nextLine();
 							System.out.println("Enter column: ");
@@ -206,6 +227,7 @@ public class CivTextView{
 					}
 
 					break;
+				// if the user wants to check the stats of one their unit or the opponent's units
 				case "stats":
 					//prompting the user the coordination
 					System.out.println("\nEnter row: ");
@@ -222,6 +244,7 @@ public class CivTextView{
 					}
 					
 					CivCharacter tempChar = controller.displayStats(Integer.valueOf(curRow), Integer.valueOf(curCol));
+					// Does not show any stats if there are no units in the clicked cell
 					if (tempChar == null) {
 						System.out.println("No character here");
 					} else {
@@ -235,9 +258,11 @@ public class CivTextView{
 					}
 					System.out.println("\nHere is the lastest board: ");
 					printBoard();
+					// prompt new command
 					System.out.println("\nEnter command: ");
 					action =  sc.nextLine();
 					break;
+				// if the user typed in an invalid command
 				default:
 					System.out.println("\nEnter command: ");
 					action =  sc.nextLine();
@@ -252,7 +277,7 @@ public class CivTextView{
 
 			//COMPUTER'S TURN
 			controller.computerMove();
-			//controller.endTurn("Computer");
+			controller.endTurn("Computer");
 			System.out.println("Here is the board after the computer's move: ");
 			printBoard();
 			System.out.println();
@@ -263,10 +288,16 @@ public class CivTextView{
 		System.out.println("The winner is: " + winner);
 	}
 
+	/**
+	 * This is a private helper method used to print out the current status of the game's map
+	 * with the player and units being expressed using the first letter of their name; for example,
+	 * an archer belonging to the human player would be "H:A".
+	 */
 	private static void printBoard() {
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
 				CivCell tempCell = model.getCell(i, j);
+				// if the cell if empty then print null
 				if (tempCell.getPlayer() == null) {
 					System.out.print(null + " ");
 				} else {

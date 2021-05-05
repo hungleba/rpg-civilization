@@ -13,17 +13,45 @@ import characters.CivGuard;
 import characters.CivKnight;
 import characters.CivWarrior;
 
+/**
+ * This class serves as the controller for the MVC (Mode/Control/View) architecture and 
+ * contains method which perform different tasks that facilitates the logic and functionality
+ * of the game. This class can check if their player'computer moves are valid, it handles
+ * the actions like moving, attacking, and spawning; it can also update the stats of the
+ * the player, the computer and both of their units.
+ * 
+ * @author Anh Nguyen Phung
+ * @author Hung Le Ba
+ * @author Thu Tra
+ * @author Peter Vo
+ *
+ */
+
 public class CivController {
+	/** the max number of unit a player(human ad computer) can have on the board at all times */
 	private static final int MAX_UNITS = 10;
+	/** the dimension of the Civilization game's board */
 	private static final int DIMENSION = 10;
+	/** the CivModel object */
 	private CivModel model;
+	/** the row that the player is currently on - used for handling attacking and moving */
 	private int prevRow;
+	/** the row that the player is currently on - used for handling attacking and moving */
 	private int prevCol;
+	/** the CivCharacter at the cell that the player is currently at - used for handling attacking and moving */
 	private CivCharacter civChar;
+	/** true if a valid cell has been clicked before, false if otherwise */
 	private boolean isMove;
+	/** true if spawning can be perform, and false if otherwise */
 	private boolean isSpawned;
+	/** true if both sides has not finished their first turn, and false if otherwise */
 	private boolean isBeginOfGame;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param model the CivModel object
+	 */
 	public CivController(CivModel model) {
 		this.model = model;
 		prevRow = -1;
@@ -34,13 +62,21 @@ public class CivController {
 		isBeginOfGame = true;
 	}
 
+	/**
+	 * Set the isSpwaned field to true and inform the program that spawning is possible
+	 */
 	public void setSpawned() {
 		isSpawned = true;
 	}
 
+	/**
+	 * Ends the turn and reset all the field for the next player's turn
+	 * 
+	 * @param player type of player "Human" or "Computer"
+	 */
 	public void endTurn(String player) {
 		isBeginOfGame = false;
-		model.getPlayer(player).addGold(2);
+		model.getPlayer(player).addGold(2); // at the end of each turn the player receives two additional gold
 		Map<String, List<CivCharacter>> unitMap = model.getPlayer(player).getUnitMap();
 		for (String name: unitMap.keySet()) {
 			List<CivCharacter> list = unitMap.get(name);
@@ -52,7 +88,7 @@ public class CivController {
 		model.updateCell(0, 0, cell.getCharacter(), cell.getPlayer());
 	}
 
-	public boolean isAbleToSpawn(String character, String playerType) {
+	private boolean isAbleToSpawn(String character, String playerType) {
 		CivCharacter curChar = null;
 		if (character.equals("Archer")) {
 			curChar = new CivArcher();

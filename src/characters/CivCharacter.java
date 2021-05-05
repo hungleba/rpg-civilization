@@ -109,7 +109,7 @@ public class CivCharacter implements Serializable{
 	}
 	
 	/** 
-	 * Change a character's health
+	 * Update a character's health
 	 * @param health the health to be set
 	 */
 	public void setHealth(int health) {
@@ -117,13 +117,13 @@ public class CivCharacter implements Serializable{
 	}
 
 	/** 
-	 * Change stats when leveling up a character
+	 * Update stats when leveling up a character
 	 */
 	public void levelUp() {
 	}
 
 	/** 
-	 * Change a character status of being moved or not
+	 * Update a character status of being moved or not
 	 * @param value the status to be set (T/F)
 	 */
 	public void setIsMoved(boolean value) {
