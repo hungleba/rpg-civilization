@@ -34,10 +34,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -69,6 +65,8 @@ public class CivGUIView extends Application implements Observer{
 	private TilePane tilePane;
 	private String currChar;
 	private boolean isSpawnArea;
+	private boolean up; // For displaying opacity effect
+	private Timeline timeline;
 
 	public static void main(String[] args) {
 		launch();
@@ -97,6 +95,7 @@ public class CivGUIView extends Application implements Observer{
 		vbox = new VBox();
 		tilePane = new TilePane();
 		currChar = null;
+		up = false;
 		model.addObserver(this);
 	}
 
@@ -390,7 +389,6 @@ public class CivGUIView extends Application implements Observer{
 				Label label = new Label(info);
 				label.setPadding(new Insets(5));
 				label.setMinWidth(285);
-				// linear-gradient(#808080, #707070)
 				label.setStyle("\n"
 						+ "    -fx-text-fill: white;\n"
 						+ "    -fx-font-family: \"Courier New\";\n"
@@ -428,7 +426,11 @@ public class CivGUIView extends Application implements Observer{
 		stack.setOnMousePressed((event) -> {
 			if (event.getButton() == MouseButton.PRIMARY && !controller.isGameOver()) {
 				stack.setEffect(new InnerShadow());
-				controller.handleClick(j, i, currChar);
+				boolean isAttack = controller.handleClick(j, i, currChar);
+				if (isAttack) {
+					timeline = getTimeLineAttack(j, i);
+					timeline.play();
+				}
 				if (controller.isGameOver()) {
 					displayAlertWinner();
 				}
@@ -458,24 +460,31 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 	
-//	private Timeline getTimeLineAttack(int row, int col) {
-//		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
-//		StackPane stack = (StackPane) rowPane.getChildren().get(row);
-//		Timeline timeline = new Timeline() ;
-//		timeline.setCycleCount( Animation.INDEFINITE ) ;
-//		KeyFrame keyframe = new KeyFrame( Duration.millis( 500 ),
-//				(event) -> {
-//					ImageView imgView = (ImageView) stack.getChildren().get(0);
-//					if (imgView.isVisible()) {
-//						imgView.setVisible(false);
-//					} else {
-//						imgView.setVisible(true);
-//					}
-//				}) ;
-//
-//		timeline.getKeyFrames().add( keyframe);
-//		return timeline;
-//	}
+	private Timeline getTimeLineAttack(int row, int col) {
+		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
+		StackPane stack = (StackPane) rowPane.getChildren().get(row);
+		Timeline timeline = new Timeline() ;
+		timeline.setCycleCount(66) ; // Blink 3 times, 22 cycles/blink
+		KeyFrame keyframe = new KeyFrame( Duration.millis(50 ),
+				(event) -> {
+					ImageView imgView = (ImageView) stack.getChildren().get(0);
+					Double opa = imgView.getOpacity();
+					if (!up) {
+						opa -= 0.1;
+						imgView.setOpacity(opa);
+					} else {
+						opa += 0.1;
+						imgView.setOpacity(opa);
+					}
+					if (opa <= 0)
+						up = true;
+					else if (opa >= 1)
+						up = false;
+				}) ;
+
+		timeline.getKeyFrames().add( keyframe);
+		return timeline;
+	}
 
 	private String getStatsInfo(int row, int col) {
 		CivCharacter character = controller.displayStats(row, col);
