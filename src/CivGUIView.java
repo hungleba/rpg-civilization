@@ -55,25 +55,47 @@ import javafx.util.Duration;
 
 
 @SuppressWarnings("deprecation")
+
+/** representing the GUI View in a Civilization game */
 public class CivGUIView extends Application implements Observer{
 
+	/** the dimension of the Civilization game's board */
 	private static final int DIMENSION = 10;
+	/** the CivModel object */
 	private CivModel model;
+	/** the CivController object */
 	private CivController controller;
+	/** The BorderPane of the view */
 	private BorderPane borderPane;
+	/** The bid GridPane of the view */
 	private GridPane bigGridPane;
+	/** The VBox of the view */
 	private VBox vbox;
+	/** The menu bar of the view */
 	private MenuBar menuBar;
+	/** The tilePane of the view */
 	private TilePane tilePane;
+	/** The current character that is spawned */
 	private String currChar;
+	/** true if the area that can be spawned by a given player and false otherwise */
 	private boolean isSpawnArea;
-	private boolean up; // For displaying opacity effect
+	/** For displaying opacity effect */
+	private boolean up; 
+	/** For adding effect when a unit is attacked */
 	private Timeline timeline;
 
+	/** 
+	 * Main method for launching the GUI view
+	 * 
+	 * @param args array of command-line arguments
+	 */
 	public static void main(String[] args) {
 		launch();
 	}
 
+	/**
+	 * Constructor. Create an instance of CivGUIView.
+	 */
 	public CivGUIView() {
 		File file = new File("save_game.dat");
 		if (file.exists()) {
@@ -101,6 +123,15 @@ public class CivGUIView extends Application implements Observer{
 		model.addObserver(this);
 	}
 
+	/**
+	 * Start the current JavaFX stage
+	 * 
+	 * @param primaryStage The current JavaFX Stage
+	 * 
+	 * @throws Exception The exception that is thrown when there is an error with
+	 * starting the current JavaFX stage
+	 * 
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Civilization");
@@ -137,6 +168,13 @@ public class CivGUIView extends Application implements Observer{
 		primaryStage.setResizable(false);
 	}
 
+	/**
+	 * Update model and board upon interactions with view
+	 * 
+	 * @param o current model
+	 * @param arg current board
+	 * 
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		model = (CivModel) o;
@@ -149,7 +187,9 @@ public class CivGUIView extends Application implements Observer{
 		addTilePane();
 	}
 
-
+	/**
+	 * Add and configure the VBox of the view
+	 */
 	private void addVBox() {
 		GridPane charsPane = new GridPane();
 		addCharsPane(charsPane);
@@ -165,6 +205,11 @@ public class CivGUIView extends Application implements Observer{
 		vbox.setAlignment(Pos.BOTTOM_CENTER);
 	}
 
+	/**
+	 * Add buttons to spawn characters and "End turn" button in the view
+	 * 
+	 * @param charsPane GridPane that contains the buttons to add char/end turn
+	 */
 	private void addCharsPane(GridPane charsPane) {
 		spawnArcherBtn(charsPane);
 		spawnCatapultBtn(charsPane);
@@ -174,6 +219,11 @@ public class CivGUIView extends Application implements Observer{
 		addEndBtn(charsPane);
 	}
 
+	/**
+	 * Add, configure, and handle interactions with the button to spawn Archer 
+	 * 
+	 * @param charsPane GridPane that contains the buttons to add char/end turn
+	 */
 	private void spawnArcherBtn(GridPane charsPane) {
 		Button archer = new Button("Archer ($3)");
 		ImageView view = getSpawnView("Archer");
@@ -190,6 +240,11 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 
+	/**
+	 * Add, configure, and handle interactions with the button to spawn Catapult 
+	 * 
+	 * @param charsPane GridPane that contains the buttons to add char/end turn
+	 */
 	private void spawnCatapultBtn(GridPane charsPane) {
 		Button catapult = new Button("Catapult ($7)");
 		ImageView view = getSpawnView("Catapult");
@@ -206,6 +261,11 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 
+	/**
+	 * Add, configure, and handle interactions with the button to spawn Guard
+	 * 
+	 * @param charsPane GridPane that contains the buttons to add char/end turn
+	 */
 	private void spawnGuardBtn(GridPane charsPane) {
 		Button guard = new Button("Guard ($5)");
 		ImageView view = getSpawnView("Guard");
@@ -222,6 +282,11 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 
+	/**
+	 * Add, configure, and handle interactions with the button to spawn Knight
+	 * 
+	 * @param charsPane GridPane that contains the buttons to add char/end turn
+	 */
 	private void spawnKnightBtn(GridPane charsPane) {
 		Button knight = new Button("Knight ($6)");
 		ImageView view = getSpawnView("Knight");
@@ -238,6 +303,11 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 
+	/**
+	 * Add, configure, and handle interactions with the button to spawn Warrior
+	 * 
+	 * @param charsPane GridPane that contains the buttons to add char/end turn
+	 */
 	private void spawnWarriorBtn(GridPane charsPane) {
 		Button warrior = new Button("Warrior ($2)");
 		ImageView view = getSpawnView("Warrior");
@@ -254,6 +324,11 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 
+	/**
+	 * Add, configure, and handle interactions with the button to end turn
+	 * 
+	 * @param charsPane GridPane that contains the buttons to add char/end turn
+	 */
 	private void addEndBtn(GridPane charsPane) {
 		Button endBtn = new Button("End Turn");
 		endBtn.setStyle("-fx-font-size: 15px;\n"
@@ -284,6 +359,12 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 
+	/**
+	 * Highlight area that can be spawned for Human side when user click on any 
+	 * button to spawn one character if they have enough gold for that character
+	 * 
+	 * @param cost the cost of the currently chosen character
+	 */
 	private void highLightspawnArea(int cost) {
 		if (controller.getPlayer("Human").getGold() < cost)
 			return;
@@ -298,7 +379,10 @@ public class CivGUIView extends Application implements Observer{
 			}
 		}
 	}
-
+	
+	/**
+	 * Hide the spawn-able area (change it to current theme color)
+	 */
 	private void hideSpawnArea() {
 		for (int x = 0; x < 10; x++) {
 			for (int y = 8; y < 10; y++) {
@@ -312,6 +396,10 @@ public class CivGUIView extends Application implements Observer{
 		}
 	}
 
+	/**
+	 * Inform the winner and delete saved game (will start a new game the next time this
+	 * application is launched)
+	 */
 	private void displayAlertWinner() {
 		File file = new File("save_game.dat");
 		file.delete();
@@ -328,6 +416,11 @@ public class CivGUIView extends Application implements Observer{
 		a.showAndWait();
 	}
 
+	/**
+	 * Get icon for the character being spawned to display on the board
+	 * 
+	 * @param character the character that is spawned
+	 */
 	private ImageView getSpawnView(String character) {
 		character = character.toLowerCase();
 		String url = "src/icons/" + character +"_icon.png";
@@ -339,6 +432,9 @@ public class CivGUIView extends Application implements Observer{
 		return imgView;
 	}
 
+	/**
+	 * Add the TilePane of the View and display gold count for both players
+	 */
 	private void addTilePane() {
 		int humanMoney = controller.getPlayer("Human").getGold();
 		int computerMoney = controller.getPlayer("Computer").getGold();
@@ -350,6 +446,9 @@ public class CivGUIView extends Application implements Observer{
 		tilePane.setPrefHeight(100);
 	}
 
+	/**
+	 * Add the GridPane of the View and fill in the current theme color
+	 */
 	private void addGridPane(Stage primaryStage) {
 		bigGridPane.setMaxWidth(630);
 		Color color = Color.GREEN;
@@ -364,6 +463,12 @@ public class CivGUIView extends Application implements Observer{
 		addStackPane(primaryStage);
 	}
 
+
+	/**
+	 * Add the StackPane of the View to contain the board
+	 * 
+	 * @param primaryStage the current JavaFX Stage
+	 */
 	private void addStackPane(Stage primaryStage) {
 		for (int i = 0; i < DIMENSION; i++) {
 			GridPane innerGrid = new GridPane();
@@ -404,6 +509,17 @@ public class CivGUIView extends Application implements Observer{
 
 	}
 
+	/**
+	 * Add event handlers to the game's board
+	 * 
+	 * @param stack the StackPane containing the board
+	 * 
+	 * @param i row of the cell being clicked
+	 * 
+	 * @param j col of the cell being clicked
+	 * 
+	 * @param primaryStage the current JavaFX Stage
+	 */
 	private void addEvent(StackPane stack, int i, int j, Stage primaryStage) {
 		Popup popup = new Popup();
 		stack.setOnMouseClicked((event) -> {
@@ -483,6 +599,15 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 	
+	/**
+	 * Add effect when a unit is attacked
+	 * 
+	 * @param row row of the cell being clicked
+	 * 
+	 * @param col col of the cell being clicked
+	 * 
+	 * @param rate determine cycle counts 
+	 */
 	private Timeline getTimeLineAttack(int row, int col, int rate) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
@@ -509,6 +634,13 @@ public class CivGUIView extends Application implements Observer{
 		return timeline;
 	}
 
+	/**
+	 * Get stats from a cell
+	 * 
+	 * @param row row of current cell
+	 * 
+	 * @param col col of current cell
+	 */
 	private String getStatsInfo(int row, int col) {
 		CivCharacter character = controller.displayStats(row, col);
 		String message = "";
@@ -530,8 +662,11 @@ public class CivGUIView extends Application implements Observer{
 		return message;
 	}
 
-	
-	
+	/**
+	 * Set background theme of the game (for Wow Factor)
+	 * 
+	 * @param menu the Menu Bar that contains theme settings
+	 */
 	private void setBackgroundWowFactor(Menu menu) {
 		Menu background = new Menu("Set Background");
 		MenuItem pink = new MenuItem("Pink Theme");
@@ -558,6 +693,11 @@ public class CivGUIView extends Application implements Observer{
 		menu.getItems().add(background);
 	}
 
+	/**
+	 * Add and configure the Menu Bar of the view
+	 * 
+	 * @param primaryStage the current JavaFX Stage
+	 */
 	private void addMenuBar(Stage primaryStage) {
 		// MenuItems
 		MenuItem newGame = new MenuItem("New Game");
@@ -624,6 +764,15 @@ public class CivGUIView extends Application implements Observer{
 		});
 	}
 
+	/**
+	 * Update a cell upon adding a character
+	 * 
+	 * @param col col of current cell
+	 * 
+	 * @param row row of current cell
+	 * 
+	 * @param type move type ("Attack" or "Move")
+	 */
 	private void updateCell(int x, int y, CivCell cell) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
 		StackPane stack = (StackPane) rowPane.getChildren().get(y);
@@ -649,6 +798,15 @@ public class CivGUIView extends Application implements Observer{
 		}
 	}
 
+	/**
+	 * Display the effect of all possible moves of a specific cell
+	 * 
+	 * @param col col of current cell
+	 * 
+	 * @param row row of current cell
+	 * 
+	 * @param type move type ("Attack" or "Move")
+	 */
 	private void displayCellEffect(int col, int row, String type) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
@@ -663,9 +821,12 @@ public class CivGUIView extends Application implements Observer{
 
 	/**
 	 * Remove the effect of all possible moves of a specific cell
-	 * @param col 
-	 * @param row
-	 * @param type
+	 * 
+	 * @param col col of current cell
+	 * 
+	 * @param row row of current cell
+	 * 
+	 * @param type move type ("Attack" or "Move")
 	 */
 	private void removeCellEffect(int col, int row, String type) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
