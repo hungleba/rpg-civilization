@@ -34,6 +34,9 @@ public class CivTest {
 		//test isGameBegin()
 		assertTrue(controller.isGameBegin());
 		
+		// test setter & getter for color
+		controller.setColor("Pink");
+		assertEquals(controller.getColor(),"Pink");
 		//test display stats
 		assertEquals(controller.displayStats(0, 1), null);
 		assertEquals(controller.displayStats(9, 1), null);
@@ -61,13 +64,23 @@ public class CivTest {
 		controller.handleClick(3,5, "Warrior");
 		assertEquals(controller.displayStats(3,5), null);
 		
+		assertEquals(controller.getCell(8, 5), model.getCell(8, 5));
 		for (int i = 0; i < 4; i++) {
 			controller.endTurn("Human");	
 		}
-		
 		controller.setSpawned();
 		controller.handleClick(9,8, "Warrior");
 		controller.handleClick(9,8, "Warrior");
+		
+		// test setter & getter for players
+		CivPlayer human = model.getPlayer("Human");
+		CivPlayer comp = model.getPlayer("Computer");
+		assertEquals(controller.getPlayer("Human"), human);
+		assertEquals(controller.getPlayer("Computer"), comp);
+		assertFalse(controller.getPlayer("Human").equals(comp));
+		assertFalse(controller.getPlayer("Computer").equals(human));
+
+		
 	}
 
 	
