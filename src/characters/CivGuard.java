@@ -35,6 +35,7 @@ public class CivGuard extends CivCharacter{
 		if (lvl < MAX_LEVEL) {
 			lvl += 1;
 			health += 2;
+			max_health += 2;
 		}
 	}
 

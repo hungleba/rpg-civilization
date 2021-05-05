@@ -25,6 +25,7 @@ public class CivArcher extends CivCharacter{
 		cost = FIXED_COST;
 		health = 5;
 		name = "Archer";
+		max_health = 5;
 	}
 	
 	/**
@@ -36,6 +37,9 @@ public class CivArcher extends CivCharacter{
 			lvl += 1;
 			attack += 1;
 			health += 1;
+			max_health += 1;
 		}
 	}
+	
+	
 }

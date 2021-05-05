@@ -614,6 +614,8 @@ public class CivGUIView extends Application implements Observer{
 	private void updateCell(int x, int y, CivCell cell) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
 		StackPane stack = (StackPane) rowPane.getChildren().get(y);
+		GridPane cellGridPane = (GridPane) stack.getChildren().get(0);
+		StackPane healthBar = (StackPane) cellGridPane.getChildren().get(1);
 		String player = cell.getPlayer();
 		if (player != null) {
 			Color color = Color.AQUA;
@@ -623,14 +625,12 @@ public class CivGUIView extends Application implements Observer{
 			CivCharacter character = cell.getCharacter();
 			String name = character.getName();
 			ImageView imgView = getSpawnView(name);
-			stack.getChildren().clear();
-			stack.getChildren().add(imgView);
+			cellGridPane.getChildren().clear();
+			cellGridPane.getChildren().add(imgView);
+			cellGridPane.getChildren().add(healthBar);
 			stack.setBackground(new Background(new BackgroundFill(color, new CornerRadii(0), Insets.EMPTY)));;
 		} else {
-			ImageView imgView = (ImageView) stack.getChildren().get(0);
-			imgView.setVisible(false);
-			stack.setBackground(new Background(new 
-					BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), Insets.EMPTY)));;
+			stack.setVisible(false);
 		}
 	}
 
@@ -640,18 +640,11 @@ public class CivGUIView extends Application implements Observer{
 		if (type.equals("Attack")) {
 			stack.setEffect(new SepiaTone());
 		} else if (type.equals("Move")) {
-			//TO-DO: Change background color
 			stack.setStyle("-fx-background-color: brown");
 			stack.setEffect(new Glow());
 		}
 	}
 
-	/**
-	 * Remove the effect of all possible moves of a specific cell
-	 * @param col 
-	 * @param row
-	 * @param type
-	 */
 	private void removeCellEffect(int col, int row, String type) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);

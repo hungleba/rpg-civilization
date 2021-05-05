@@ -7,7 +7,12 @@ import java.io.ObjectOutputStream;
 
 import org.junit.jupiter.api.Test;
 
+import characters.CivArcher;
+import characters.CivCatapult;
 import characters.CivCharacter;
+import characters.CivGuard;
+import characters.CivKnight;
+import characters.CivWarrior;
 /**
  * This class serves as tests for CivController and CivModel
  * 
@@ -167,7 +172,7 @@ public class CivTest {
 	
 	
 	/**
-	 * Test methods CivModel
+	 * Test methods CivModel & CivCharacte, character classes
 	 * 
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
@@ -175,7 +180,27 @@ public class CivTest {
 	 */
 	@Test
 	void test_model() throws FileNotFoundException, IOException, ClassNotFoundException {
-		System.out.println("TEST CONTROLLER 2:");
+		System.out.println("TEST MODEL:");
+		
+		CivCharacter cha = new CivCharacter();
+		CivCharacter arc = new CivArcher();
+		CivCharacter warr = new CivWarrior();
+		CivCharacter kni = new CivKnight();
+		CivCharacter cat = new CivCatapult();
+		CivCharacter gua = new CivGuard();
+		cat.levelUp();
+		arc.levelUp();
+		warr.levelUp();
+		gua.levelUp();
+		kni.levelUp();
+		cha.levelUp();
+		assertEquals(cat.getMaxLevel(), 5);
+		assertEquals(cat.getLevel(), 2);
+		assertEquals(arc.getLevel(), 2);
+		assertEquals(kni.getLevel(), 2);
+		assertEquals(warr.getLevel(), 2);
+		assertEquals(gua.getLevel(), 2);
+
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
 		CivPlayer human = model.getPlayer("Human");

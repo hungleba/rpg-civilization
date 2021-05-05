@@ -36,6 +36,7 @@ public class CivKnight extends CivCharacter{
 			lvl += 1;
 			health += 1;
 			movement += 1;
+			max_health += 1;
 		}
 	}
 }

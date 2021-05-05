@@ -37,6 +37,7 @@ public class CivCatapult extends CivCharacter{
 			lvl += 1;
 			attack += 1;
 			health += 1;
+			max_health += 1;
 		}
 	}
 
