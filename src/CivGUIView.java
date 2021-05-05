@@ -140,7 +140,7 @@ public class CivGUIView extends Application implements Observer{
 		model = (CivModel) o;
 		for (int i=0; i<DIMENSION; i++) {
 			for (int j=0; j<DIMENSION; j++) {
-				CivCell cell = model.getCell(j, i);
+				CivCell cell = controller.getCell(j, i);
 				updateCell(i, j, cell);
 			}
 		}
@@ -274,7 +274,7 @@ public class CivGUIView extends Application implements Observer{
 	}
 
 	private void highLightspawnArea(int cost) {
-		if (model.getPlayer("Human").getGold() < cost)
+		if (controller.getPlayer("Human").getGold() < cost)
 			return;
 		for (int x = 0; x < 10; x++) { // last two rows
 			for (int y = 8; y < 10; y++) { // Elements within the last two rows
@@ -329,8 +329,8 @@ public class CivGUIView extends Application implements Observer{
 	}
 
 	private void addTilePane() {
-		int humanMoney = model.getPlayer("Human").getGold();
-		int computerMoney = model.getPlayer("Computer").getGold();
+		int humanMoney = controller.getPlayer("Human").getGold();
+		int computerMoney = controller.getPlayer("Computer").getGold();
 		Label score = new Label("Human: $"+humanMoney+" - Computer: $"+computerMoney);
 		score.setStyle("-fx-font-size: 15px;\n"
 				+"		-fx-padding: 7px;\n");
@@ -342,9 +342,9 @@ public class CivGUIView extends Application implements Observer{
 	private void addGridPane(Stage primaryStage) {
 		bigGridPane.setMaxWidth(630);
 		Color color = Color.GREEN;
-		if (model.getColor().equals("Blue")) {
-			color = Color.BLUE;
-		} else if (model.getColor().equals("Grey")) {
+		if (controller.getColor().equals("Pink")) {
+			color = Color.PINK;
+		} else if (controller.getColor().equals("Grey")) {
 			color = Color.GREY;
 		}
 		bigGridPane.setBackground(new Background(new 
@@ -374,7 +374,7 @@ public class CivGUIView extends Application implements Observer{
 		}
 		for (int i=0; i<DIMENSION; i++) {
 			for (int j=0; j<DIMENSION; j++) {
-				CivCell cell = model.getCell(j, i);
+				CivCell cell = controller.getCell(j, i);
 				updateCell(i, j, cell);
 			}
 		}
@@ -415,12 +415,12 @@ public class CivGUIView extends Application implements Observer{
 				for (int coord : attack) {
 					int row = coord / DIMENSION;
 					int col = coord % DIMENSION;
-					removeCellEffect(col, row);
+					removeCellEffect(col, row, "Attack");
 				}
 				for (int coord : move) {
 					int row = coord / DIMENSION;
 					int col = coord % DIMENSION;
-					removeCellEffect(col, row);
+					removeCellEffect(col, row, "Move");
 				}
 			}
 		});
@@ -493,7 +493,7 @@ public class CivGUIView extends Application implements Observer{
 		if (character == null) {
 			message += "No information on this cell!";
 		} else {
-			String name = model.getCell(row, col).getPlayer();
+			String name = controller.getCell(row, col).getPlayer();
 			message += "Type: " + character.getName() + "\n";
 			message += "Attack: " + String.valueOf(character.getAttack()) + "\n";
 			message += "Attack Range: " + String.valueOf(character.getRange()) + "\n";
@@ -508,18 +508,20 @@ public class CivGUIView extends Application implements Observer{
 		return message;
 	}
 
+	
+	
 	private void setBackgroundWowFactor(Menu menu) {
 		Menu background = new Menu("Set Background");
-		MenuItem blue = new MenuItem("Blue Theme");
+		MenuItem pink = new MenuItem("Pink Theme");
 		MenuItem grey = new MenuItem("Grey Theme");
 		MenuItem green = new MenuItem("Green Theme");
-		background.getItems().add(blue);
+		background.getItems().add(pink);
 		background.getItems().add(grey);
 		background.getItems().add(green);
-		blue.setOnAction((ActionEvent ae) -> {
+		pink.setOnAction((ActionEvent ae) -> {
 			bigGridPane.setBackground(new Background(new 
-					BackgroundFill(Color.BLUE, new CornerRadii(0), Insets.EMPTY)));
-			controller.setColor("Blue");
+					BackgroundFill(Color.PINK, new CornerRadii(0), Insets.EMPTY)));
+			controller.setColor("Pink");
 		});
 		grey.setOnAction((ActionEvent ae) -> {
 			bigGridPane.setBackground(new Background(new 
@@ -556,7 +558,7 @@ public class CivGUIView extends Application implements Observer{
 			model.addObserver(this);
 			for (int i=0; i<DIMENSION; i++) {
 				for (int j=0; j<DIMENSION; j++) {
-					CivCell cell = model.getCell(j, i);
+					CivCell cell = controller.getCell(j, i);
 					updateCell(i, j, cell);
 				}
 			}
@@ -630,15 +632,19 @@ public class CivGUIView extends Application implements Observer{
 			stack.setEffect(new SepiaTone());
 		} else if (type.equals("Move")) {
 			//TO-DO: Change background color
-			stack.setStyle("-fx-background-color: grey");
+			stack.setStyle("-fx-background-color: brown");
 			stack.setEffect(new Glow());
 		}
 	}
 
-	private void removeCellEffect(int col, int row) {
+	private void removeCellEffect(int col, int row, String type) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
-		stack.setStyle("-fx-background-color: green");
+		if (type.equals("Move")) {
+			stack.setStyle("-fx-background-color: transparent");
+		} else if (type.equals("Attack")) {
+			stack.setStyle("-fx-background-color: violet");
+		}
 		stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
 				BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		stack.setEffect(null);

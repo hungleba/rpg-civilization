@@ -371,5 +371,17 @@ public class CivController {
 	public void setColor(String color) {
 		model.setColor(color);
 	}
+	
+	public String getColor() {
+		return model.getColor();
+	}
+	
+	public CivCell getCell(int r, int c) {
+		return model.getCell(r, c);
+	}
+	
+	public CivPlayer getPlayer(String player) {
+		return model.getPlayer(player);
+	}
 
 }
