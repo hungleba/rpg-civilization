@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
 
 import characters.CivArcher;
@@ -152,8 +154,8 @@ public class CivController {
 		}
 	}
 
-	public List<Integer> computerMove() {
-		List<Integer> attacked = new ArrayList<>();
+	public Set<Integer> computerMove() {
+		Set<Integer> attacked = new HashSet<>();
 		CivPlayer computer = model.getPlayer("Computer");
 		Map<CivCharacter, Integer> positionMap = computer.getPositionMap();
 		Random rand = new Random();
