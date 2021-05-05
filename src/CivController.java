@@ -11,7 +11,6 @@ import characters.CivCharacter;
 import characters.CivGuard;
 import characters.CivKnight;
 import characters.CivWarrior;
-import javafx.scene.paint.Color;
 
 /**
  * This class serves as the controller for the MVC (Mode/Control/View) architecture and 
@@ -277,7 +276,7 @@ public class CivController {
 		return cell.getCharacter();
 	}
 
-	public void handleClick(int row, int col, String character) {
+	public boolean handleClick(int row, int col, String character) {
 		CivPlayer human = model.getPlayer("Human");
 		CivCell cell = model.getCell(row, col);
 
@@ -295,8 +294,10 @@ public class CivController {
 				isMove = true;
 			} else if (isMove && cell.getPlayer().equals("Computer")) {
 				handleAttack(prevRow, prevCol, row, col, human, civChar);
+				return true;
 			}
 		}
+		return false;
 	}
 
 	private void handleAttack(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
