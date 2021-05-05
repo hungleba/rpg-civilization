@@ -9,6 +9,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import characters.CivCharacter;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 
@@ -55,11 +58,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 
 @SuppressWarnings("deprecation")
 public class CivGUIView extends Application implements Observer{
-	
+
 	private static final int DIMENSION = 10;
 	private CivModel model;
 	private CivController controller;
@@ -70,6 +74,8 @@ public class CivGUIView extends Application implements Observer{
 	private TilePane tilePane;
 	private String currChar;
 	private boolean isSpawnArea;
+	private Timeline timelineAttack;
+	private Timeline timelineMove;
 
 	public static void main(String[] args) {
 		launch();
@@ -100,7 +106,7 @@ public class CivGUIView extends Application implements Observer{
 		currChar = null;
 		model.addObserver(this);
 	}
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Civilization");
@@ -115,7 +121,7 @@ public class CivGUIView extends Application implements Observer{
 		addVBox();
 		addTilePane();
 		// Final scene
-		
+
 		Scene scene = new Scene(borderPane, 950, 700);
 		primaryStage.setScene(scene);
 		primaryStage.setOnCloseRequest((WindowEvent we) -> {
@@ -136,7 +142,7 @@ public class CivGUIView extends Application implements Observer{
 		primaryStage.show();
 		primaryStage.setResizable(false);
 	}
-	
+
 	@Override
 	public void update(Observable o, Object arg) {
 		model = (CivModel) o;
@@ -148,7 +154,7 @@ public class CivGUIView extends Application implements Observer{
 		}
 		addTilePane();
 	}
-	
+
 
 	private void addVBox() {
 		GridPane charsPane = new GridPane();
@@ -158,13 +164,13 @@ public class CivGUIView extends Application implements Observer{
 		charsPane.setPadding(new Insets(5));
 		vbox.getChildren().add(0, charsPane);
 		vbox.setStyle("-fx-border-color: black;\n" +
-                "-fx-border-insets: 2;\n" +
-                "-fx-border-width: 3;\n" +
-                "-fx-border-style: dashed;\n");
+				"-fx-border-insets: 2;\n" +
+				"-fx-border-width: 3;\n" +
+				"-fx-border-style: dashed;\n");
 		vbox.setPrefSize(300, 700);
 		vbox.setAlignment(Pos.BOTTOM_CENTER);
 	}
-	
+
 	private void addCharsPane(GridPane charsPane) {
 		spawnArcherBtn(charsPane);
 		spawnCatapultBtn(charsPane);
@@ -173,7 +179,7 @@ public class CivGUIView extends Application implements Observer{
 		spawnWarriorBtn(charsPane);
 		addEndBtn(charsPane);
 	}
-	
+
 	private void spawnArcherBtn(GridPane charsPane) {
 		Button archer = new Button("Archer ($3)");
 		ImageView view = getSpawnView("Archer");
@@ -189,7 +195,7 @@ public class CivGUIView extends Application implements Observer{
 			highLightspawnArea(3);
 		});
 	}
-	
+
 	private void spawnCatapultBtn(GridPane charsPane) {
 		Button catapult = new Button("Catapult ($7)");
 		ImageView view = getSpawnView("Catapult");
@@ -205,7 +211,7 @@ public class CivGUIView extends Application implements Observer{
 			highLightspawnArea(7);
 		});
 	}
-	
+
 	private void spawnGuardBtn(GridPane charsPane) {
 		Button guard = new Button("Guard ($5)");
 		ImageView view = getSpawnView("Guard");
@@ -221,7 +227,7 @@ public class CivGUIView extends Application implements Observer{
 			highLightspawnArea(5);
 		});
 	}
-	
+
 	private void spawnKnightBtn(GridPane charsPane) {
 		Button knight = new Button("Knight ($6)");
 		ImageView view = getSpawnView("Knight");
@@ -237,7 +243,7 @@ public class CivGUIView extends Application implements Observer{
 			highLightspawnArea(6);
 		});
 	}
-	
+
 	private void spawnWarriorBtn(GridPane charsPane) {
 		Button warrior = new Button("Warrior ($2)");
 		ImageView view = getSpawnView("Warrior");
@@ -253,7 +259,7 @@ public class CivGUIView extends Application implements Observer{
 			highLightspawnArea(2);
 		});
 	}
-	
+
 	private void addEndBtn(GridPane charsPane) {
 		Button endBtn = new Button("End Turn");
 		endBtn.setStyle("-fx-font-size: 15px;\n"
@@ -274,7 +280,7 @@ public class CivGUIView extends Application implements Observer{
 			}
 		});
 	}
-	
+
 	private void highLightspawnArea(int cost) {
 		if (model.getPlayer("Human").getGold() < cost)
 			return;
@@ -289,7 +295,7 @@ public class CivGUIView extends Application implements Observer{
 			}
 		}
 	}
-	
+
 	private void hideSpawnArea() {
 		for (int x = 0; x < 10; x++) {
 			for (int y = 8; y < 10; y++) {
@@ -302,7 +308,7 @@ public class CivGUIView extends Application implements Observer{
 			}
 		}
 	}
-	
+
 	private void displayAlertWinner() {
 		File file = new File("save_game.dat");
 		file.delete();
@@ -356,7 +362,9 @@ public class CivGUIView extends Application implements Observer{
 				stack.setBorder(new Border(new BorderStroke(Color.CHARTREUSE, 
 						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 				stack.setPadding(new Insets(10));
-				ImageView imgView = getSpawnView("Archer");
+				ImageView imgView = new ImageView();
+				imgView.setFitHeight(40);
+				imgView.setFitWidth(40);
 				imgView.setVisible(false);
 				stack.getChildren().clear();
 				stack.getChildren().add(imgView);
@@ -371,7 +379,7 @@ public class CivGUIView extends Application implements Observer{
 				updateCell(i, j, cell);
 			}
 		}
-		
+
 	}
 
 	private void addEvent(StackPane stack, int i, int j, Stage primaryStage) {
@@ -439,15 +447,36 @@ public class CivGUIView extends Application implements Observer{
 				for (int coord : attack) {
 					int row = coord / DIMENSION;
 					int col = coord % DIMENSION;
+					timelineAttack = getTimeLineAttack(row, col);
 					displayCellEffect(col, row, "Attack");
 				}
 				for (int coord : move) {
 					int row = coord / DIMENSION;
 					int col = coord % DIMENSION;
+					timelineMove = null;
 					displayCellEffect(col, row, "Move");
 				}
 			}
 		});
+	}
+	
+	private Timeline getTimeLineAttack(int row, int col) {
+		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
+		StackPane stack = (StackPane) rowPane.getChildren().get(row);
+		Timeline timeline = new Timeline() ;
+		timeline.setCycleCount( Animation.INDEFINITE ) ;
+		KeyFrame keyframe = new KeyFrame( Duration.millis( 500 ),
+				(event) -> {
+					ImageView imgView = (ImageView) stack.getChildren().get(0);
+					if (imgView.isVisible()) {
+						imgView.setVisible(false);
+					} else {
+						imgView.setVisible(true);
+					}
+				}) ;
+
+		timeline.getKeyFrames().add( keyframe ) ;
+		return timeline;
 	}
 
 	private String getStatsInfo(int row, int col) {
@@ -487,7 +516,7 @@ public class CivGUIView extends Application implements Observer{
 		}
 		model.setCountry(country);
 	}
-	
+
 	private void setBackgroundWowFactor(Menu menu) {
 		Menu background = new Menu("Set Background");
 		MenuItem france = new MenuItem("France Theme");
@@ -512,20 +541,20 @@ public class CivGUIView extends Application implements Observer{
 		});
 		menu.getItems().add(background);
 	}
-	
+
 	private void addMenuBar(Stage primaryStage) {
 		// MenuItems
 		MenuItem newGame = new MenuItem("New Game");
 		MenuItem gameRule = new MenuItem("Game Rule");
 		MenuItem about = new MenuItem("About");
-		
+
 		// Menu
 		Menu menu = new Menu("Menu");
 		menu.getItems().add(newGame);
 		menu.getItems().add(gameRule);
 		menu.getItems().add(about);
 		setBackgroundWowFactor(menu);
-		
+
 		// Menu bar
 		menuBar.getMenus().add(menu);
 		newGame.setOnAction((ActionEvent ae) -> {
@@ -577,7 +606,7 @@ public class CivGUIView extends Application implements Observer{
 			a.showAndWait();
 		});
 	}
-	
+
 	private void updateCell(int x, int y, CivCell cell) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
 		StackPane stack = (StackPane) rowPane.getChildren().get(y);
@@ -600,25 +629,37 @@ public class CivGUIView extends Application implements Observer{
 					BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), Insets.EMPTY)));;
 		}
 	}
-	
+
 	private void displayCellEffect(int col, int row, String type) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
 		if (type.equals("Attack")) {
 			stack.setBorder(new Border(new BorderStroke(Color.RED, 
 					BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+			if (timelineAttack != null)
+				timelineAttack.play();
 		} else if (type.equals("Move")) {
 			//TODO: Change effect
 			stack.setBorder(new Border(new BorderStroke(Color.BLUE, 
 					BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+			if (timelineAttack != null)
+				timelineAttack.play() ;
 		}
 	}
-	
+
 	private void removeCellEffect(int col, int row) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
 		stack.setBorder(new Border(new BorderStroke(Color.CHARTREUSE, 
 				BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		if (timelineAttack != null) {
+			stack.getChildren().get(0).setVisible(true);
+			timelineAttack.stop();
+		}
+		if (timelineMove != null) {
+			stack.getChildren().get(0).setVisible(true);
+			timelineMove.stop();
+		}
 	}
 
 }
