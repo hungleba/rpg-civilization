@@ -190,7 +190,7 @@ public class CivGUIView extends Application implements Observer{
 		archer.setPrefHeight(48);
 		archer.setPrefWidth(140);
 		archer.setOnMouseClicked((event) -> {
-			highLightspawnArea(3);
+			//highLightspawnArea(3);
 		});
 	}
 
@@ -206,7 +206,7 @@ public class CivGUIView extends Application implements Observer{
 		catapult.setPrefHeight(48);
 		catapult.setPrefWidth(140);
 		catapult.setOnMouseClicked((event) -> {
-			highLightspawnArea(7);
+			//highLightspawnArea(7);
 		});
 	}
 
@@ -222,7 +222,7 @@ public class CivGUIView extends Application implements Observer{
 		guard.setPrefHeight(48);
 		guard.setPrefWidth(140);
 		guard.setOnMouseClicked((event) -> {
-			highLightspawnArea(5);
+			//highLightspawnArea(5);
 		});
 	}
 
@@ -238,7 +238,7 @@ public class CivGUIView extends Application implements Observer{
 		knight.setPrefHeight(48);
 		knight.setPrefWidth(140);
 		knight.setOnMouseClicked((event) -> {
-			highLightspawnArea(6);
+			//highLightspawnArea(6);
 		});
 	}
 
@@ -254,7 +254,7 @@ public class CivGUIView extends Application implements Observer{
 		warrior.setPrefHeight(48);
 		warrior.setPrefWidth(140);
 		warrior.setOnMouseClicked((event) -> {
-			highLightspawnArea(2);
+			//highLightspawnArea(2);
 		});
 	}
 
@@ -278,7 +278,7 @@ public class CivGUIView extends Application implements Observer{
 			}
 		});
 	}
-
+/**
 	private void highLightspawnArea(int cost) {
 		if (model.getPlayer("Human").getGold() < cost)
 			return;
@@ -305,7 +305,7 @@ public class CivGUIView extends Application implements Observer{
 				isSpawnArea = false;
 			}
 		}
-	}
+	}*/
 
 	private void displayAlertWinner() {
 		File file = new File("save_game.dat");
@@ -439,12 +439,12 @@ public class CivGUIView extends Application implements Observer{
 				}
 			}
 			if (isSpawnArea) {
-				hideSpawnArea();
+				//hideSpawnArea();
 			}
 		});
 		stack.setOnMouseEntered((event) -> {
-			if (isSpawnArea)
-				return;
+			//if (isSpawnArea)
+				//return;
 			Map<String, List<Integer>> validMoves = controller.allPossibleMoves(j, i, "Human");
 			if (validMoves != null) {
 				List<Integer> attack = validMoves.get("Attack");
