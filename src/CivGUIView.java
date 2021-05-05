@@ -47,6 +47,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -333,8 +334,8 @@ public class CivGUIView extends Application implements Observer{
 		File file = new File(url);
 		Image img = new Image(file.toURI().toString());
 		ImageView imgView = new ImageView(img);
-		imgView.setFitHeight(40);
-		imgView.setFitWidth(40);
+		imgView.setFitHeight(53);
+		imgView.setFitWidth(60);
 		return imgView;
 	}
 
@@ -370,13 +371,25 @@ public class CivGUIView extends Application implements Observer{
 				StackPane stack = new StackPane();
 				stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
 						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-				stack.setPadding(new Insets(10));
-				ImageView imgView = new ImageView();
-				imgView.setFitHeight(40);
-				imgView.setFitWidth(40);
-				imgView.setVisible(false);
+				//stack.setPadding(new Insets(10));
+				ImageView imgView = getSpawnView("Warrior");
+				imgView.setVisible(true);
 				stack.getChildren().clear();
-				stack.getChildren().add(imgView);
+				GridPane smallGrid = new GridPane(); 
+				smallGrid.addRow(0, imgView);
+				// Add bottom stack pane
+				StackPane bottomStack = new StackPane();
+				bottomStack.setStyle("-fx-background-color: red");
+				Rectangle rectangle = new Rectangle(0, 0, 30, 7);
+				rectangle.setFill(Color.LIGHTGREEN);
+				bottomStack.getChildren().add(rectangle);
+				bottomStack.setMaxWidth(60);
+				bottomStack.setMaxHeight(7);
+				bottomStack.setAlignment(Pos.BOTTOM_LEFT);
+				//bottomStack.setAlignment(rectangle, Pos.BOTTOM_CENTER);
+				smallGrid.addRow(1, bottomStack);
+				
+				stack.getChildren().add(smallGrid);
 				addEvent(stack, i, j, primaryStage);
 				innerGrid.addRow(j, stack);
 			}
@@ -627,8 +640,10 @@ public class CivGUIView extends Application implements Observer{
 			stack.getChildren().add(imgView);
 			stack.setBackground(new Background(new BackgroundFill(color, new CornerRadii(0), Insets.EMPTY)));;
 		} else {
-			ImageView imgView = (ImageView) stack.getChildren().get(0);
-			imgView.setVisible(false);
+			GridPane smallGrid = (GridPane) stack.getChildren().get(0);
+			ImageView imgView = (ImageView) smallGrid.getChildren().get(0);
+			
+			imgView.setVisible(true);
 			stack.setBackground(new Background(new 
 					BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), Insets.EMPTY)));;
 		}
