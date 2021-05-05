@@ -11,6 +11,7 @@ import characters.CivCharacter;
 import characters.CivGuard;
 import characters.CivKnight;
 import characters.CivWarrior;
+import javafx.scene.paint.Color;
 
 /**
  * This class serves as the controller for the MVC (Mode/Control/View) architecture and 
@@ -366,8 +367,8 @@ public class CivController {
 		return isMove;
 	}
 	
-	public void setCountry(String country) {
-		model.setCountry(country);
+	public void setColor(String color) {
+		model.setColor(color);
 	}
 
 }

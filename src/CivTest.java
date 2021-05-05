@@ -34,20 +34,11 @@ public class CivTest {
 		//test isGameBegin()
 		assertTrue(controller.isGameBegin());
 		
-		//test spawning mechanism
-		assertTrue(controller.isAbleToSpawn("Warrior","Human"));
-		assertTrue(controller.isAbleToSpawn("Catapult","Human"));
-		assertTrue(controller.isAbleToSpawn("Guard","Human"));
-		assertTrue(controller.isAbleToSpawn("Knight","Human"));
-		assertTrue(controller.isAbleToSpawn("Warrior","Human"));
-		
 		assertEquals(controller.displayStats(0, 1), null);
 		assertEquals(controller.displayStats(9, 1), null);
 		assertEquals(controller.displayStats(0, 9), null);
 		assertEquals(controller.displayStats(8, 0), null);
 		
-		// test spawning with invalid character
-		assertEquals(controller.isAbleToSpawn("Tank", "Human"),false);
 		
 		// test spawning in invalid positions
 		controller.handleClick(3,5, "Archer");
