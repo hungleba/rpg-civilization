@@ -74,4 +74,14 @@ public class CivCell implements Serializable{
 	public String getPlayer() {
 		return player;
 	}
+	
+	public String getIsAttack() {
+		return player;
+	}
+	
+	public String setIsAttack() {
+		return player;
+	}
+	
+	
 }
