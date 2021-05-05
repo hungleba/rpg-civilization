@@ -26,7 +26,7 @@ public class CivModel extends Observable implements Serializable{
 	private int curUnits; // the current number of units on the map
 	private CivPlayer human;
 	private CivPlayer computer;
-	private String country;
+	private String color;
 	
 	/**
 	 * Constructor. Creates an instance of CivModel with previously saved data
@@ -41,7 +41,7 @@ public class CivModel extends Observable implements Serializable{
 			this.curUnits = model.curUnits;
 			this.human = model.human;
 			this.computer = model.computer;
-			this.country = model.country;
+			this.color = model.color;
 			this.curUnits = model.curUnits;
 		} else {
 			getDefaultModel();
@@ -64,14 +64,12 @@ public class CivModel extends Observable implements Serializable{
 		computer = new CivPlayer("Computer");
 		curUnits = 0;
 		boardArr = new CivCell[DIMENSION][DIMENSION];
-		
 		for (int i = 0; i < DIMENSION; i++) {
 			for (int j = 0; j < DIMENSION; j++) {
 				boardArr[i][j] = new CivCell();
 			}
 		}
-		
-		country = null;
+		color = "Green";
 	}
 	
 	/**
@@ -100,20 +98,19 @@ public class CivModel extends Observable implements Serializable{
 	}
 	
 	/**
-	 * Get the country theme
-	 * @return the country theme
+	 * Get the color theme
+	 * @return the color theme
 	 */
-	public String getCountry() {
-		return country;
+	public String getColor() {
+		return color;
 	}
 	
 	/**
-	 * Set the country theme
-	 * @param country the new country theme to be set
+	 * Set the color theme
+	 * @param color the new color theme to be set
 	 */
-	public void setCountry(String country) {
-		this.country = country;
-		System.out.println(this.getCountry());
+	public void setColor(String color) {
+		this.color = color;
 	}
 	
 	/**
