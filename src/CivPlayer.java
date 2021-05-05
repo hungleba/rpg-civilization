@@ -20,16 +20,22 @@ import characters.CivCharacter;
 public class CivPlayer implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	private static final int DIMENSION = 10;
+	/** the dimension of the Civilization's map */
+	private static final int DIMENSION = 10; 
 	private static final int INITIAL_GOLD = 10;
 	private int unitCount;
-	private Map<String, List<CivCharacter>> unitMap;
-	private Map<CivCharacter, Integer> positionMap;
+	/** map of the all the units for each type of character the player has */
+	private Map<String, List<CivCharacter>> unitMap; 
+	/** map of all the characters of the player and their coordinates in the game board */
+	private Map<CivCharacter, Integer> positionMap; 
+	/** the type of player (human or computer)*/ 
 	private String name;
+	/** player's gold */ 
 	private int gold;
 	
 	/**
 	 * Constructor. Creates an instance of CivPlayer
+	 * 
 	 * @param name name of the player ("Human" or "Computer")
 	 *
 	 */
@@ -48,6 +54,7 @@ public class CivPlayer implements Serializable{
 
 	/**
 	 * Get current unit count of the player
+	 * 
 	 * @return the current unit count
 	 *
 	 */
@@ -57,6 +64,7 @@ public class CivPlayer implements Serializable{
 
 	/**
 	 * Get current name of the player ("Human" or "Computer")
+	 * 
 	 * @return the current name
 	 *
 	 */
@@ -66,6 +74,7 @@ public class CivPlayer implements Serializable{
 
 	/**
 	 * Get current gold count of the player
+	 * 
 	 * @return the current gold count
 	 *
 	 */
@@ -75,6 +84,7 @@ public class CivPlayer implements Serializable{
 	
 	/**
 	 * Add to current gold count of the player
+	 * 
 	 * @param add the amount of gold to be added
 	 *
 	 */
@@ -84,6 +94,7 @@ public class CivPlayer implements Serializable{
 	
 	/**
 	 * Get the map of all units and their positions
+	 * 
 	 * @return a HashMap of (unit, position) entries
 	 *
 	 */
@@ -93,6 +104,7 @@ public class CivPlayer implements Serializable{
 	
 	/**
 	 * Get the map of character types and all current units of each type
+	 * 
 	 * @return a HashMap of (character type, list of units with this type) entries
 	 *
 	 */
@@ -102,6 +114,7 @@ public class CivPlayer implements Serializable{
 
 	/**
 	 * Add a new unit to current player
+	 * 
 	 * @param character the new character to be added
 	 * @param row the row position to be added on the board
 	 * @param col the column position to be added on the board
@@ -118,6 +131,7 @@ public class CivPlayer implements Serializable{
 
 	/**
 	 * remove a character from the current player's units 
+	 * 
 	 * @param character a specific character to be removed
 	 */
 	public void removeUnit(CivCharacter character) {
@@ -128,7 +142,8 @@ public class CivPlayer implements Serializable{
 	}
 	
 	/**
-	 * Update a current unit's position
+	 * Update a current unit's position in the positionMap
+	 * 
 	 * @param character the current character to be updated
 	 * @param row new row position to be moved over to
 	 * @param col new column position to be moved over to
