@@ -74,8 +74,6 @@ public class CivGUIView extends Application implements Observer{
 	private TilePane tilePane;
 	private String currChar;
 	private boolean isSpawnArea;
-	private Timeline timelineAttack;
-	private Timeline timelineMove;
 
 	public static void main(String[] args) {
 		launch();
@@ -447,37 +445,35 @@ public class CivGUIView extends Application implements Observer{
 				for (int coord : attack) {
 					int row = coord / DIMENSION;
 					int col = coord % DIMENSION;
-					timelineAttack = getTimeLineAttack(row, col);
 					displayCellEffect(col, row, "Attack");
 				}
 				for (int coord : move) {
 					int row = coord / DIMENSION;
 					int col = coord % DIMENSION;
-					timelineMove = null;
 					displayCellEffect(col, row, "Move");
 				}
 			}
 		});
 	}
 	
-	private Timeline getTimeLineAttack(int row, int col) {
-		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
-		StackPane stack = (StackPane) rowPane.getChildren().get(row);
-		Timeline timeline = new Timeline() ;
-		timeline.setCycleCount( Animation.INDEFINITE ) ;
-		KeyFrame keyframe = new KeyFrame( Duration.millis( 500 ),
-				(event) -> {
-					ImageView imgView = (ImageView) stack.getChildren().get(0);
-					if (imgView.isVisible()) {
-						imgView.setVisible(false);
-					} else {
-						imgView.setVisible(true);
-					}
-				}) ;
-
-		timeline.getKeyFrames().add( keyframe ) ;
-		return timeline;
-	}
+//	private Timeline getTimeLineAttack(int row, int col) {
+//		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
+//		StackPane stack = (StackPane) rowPane.getChildren().get(row);
+//		Timeline timeline = new Timeline() ;
+//		timeline.setCycleCount( Animation.INDEFINITE ) ;
+//		KeyFrame keyframe = new KeyFrame( Duration.millis( 500 ),
+//				(event) -> {
+//					ImageView imgView = (ImageView) stack.getChildren().get(0);
+//					if (imgView.isVisible()) {
+//						imgView.setVisible(false);
+//					} else {
+//						imgView.setVisible(true);
+//					}
+//				}) ;
+//
+//		timeline.getKeyFrames().add( keyframe);
+//		return timeline;
+//	}
 
 	private String getStatsInfo(int row, int col) {
 		CivCharacter character = controller.displayStats(row, col);
@@ -636,14 +632,10 @@ public class CivGUIView extends Application implements Observer{
 		if (type.equals("Attack")) {
 			stack.setBorder(new Border(new BorderStroke(Color.RED, 
 					BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-			if (timelineAttack != null)
-				timelineAttack.play();
+			stack.setEffect(new Lighting());
 		} else if (type.equals("Move")) {
 			//TODO: Change effect
-			stack.setBorder(new Border(new BorderStroke(Color.BLUE, 
-					BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-			if (timelineAttack != null)
-				timelineAttack.play() ;
+			stack.setEffect(new Lighting());
 		}
 	}
 
@@ -652,14 +644,7 @@ public class CivGUIView extends Application implements Observer{
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
 		stack.setBorder(new Border(new BorderStroke(Color.CHARTREUSE, 
 				BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-		if (timelineAttack != null) {
-			stack.getChildren().get(0).setVisible(true);
-			timelineAttack.stop();
-		}
-		if (timelineMove != null) {
-			stack.getChildren().get(0).setVisible(true);
-			timelineMove.stop();
-		}
+		stack.setEffect(null);
 	}
 
 }
