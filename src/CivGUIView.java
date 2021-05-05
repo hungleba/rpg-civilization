@@ -66,6 +66,7 @@ public class CivGUIView extends Application implements Observer{
 	private MenuBar menuBar;
 	private TilePane tilePane;
 	private String currChar;
+	private boolean isSpawnArea;
 
 	public static void main(String[] args) {
 		launch();
@@ -86,6 +87,7 @@ public class CivGUIView extends Application implements Observer{
 		} else {
 			model = new CivModel();
 		}
+		isSpawnArea = false;
 		controller = new CivController(model);
 		borderPane = new BorderPane();
 		menuBar = new MenuBar();
@@ -180,6 +182,9 @@ public class CivGUIView extends Application implements Observer{
 		});
 		archer.setPrefHeight(48);
 		archer.setPrefWidth(140);
+		archer.setOnMouseClicked((event) -> {
+			highLightspawnArea();
+		});
 	}
 	
 	private void spawnCatapultBtn(GridPane charsPane) {
@@ -193,6 +198,9 @@ public class CivGUIView extends Application implements Observer{
 		});
 		catapult.setPrefHeight(48);
 		catapult.setPrefWidth(140);
+		catapult.setOnMouseClicked((event) -> {
+			highLightspawnArea();
+		});
 	}
 	
 	private void spawnGuardBtn(GridPane charsPane) {
@@ -206,6 +214,9 @@ public class CivGUIView extends Application implements Observer{
 		});
 		guard.setPrefHeight(48);
 		guard.setPrefWidth(140);
+		guard.setOnMouseClicked((event) -> {
+			highLightspawnArea();
+		});
 	}
 	
 	private void spawnKnightBtn(GridPane charsPane) {
@@ -219,6 +230,9 @@ public class CivGUIView extends Application implements Observer{
 		});
 		knight.setPrefHeight(48);
 		knight.setPrefWidth(140);
+		knight.setOnMouseClicked((event) -> {
+			highLightspawnArea();
+		});
 	}
 	
 	private void spawnWarriorBtn(GridPane charsPane) {
@@ -232,6 +246,9 @@ public class CivGUIView extends Application implements Observer{
 		});
 		warrior.setPrefHeight(48);
 		warrior.setPrefWidth(140);
+		warrior.setOnMouseClicked((event) -> {
+			highLightspawnArea();
+		});
 	}
 	
 	private void addEndBtn(GridPane charsPane) {
@@ -253,6 +270,30 @@ public class CivGUIView extends Application implements Observer{
 				}
 			}
 		});
+	}
+	
+	private void highLightspawnArea() {
+		for (int x = 0; x < 10; x++) { // last two rows
+			for (int y = 8; y < 10; y++) { // Elements within the last two rows
+				GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x); //x-axis
+				StackPane stack = (StackPane) rowPane.getChildren().get(y); //y-axis
+				stack.setBorder(new Border(new BorderStroke(Color.RED, 
+						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+				isSpawnArea = true;
+			}
+		}
+	}
+	
+	private void hideSpawnArea() {
+		for (int x = 0; x < 10; x++) {
+			for (int y = 8; y < 10; y++) {
+				GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
+				StackPane stack = (StackPane) rowPane.getChildren().get(y);
+				stack.setBorder(new Border(new BorderStroke(Color.CHARTREUSE, 
+						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+				isSpawnArea = false;
+			}
+		}
 	}
 	
 	private void displayAlertWinner() {
@@ -374,6 +415,9 @@ public class CivGUIView extends Application implements Observer{
 				if (controller.isGameOver()) {
 					displayAlertWinner();
 				}
+			}
+			if (isSpawnArea) {
+				hideSpawnArea();
 			}
 		});
 		stack.setOnMouseEntered((event) -> {
