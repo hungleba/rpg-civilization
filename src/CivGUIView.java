@@ -624,6 +624,8 @@ public class CivGUIView extends Application implements Observer{
 		if (type.equals("Attack")) {
 			stack.setEffect(new SepiaTone());
 		} else if (type.equals("Move")) {
+			//TO-DO: Change background color
+			stack.setStyle("-fx-background-color: grey");
 			stack.setEffect(new Glow());
 		}
 	}
@@ -631,6 +633,7 @@ public class CivGUIView extends Application implements Observer{
 	private void removeCellEffect(int col, int row) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
+		stack.setStyle("-fx-background-color: green");
 		stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
 				BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		stack.setEffect(null);
