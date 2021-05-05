@@ -152,7 +152,8 @@ public class CivController {
 		}
 	}
 
-	public void computerMove() {
+	public List<Integer> computerMove() {
+		List<Integer> attacked = new ArrayList<>();
 		CivPlayer computer = model.getPlayer("Computer");
 		Map<CivCharacter, Integer> positionMap = computer.getPositionMap();
 		Random rand = new Random();
@@ -167,7 +168,8 @@ public class CivController {
 				int newCoord = optimizeAttack(attack, character);
 				int nextRow = newCoord / DIMENSION;
 				int nextCol = newCoord % DIMENSION;
-				handleAttack(row, col, nextRow, nextCol, computer, character);			
+				handleAttack(row, col, nextRow, nextCol, computer, character);
+				attacked.add(newCoord);
 			} else if (movement.size() != 0) {
 				int newCoord = movement.get(rand.nextInt(movement.size()));
 				int nextRow = newCoord / DIMENSION;
@@ -183,7 +185,7 @@ public class CivController {
 		}
 		if (isSpawn > 0) {
 			endTurn("Computer");
-			return;
+			return attacked;
 		}
 		int countSpawn = 0;
 		while (countSpawn < numSpawn && computer.getGold() >= CivWarrior.FIXED_COST) {
@@ -223,6 +225,7 @@ public class CivController {
 			}
 		}
 		endTurn("Computer");
+		return attacked;
 	}
 
 	private int optimizeAttack(List<Integer> attack, CivCharacter character) {
