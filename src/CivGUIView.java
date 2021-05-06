@@ -10,7 +10,6 @@ import java.util.Observer;
 import java.util.Set;
 
 import characters.CivCharacter;
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -359,7 +358,6 @@ public class CivGUIView extends Application implements Observer{
 					rate--;
 					timeline.play();
 				}
-				System.out.println(attackedList);
 				if (controller.isGameOver()) {
 					displayAlertWinner();
 				}
@@ -863,7 +861,6 @@ public class CivGUIView extends Application implements Observer{
 		} else {
 			if (cell.getObstacle() != null) {
 				String obstacle = cell.getObstacle();
-				System.out.println(obstacle);
 				ImageView imgView = getSpawnView(obstacle);
 				stack.getChildren().clear();
 				stack.getChildren().add(imgView);
