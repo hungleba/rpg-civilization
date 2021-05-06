@@ -696,14 +696,16 @@ public class CivGUIView extends Application implements Observer{
 	private void addMenuBar(Stage primaryStage) {
 		// MenuItems
 		Menu newGame = new Menu("New Game");
-		MenuItem theme0 = new MenuItem("Legionare Theme");
-		MenuItem theme1 = new MenuItem("Redeemed Theme");
-		MenuItem theme2 = new MenuItem("Hellion Theme");
+		MenuItem theme0 = new MenuItem("Legionare Map Theme");
+		MenuItem theme1 = new MenuItem("Redeemed Map Theme");
+		MenuItem theme2 = new MenuItem("Hellion Map Theme");
+		MenuItem theme3 = new MenuItem("Default Map Theme");
 		MenuItem gameRule = new MenuItem("Game Rule");
 		MenuItem about = new MenuItem("About");
 		newGame.getItems().add(theme0);
 		newGame.getItems().add(theme1);
 		newGame.getItems().add(theme2);
+		newGame.getItems().add(theme3);
 		
 		// Menu
 		Menu menu = new Menu("Menu");
@@ -751,6 +753,23 @@ public class CivGUIView extends Application implements Observer{
 		theme2.setOnAction((ActionEvent ae) -> {
 			model.deleteObserver(this);
 			model = new CivModel(2);
+			controller = new CivController(model);
+			model.addObserver(this);
+			for (int i=0; i<DIMENSION; i++) {
+				for (int j=0; j<DIMENSION; j++) {
+					CivCell cell = controller.getCell(j, i);
+					updateCell(i, j, cell);
+				}
+			}
+			bigGridPane.setBackground(new Background(new 
+					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
+			addTilePane();
+			File file = new File("save_game.dat");
+			file.delete();
+		});
+		theme3.setOnAction((ActionEvent ae) -> {
+			model.deleteObserver(this);
+			model = new CivModel();
 			controller = new CivController(model);
 			model.addObserver(this);
 			for (int i=0; i<DIMENSION; i++) {
