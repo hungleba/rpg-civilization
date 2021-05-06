@@ -164,6 +164,46 @@ public class CivModel extends Observable implements Serializable{
 	}
 
 	/**
+	 * build map number 0
+	 * 
+	 * @return map number 0
+	 */
+	private static CivCell[][] buildMap0() {
+		CivCell[][] arr = new CivCell[DIMENSION][DIMENSION]; 
+		for (int i = 0; i < DIMENSION; i++) {
+			for (int j = 0; j < DIMENSION; j++) {
+				arr[i][j] = new CivCell();
+			}
+		}
+		arr[4][0].setObstacle("Water");
+		arr[4][1].setObstacle("Water");
+		arr[4][2].setObstacle("Water");
+		arr[4][7].setObstacle("Water");
+		arr[4][8].setObstacle("Water");
+		arr[4][9].setObstacle("Water");
+		arr[5][0].setObstacle("Water");
+		arr[5][1].setObstacle("Water");
+		arr[5][2].setObstacle("Water");
+		arr[5][7].setObstacle("Water");
+		arr[5][8].setObstacle("Water");
+		arr[5][9].setObstacle("Water");
+		arr[2][0].setObstacle("Tree");
+		arr[2][9].setObstacle("Tree");
+		arr[7][0].setObstacle("Tree");
+		arr[7][9].setObstacle("Tree");
+		arr[3][3].setObstacle("Rock");
+		arr[3][6].setObstacle("Rock");
+		arr[6][3].setObstacle("Rock");
+		arr[6][6].setObstacle("Rock");
+		arr[1][2].setObstacle("Tree");
+		arr[1][7].setObstacle("Tree");
+		arr[8][2].setObstacle("Tree");
+		arr[8][7].setObstacle("Tree");
+		return arr;
+	}
+
+	
+	/**
 	 * build map number 1
 	 * 
 	 * @return map number 1
@@ -175,16 +215,34 @@ public class CivModel extends Observable implements Serializable{
 				arr[i][j] = new CivCell();
 			}
 		}
-		arr[6][4].setObstacle("Tree");
-		arr[5][9].setObstacle("Water");
-		arr[2][3].setObstacle("Tree");
-		arr[4][4].setObstacle("Tree");
-		arr[7][1].setObstacle("Water");
-		arr[6][0].setObstacle("Tree");
-		arr[3][9].setObstacle("Water");
-		arr[3][6].setObstacle("Tree");
-		arr[7][7].setObstacle("Water");
-		arr[5][0].setObstacle("Water");
+		arr[4][2].setObstacle("Lava");
+		arr[4][3].setObstacle("Lava");
+		arr[4][4].setObstacle("Lava");
+		arr[4][5].setObstacle("Lava");
+		arr[4][6].setObstacle("Lava");
+		arr[4][7].setObstacle("Lava");
+		arr[5][2].setObstacle("Lava");
+		arr[5][3].setObstacle("Lava");
+		arr[5][4].setObstacle("Lava");
+		arr[5][5].setObstacle("Lava");
+		arr[5][6].setObstacle("Lava");
+		arr[5][7].setObstacle("Lava");
+		arr[2][1].setObstacle("Tree");
+		arr[2][8].setObstacle("Tree");
+		arr[7][1].setObstacle("Tree");
+		arr[7][8].setObstacle("Tree");
+		arr[1][0].setObstacle("Rock");
+		arr[1][2].setObstacle("Rock");
+		arr[1][7].setObstacle("Rock");
+		arr[1][9].setObstacle("Rock");
+		arr[8][0].setObstacle("Rock");
+		arr[8][2].setObstacle("Rock");
+		arr[8][7].setObstacle("Rock");
+		arr[8][9].setObstacle("Rock");
+		arr[3][4].setObstacle("Rock");
+		arr[3][5].setObstacle("Rock");
+		arr[6][4].setObstacle("Rock");
+		arr[6][5].setObstacle("Rock");
 		return arr;
 	}
 
@@ -200,45 +258,31 @@ public class CivModel extends Observable implements Serializable{
 				arr[i][j] = new CivCell();
 			}
 		}
-		arr[6][4].setObstacle("Lava");
-		arr[5][3].setObstacle("Rock");
-		arr[4][0].setObstacle("Tree");
-		arr[3][4].setObstacle("Rock");
-		arr[2][9].setObstacle("Lava");
-		arr[6][8].setObstacle("Tree");
-		arr[5][7].setObstacle("Rock");
-		arr[4][6].setObstacle("Tree");
-		arr[3][9].setObstacle("Rock");
-		arr[2][2].setObstacle("Lava");
+		arr[0][0].setObstacle("Rock");
+		arr[1][1].setObstacle("Water");
+		arr[2][2].setObstacle("Water");
+		arr[3][3].setObstacle("Rock");
+		arr[6][6].setObstacle("Rock");
+		arr[7][7].setObstacle("Water");
+		arr[8][8].setObstacle("Water");
+		arr[9][9].setObstacle("Rock");
+		arr[0][9].setObstacle("Rock");
+		arr[1][8].setObstacle("Lava");
+		arr[2][7].setObstacle("Lava");
+		arr[3][6].setObstacle("Rock");
+		arr[6][3].setObstacle("Rock");
+		arr[7][2].setObstacle("Lava");
+		arr[8][1].setObstacle("Lava");
+		arr[9][0].setObstacle("Rock");
+		arr[1][4].setObstacle("Tree");
+		arr[1][5].setObstacle("Tree");
+		arr[8][4].setObstacle("Tree");
+		arr[8][5].setObstacle("Tree");
+		arr[4][1].setObstacle("Tree");
+		arr[5][1].setObstacle("Tree");
+		arr[4][8].setObstacle("Tree");
+		arr[5][8].setObstacle("Tree");
 		return arr;
 	}
-
-
-	/**
-	 * build map number 0
-	 * 
-	 * @return map number 0
-	 */
-	private static CivCell[][] buildMap0() {
-		CivCell[][] arr = new CivCell[DIMENSION][DIMENSION]; 
-		for (int i = 0; i < DIMENSION; i++) {
-			for (int j = 0; j < DIMENSION; j++) {
-				arr[i][j] = new CivCell();
-			}
-		}
-		arr[6][4].setObstacle("Water");
-		arr[5][4].setObstacle("Lava");
-		arr[2][4].setObstacle("Lava");
-		arr[3][4].setObstacle("Water");
-		arr[4][4].setObstacle("Water");
-		arr[4][4].setObstacle("Lava");
-		arr[5][4].setObstacle("Tree");
-		arr[7][4].setObstacle("Water");
-		arr[6][4].setObstacle("Tree");
-		arr[7][4].setObstacle("Water");
-		return arr;
-	}
-
-
-
+	
 }

@@ -203,10 +203,8 @@ public class CivTest {
 		assertEquals(warr.getLevel(), 2);
 		assertEquals(gua.getLevel(), 2);
 
-		CivModel model = new CivModel();
+		CivModel model = new CivModel(0);
 		CivController controller = new CivController(model);
-		CivPlayer human = model.getPlayer("Human");
-		CivPlayer computer = model.getPlayer("Computer");
 
 		controller.setSpawned();
 		controller.handleClick(8,9, "Knight");

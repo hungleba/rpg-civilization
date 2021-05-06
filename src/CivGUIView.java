@@ -53,9 +53,18 @@ import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 
-@SuppressWarnings("deprecation")
 
-/** representing the GUI View in a Civilization game */
+
+
+/**
+ * Represent the GUI View in a Civilization game 
+ * @author Anh Nguyen Phung
+ * @author Hung Le Ba
+ * @author Peter Vo
+ * @author Thu Tra
+ *
+ */
+@SuppressWarnings("deprecation")
 public class CivGUIView extends Application implements Observer{
 
 	/** the dimension of the Civilization game's board */
@@ -369,12 +378,15 @@ public class CivGUIView extends Application implements Observer{
 			return;
 		for (int x = 0; x < 10; x++) { // last two rows
 			for (int y = 8; y < 10; y++) { // Elements within the last two rows
-				GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x); //x-axis
-				StackPane stack = (StackPane) rowPane.getChildren().get(y); //y-axis
-				stack.setBorder(new Border(new BorderStroke(Color.GREY, 
-						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-				stack.setEffect(new DropShadow(BlurType.GAUSSIAN, Color.RED, 5, 0.75, 0, 0));
 				isSpawnArea = true;
+				if (controller.getCell(y, x).getObstacle() == null 
+						&& controller.getCell(y, x).getCharacter() == null) {
+					GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x); //x-axis
+					StackPane stack = (StackPane) rowPane.getChildren().get(y); //y-axis
+					stack.setBorder(new Border(new BorderStroke(Color.GREY, 
+							BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+					stack.setEffect(new DropShadow(BlurType.GAUSSIAN, Color.RED, 5, 0.75, 0, 0));
+				}
 			}
 		}
 	}
@@ -385,12 +397,15 @@ public class CivGUIView extends Application implements Observer{
 	private void hideSpawnArea() {
 		for (int x = 0; x < 10; x++) {
 			for (int y = 8; y < 10; y++) {
-				GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
-				StackPane stack = (StackPane) rowPane.getChildren().get(y);
-				stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
-						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-				stack.setEffect(null);
 				isSpawnArea = false;
+				if (controller.getCell(y, x).getObstacle() == null 
+						&& controller.getCell(y, x).getCharacter() == null) {
+					GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
+					StackPane stack = (StackPane) rowPane.getChildren().get(y);
+					stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
+							BorderWidths.DEFAULT)));
+					stack.setEffect(null);
+				}
 			}
 		}
 	}
@@ -696,10 +711,10 @@ public class CivGUIView extends Application implements Observer{
 	private void addMenuBar(Stage primaryStage) {
 		// MenuItems
 		Menu newGame = new Menu("New Game");
-		MenuItem theme0 = new MenuItem("Legionare Map Theme");
-		MenuItem theme1 = new MenuItem("Redeemed Map Theme");
-		MenuItem theme2 = new MenuItem("Hellion Map Theme");
-		MenuItem theme3 = new MenuItem("Default Map Theme");
+		MenuItem theme0 = new MenuItem("River Sprite Theme");
+		MenuItem theme1 = new MenuItem("Hot Lava Theme");
+		MenuItem theme2 = new MenuItem("Mystic X Theme");
+		MenuItem theme3 = new MenuItem("Default/Blank Map Theme");
 		MenuItem gameRule = new MenuItem("Game Rule");
 		MenuItem about = new MenuItem("About");
 		newGame.getItems().add(theme0);
