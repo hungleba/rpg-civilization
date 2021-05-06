@@ -47,7 +47,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -429,8 +428,8 @@ public class CivGUIView extends Application implements Observer{
 		File file = new File(url);
 		Image img = new Image(file.toURI().toString());
 		ImageView imgView = new ImageView(img);
-		imgView.setFitHeight(53);
-		imgView.setFitWidth(60);
+		imgView.setFitHeight(40);
+		imgView.setFitWidth(40);
 		return imgView;
 	}
 
@@ -480,25 +479,13 @@ public class CivGUIView extends Application implements Observer{
 				StackPane stack = new StackPane();
 				stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
 						BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-				//stack.setPadding(new Insets(10));
-				ImageView imgView = getSpawnView("Warrior");
-				imgView.setVisible(true);
+				stack.setPadding(new Insets(10));
+				ImageView imgView = new ImageView();
+				imgView.setFitHeight(40);
+				imgView.setFitWidth(40);
+				imgView.setVisible(false);
 				stack.getChildren().clear();
-				GridPane smallGrid = new GridPane(); 
-				smallGrid.addRow(0, imgView);
-				// Add bottom stack pane
-				StackPane bottomStack = new StackPane();
-				bottomStack.setStyle("-fx-background-color: red");
-				Rectangle rectangle = new Rectangle(0, 0, 30, 7);
-				rectangle.setFill(Color.LIGHTGREEN);
-				bottomStack.getChildren().add(rectangle);
-				bottomStack.setMaxWidth(60);
-				bottomStack.setMaxHeight(7);
-				bottomStack.setAlignment(Pos.BOTTOM_LEFT);
-				//bottomStack.setAlignment(rectangle, Pos.BOTTOM_CENTER);
-				smallGrid.addRow(1, bottomStack);
-				
-				stack.getChildren().add(smallGrid);
+				stack.getChildren().add(imgView);
 				addEvent(stack, i, j, primaryStage);
 				innerGrid.addRow(j, stack);
 			}
@@ -708,10 +695,16 @@ public class CivGUIView extends Application implements Observer{
 	 */
 	private void addMenuBar(Stage primaryStage) {
 		// MenuItems
-		MenuItem newGame = new MenuItem("New Game");
+		Menu newGame = new Menu("New Game");
+		MenuItem theme0 = new MenuItem("Legionare Theme");
+		MenuItem theme1 = new MenuItem("Redeemed Theme");
+		MenuItem theme2 = new MenuItem("Hellion Theme");
 		MenuItem gameRule = new MenuItem("Game Rule");
 		MenuItem about = new MenuItem("About");
-
+		newGame.getItems().add(theme0);
+		newGame.getItems().add(theme1);
+		newGame.getItems().add(theme2);
+		
 		// Menu
 		Menu menu = new Menu("Menu");
 		menu.getItems().add(newGame);
@@ -721,9 +714,43 @@ public class CivGUIView extends Application implements Observer{
 
 		// Menu bar
 		menuBar.getMenus().add(menu);
-		newGame.setOnAction((ActionEvent ae) -> {
+		theme0.setOnAction((ActionEvent ae) -> {
 			model.deleteObserver(this);
-			model = new CivModel();
+			model = new CivModel(0);
+			controller = new CivController(model);
+			model.addObserver(this);
+			for (int i=0; i<DIMENSION; i++) {
+				for (int j=0; j<DIMENSION; j++) {
+					CivCell cell = controller.getCell(j, i);
+					updateCell(i, j, cell);
+				}
+			}
+			bigGridPane.setBackground(new Background(new 
+					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
+			addTilePane();
+			File file = new File("save_game.dat");
+			file.delete();
+		});
+		theme1.setOnAction((ActionEvent ae) -> {
+			model.deleteObserver(this);
+			model = new CivModel(1);
+			controller = new CivController(model);
+			model.addObserver(this);
+			for (int i=0; i<DIMENSION; i++) {
+				for (int j=0; j<DIMENSION; j++) {
+					CivCell cell = controller.getCell(j, i);
+					updateCell(i, j, cell);
+				}
+			}
+			bigGridPane.setBackground(new Background(new 
+					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
+			addTilePane();
+			File file = new File("save_game.dat");
+			file.delete();
+		});
+		theme2.setOnAction((ActionEvent ae) -> {
+			model.deleteObserver(this);
+			model = new CivModel(2);
 			controller = new CivController(model);
 			model.addObserver(this);
 			for (int i=0; i<DIMENSION; i++) {
@@ -795,14 +822,21 @@ public class CivGUIView extends Application implements Observer{
 			ImageView imgView = getSpawnView(name);
 			stack.getChildren().clear();
 			stack.getChildren().add(imgView);
-			stack.setBackground(new Background(new BackgroundFill(color, new CornerRadii(0), Insets.EMPTY)));;
+			stack.setBackground(new Background(new BackgroundFill(color, new CornerRadii(0), Insets.EMPTY)));
 		} else {
-			GridPane smallGrid = (GridPane) stack.getChildren().get(0);
-			ImageView imgView = (ImageView) smallGrid.getChildren().get(0);
-			
-			imgView.setVisible(true);
-			stack.setBackground(new Background(new 
-					BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), Insets.EMPTY)));;
+			if (cell.getObstacle() != null) {
+				String obstacle = cell.getObstacle();
+				System.out.println(obstacle);
+				ImageView imgView = getSpawnView(obstacle);
+				stack.getChildren().clear();
+				stack.getChildren().add(imgView);
+				stack.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), Insets.EMPTY)));
+			} else {
+				ImageView imgView = (ImageView) stack.getChildren().get(0);
+				imgView.setVisible(false);
+				stack.setBackground(new Background(new 
+						BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), Insets.EMPTY)));
+			}
 		}
 	}
 

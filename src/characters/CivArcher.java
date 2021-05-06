@@ -38,4 +38,6 @@ public class CivArcher extends CivCharacter{
 			health += 1;
 		}
 	}
+	
+	
 }

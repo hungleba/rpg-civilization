@@ -35,6 +35,7 @@ public class CivCharacter implements Serializable{
 	protected boolean isMoved;
 	/** Maximum level that can be attained by the character */
 	protected static final int MAX_LEVEL = 5;
+	/** Maximum health that can be attained by the character */
 	
 	/**
 	 * Constructor. Creates an instance of CivCharacter
@@ -44,6 +45,7 @@ public class CivCharacter implements Serializable{
 		isMoved = false;
 		lvl = 1;
 	}
+
 	
 	/** 
 	 * Return how much damage a character can cause in one attack

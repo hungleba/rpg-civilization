@@ -39,9 +39,6 @@ public class CivTest {
 		//test isGameBegin()
 		assertTrue(controller.isGameBegin());
 		
-		// test setter & getter for color
-		controller.setColor("Pink");
-		assertEquals(controller.getColor(),"Pink");
 		//test display stats
 		assertEquals(controller.displayStats(0, 1), null);
 		assertEquals(controller.displayStats(9, 1), null);
@@ -172,7 +169,11 @@ public class CivTest {
 	
 	
 	/**
+<<<<<<< HEAD
+	 * Test methods CivModel & CivCharacte, character classes
+=======
 	 * Test methods CivModel and CivCharacte, character classes
+>>>>>>> 3e8597f17bb8c7f9005b9790f4a7c68d98e138f9
 	 * 
 	 * @throws IOException when IOEException is caught
 	 * @throws FileNotFoundException when file can not be found
@@ -194,7 +195,6 @@ public class CivTest {
 		gua.levelUp();
 		kni.levelUp();
 		cha.levelUp();
-		assertEquals(cat.getMaxLevel(), 5);
 		assertEquals(cat.getLevel(), 2);
 		assertEquals(arc.getLevel(), 2);
 		assertEquals(kni.getLevel(), 2);
@@ -223,6 +223,5 @@ public class CivTest {
 		oos2.writeObject(null);
 		oos2.close();
 		
-		CivModel model3 = new CivModel("test_save_game2.dat");
 	}
 }

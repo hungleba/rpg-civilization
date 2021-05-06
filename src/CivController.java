@@ -140,13 +140,13 @@ public class CivController {
 			if (row >= 2) {
 				return false;
 			} else {
-				return model.getCell(row, col).getPlayer() == null;
+				return model.getCell(row, col).getPlayer() == null && model.getCell(row, col).getObstacle() == null;
 			}
 		} else {
 			if (row < DIMENSION - 2) {
 				return false;
 			} else {
-				return model.getCell(row, col).getPlayer() == null;
+				return model.getCell(row, col).getPlayer() == null && model.getCell(row, col).getObstacle() == null;
 			}
 		}
 	}
@@ -239,7 +239,7 @@ public class CivController {
 		while (countSpawn < numSpawn && computer.getGold() >= CivWarrior.FIXED_COST) {
 			int r = rand.nextInt(2);
 			int c = rand.nextInt(DIMENSION);
-			while (model.getCell(r, c).getPlayer() != null) {
+			while (model.getCell(r, c).getPlayer() != null || model.getCell(r, c).getObstacle() != null) {
 				if (c == DIMENSION-1) {
 					if (r == 0) {
 						r = 1;
@@ -324,7 +324,7 @@ public class CivController {
 		int movement = character.getMovement();
 		for (int i = Math.max(0, row - movement); i <= Math.min(DIMENSION - 1, row + movement); i++) {
 			for (int j = Math.max(0, col - movement); j <= Math.min(DIMENSION - 1, col + movement); j++) {
-				if (model.getCell(i, j).getPlayer() == null) {
+				if (model.getCell(i, j).getPlayer() == null && model.getCell(i, j).getObstacle() == null) {
 					map.get("Move").add(i * DIMENSION + j);
 				}
 			}
@@ -375,9 +375,9 @@ public class CivController {
 	public boolean handleClick(int row, int col, String character) {
 		CivPlayer human = model.getPlayer("Human");
 		CivCell cell = model.getCell(row, col);
-
 		if (cell.getCharacter() == null) {
-			if (isSpawned) {
+			if (cell.getObstacle() != null) {
+			} else if (isSpawned) {
 				handleAddUnit(character, human, row, col);
 			} else if (isMove) {
 				handleMove(prevRow, prevCol, row, col, human, civChar);
@@ -434,6 +434,7 @@ public class CivController {
 				civChar.levelUp();
 			} else {
 				curChar.setHealth(health);
+				model.updateCell(row, col, curChar, otherPlayer.getName());
 			}
 			civChar.setIsMoved(true);
 		}
@@ -523,26 +524,6 @@ public class CivController {
 	}
 	
 	/**
-	 * Set the current theme color
-	 * 
-	 * @param color the color to be set
-	 *
-	 */
-	public void setColor(String color) {
-		model.setColor(color);
-	}
-	
-	/**
-	 * Get the current theme color
-	 * 
-	 * @return current them color as a string
-	 *
-	 */
-	public String getColor() {
-		return model.getColor();
-	}
-	
-	/**
 	 * Get the cell at (r,c)
 	 * 
 	 * @param r the row position of the cell
@@ -566,6 +547,18 @@ public class CivController {
 	 */
 	public CivPlayer getPlayer(String player) {
 		return model.getPlayer(player);
+	}
+	
+	/**
+	 * Set the color theme
+	 * @param color the new color theme to be set
+	 */
+	public void setColor(String color) {
+		model.setColor(color);
+	}
+	
+	public String getColor() {
+		return model.getColor();
 	}
 
 }

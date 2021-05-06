@@ -25,7 +25,6 @@ public class CivCatapult extends CivCharacter{
 		cost = FIXED_COST;
 		health = 10;
 		name = "Catapult";
-		
 	}
 	
 	/**
