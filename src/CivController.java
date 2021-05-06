@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
@@ -321,13 +322,9 @@ public class CivController {
 		map.put("Move", new ArrayList<Integer>());
 		CivCharacter character = cell.getCharacter();
 		int range = character.getRange();
-		int movement = character.getMovement();
-		for (int i = Math.max(0, row - movement); i <= Math.min(DIMENSION - 1, row + movement); i++) {
-			for (int j = Math.max(0, col - movement); j <= Math.min(DIMENSION - 1, col + movement); j++) {
-				if (model.getCell(i, j).getPlayer() == null && model.getCell(i, j).getObstacle() == null) {
-					map.get("Move").add(i * DIMENSION + j);
-				}
-			}
+		Set<Integer> moves = validMoves(row, col, character.getMovement());
+		for (int move: moves) {
+			map.get("Move").add(move);
 		}
 		for (int i = Math.max(0, row - range); i <= Math.min(DIMENSION - 1, row + range); i++) {
 			for (int j = Math.max(0, col - range); j <= Math.min(DIMENSION - 1, col + range); j++) {
@@ -339,7 +336,74 @@ public class CivController {
 		}
 		return map;
 	}
-
+	
+	/**
+	 * Get the set of all valid moves given the position and the movement range
+	 * @param r the row position
+	 * @param c the column position
+	 * @param range the movement range
+	 * @return the set of all valid moves
+	 */
+	private Set<Integer> validMoves(int r, int c, int range) {
+		Set<Integer> moves = new HashSet<>();
+		validMovesHelper(r, c, 1, range, moves);
+		return moves;
+	}
+	
+	/**
+	 * A helper method for all valid moves method
+	 * @param r the row position
+	 * @param c the column position
+	 * @param count the count variable to keep track
+	 * @param range the movement range
+	 * @param moves the set of valid moves
+	 */
+	private void validMovesHelper(int r, int c, int count, int range, Set<Integer> moves) {
+		if (count > range) {
+			return;
+		}
+		if (r-1 >= 0 && c-1 >= 0 && model.getCell(r-1, c-1).getObstacle() == null 
+				&& model.getCell(r-1, c-1).getCharacter() == null) {
+			moves.add((r-1)*DIMENSION+c-1);
+			validMovesHelper(r-1, c-1, count+1, range, moves);
+		}
+		if (r-1 >= 0 && model.getCell(r-1, c).getObstacle() == null 
+				&& model.getCell(r-1, c).getCharacter() == null) {
+			moves.add((r-1)*DIMENSION+c);
+			validMovesHelper(r-1, c, count+1, range, moves);
+		}
+		if (r-1 >= 0 && c+1 < DIMENSION && model.getCell(r-1, c+1).getObstacle() == null 
+				&& model.getCell(r-1, c+1).getCharacter() == null) {
+			moves.add((r-1)*DIMENSION+c+1);
+			validMovesHelper(r-1, c+1, count+1, range, moves);
+		}
+		if (c+1 < DIMENSION && model.getCell(r, c+1).getObstacle() == null 
+				&& model.getCell(r, c+1).getCharacter() == null) {
+			moves.add(r*DIMENSION+c+1);
+			validMovesHelper(r, c+1, count+1, range, moves);
+		}
+		if (r+1 < DIMENSION && c+1 < DIMENSION && model.getCell(r+1, c+1).getObstacle() == null 
+				&& model.getCell(r+1, c+1).getCharacter() == null) {
+			moves.add((r+1)*DIMENSION+c+1);
+			validMovesHelper(r+1, c+1, count+1, range, moves);
+		}
+		if (r+1 < DIMENSION && model.getCell(r+1, c).getObstacle() == null 
+				&& model.getCell(r+1, c).getCharacter() == null) {
+			moves.add((r+1)*DIMENSION+c);
+			validMovesHelper(r+1, c, count+1, range, moves);
+		}
+		if (r+1 < DIMENSION && c-1 >= 0 && model.getCell(r+1, c-1).getObstacle() == null 
+				&& model.getCell(r+1, c-1).getCharacter() == null) {
+			moves.add((r+1)*DIMENSION+c-1);
+			validMovesHelper(r+1, c-1, count+1, range, moves);
+		}
+		if (c-1 >= 0 && model.getCell(r, c-1).getObstacle() == null 
+				&& model.getCell(r, c-1).getCharacter() == null) {
+			moves.add(r*DIMENSION+c-1);
+			validMovesHelper(r, c-1, count+1, range, moves);
+		}
+	}
+	
 	/**
 	 * Display stats of a cell at (row, col)
 	 * 
@@ -462,8 +526,8 @@ public class CivController {
 	 * 
 	 */
 	private void handleMove(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
-		if (Math.max(Math.abs(row - prevRow), Math.abs(col - prevCol)) <= civChar.getMovement()
-				&& !civChar.getIsMoved()) {
+		Set<Integer> moves = validMoves(prevRow, prevCol, civChar.getMovement());
+		if (moves.contains(row*DIMENSION+col) && !civChar.getIsMoved()) {
 			System.out.println(player.getName()+" move from "+prevRow+prevCol+" to "+row+col+" using "+civChar.getName()+"\n");
 			model.updateCell(row, col, civChar, player.getName());
 			model.updateCell(prevRow, prevCol, null, null);

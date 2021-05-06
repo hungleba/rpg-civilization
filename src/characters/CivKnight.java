@@ -20,7 +20,7 @@ public class CivKnight extends CivCharacter{
 	 */
 	public CivKnight() {
 		attack = 4;
-		range = 2;
+		range = 1;
 		movement = 3;
 		cost = FIXED_COST;
 		health = 12;

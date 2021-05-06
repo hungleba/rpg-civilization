@@ -20,7 +20,7 @@ public class CivCatapult extends CivCharacter{
 	 */
 	public CivCatapult() {
 		attack = 4;
-		range = 4;
+		range = 3;
 		movement = 2;
 		cost = FIXED_COST;
 		health = 10;

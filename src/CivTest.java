@@ -95,6 +95,8 @@ public class CivTest {
 		System.out.println("TEST CONTROLLER 2:");
 		CivModel model = new CivModel();
 		CivController controller = new CivController(model);
+		model.setColor("Pink");
+		assertEquals(model.getColor(), "Pink");
 		CivPlayer human = model.getPlayer("Human");
 		CivPlayer computer = model.getPlayer("Computer");
 		
