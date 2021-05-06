@@ -489,7 +489,6 @@ public class CivController {
 		CivPlayer otherPlayer = model.getPlayer(model.getCell(row, col).getPlayer());
 		if (Math.max(Math.abs(row - prevRow), Math.abs(col - prevCol)) <= civChar.getRange()
 				&& !civChar.getIsMoved()) {
-			System.out.println(player.getName()+" attack from "+prevRow+prevCol+" to "+row+col+" using "+civChar.getName()+"\n");
 			int health = curChar.getHealth() - civChar.getAttack();
 			if (health <= 0) {
 				model.updateCell(row, col, null, null);
@@ -528,7 +527,6 @@ public class CivController {
 	private void handleMove(int prevRow, int prevCol, int row, int col, CivPlayer player, CivCharacter civChar) {
 		Set<Integer> moves = validMoves(prevRow, prevCol, civChar.getMovement());
 		if (moves.contains(row*DIMENSION+col) && !civChar.getIsMoved()) {
-			System.out.println(player.getName()+" move from "+prevRow+prevCol+" to "+row+col+" using "+civChar.getName()+"\n");
 			model.updateCell(row, col, civChar, player.getName());
 			model.updateCell(prevRow, prevCol, null, null);
 			civChar.setIsMoved(true);
@@ -558,7 +556,6 @@ public class CivController {
 			isSpawned = false;
 			return;
 		}
-		System.out.println(player.getName()+" add "+row+col+" using "+character+"\n");
 		CivCharacter curChar = null;
 		if (character.equals("Archer")) {
 			curChar = new CivArcher();

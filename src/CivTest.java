@@ -97,8 +97,6 @@ public class CivTest {
 		CivController controller = new CivController(model);
 		model.setColor("Pink");
 		assertEquals(model.getColor(), "Pink");
-		CivPlayer human = model.getPlayer("Human");
-		CivPlayer computer = model.getPlayer("Computer");
 		
 		// set countries
 		assertEquals(controller.determineWinner(), null);

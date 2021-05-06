@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 import characters.CivCharacter;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 /**
  * This class serves as the view for the MVC (Mode/Control/View) architecture and let the 
