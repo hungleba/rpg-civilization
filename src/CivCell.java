@@ -29,6 +29,8 @@ public class CivCell implements Serializable{
 	private String player;
 	/** represent the character that occupies this cell */
 	private CivCharacter character;
+	/** represent the obstacle */
+	private String obstacle;
 	
 	/**
 	 * Constructor. Creates an instance of CivCell.
@@ -37,6 +39,25 @@ public class CivCell implements Serializable{
 	public CivCell() {
 		this.player = null;
 		this.character = null;
+		this.obstacle = null;
+	}
+	
+	/**
+	 * Set current obstacle of the cell (type of character that is in the cell)
+	 * @param obstacle to be set
+	 *
+	 */
+	public void setObstacle(String obstacle) {
+		this.obstacle = obstacle;
+	}
+	
+	/**
+	 * Get current obstacle of the cell
+	 * @return obstacle that is currently in the cell
+	 *
+	 */
+	public String getObstacle() {
+		return obstacle;
 	}
 	
 	/**

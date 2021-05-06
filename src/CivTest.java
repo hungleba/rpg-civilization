@@ -39,9 +39,6 @@ public class CivTest {
 		//test isGameBegin()
 		assertTrue(controller.isGameBegin());
 		
-		// test setter & getter for color
-		controller.setColor("Pink");
-		assertEquals(controller.getColor(),"Pink");
 		//test display stats
 		assertEquals(controller.displayStats(0, 1), null);
 		assertEquals(controller.displayStats(9, 1), null);
