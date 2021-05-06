@@ -480,9 +480,9 @@ public class CivController {
 	/**
 	 * Add unit to an empty cell and the player's team when they spawned
 	 * 
-	 * @param player the player that has spawned
+	 * @param player the current player (human or computer) 
 	 * 
-	 * @param civChar the character that has been spanwed
+	 * @param character the character that has been spawned
 	 * 
 	 * @param row the row of the cell to spawn on
 	 * 

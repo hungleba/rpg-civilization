@@ -68,15 +68,15 @@ public class CivGUIView extends Application implements Observer{
 	private BorderPane borderPane;
 	/** The bid GridPane of the view */
 	private GridPane bigGridPane;
-	/** The VBox of the view */
+	/** The VBox that contains the spawn button, end turn button, and information pop ups*/
 	private VBox vbox;
-	/** The menu bar of the view */
+	/** The menu bar of the view that show option for new game, rule, and background changes*/
 	private MenuBar menuBar;
-	/** The tilePane of the view */
+	/** The tilePane that shows the current gold count of the players */
 	private TilePane tilePane;
 	/** The current character that is spawned */
 	private String currChar;
-	/** true if the area that can be spawned by a given player and false otherwise */
+	/** true if the spawn area is valid (8,9 for human and 0,1 for computer), false if otherwise */
 	private boolean isSpawnArea;
 	/** For displaying opacity effect */
 	private boolean up; 
@@ -187,7 +187,7 @@ public class CivGUIView extends Application implements Observer{
 	}
 
 	/**
-	 * Add and configure the VBox of the view
+	 * Add VBox that contains the spawn button, end turn button, and information pop ups
 	 */
 	private void addVBox() {
 		GridPane charsPane = new GridPane();
@@ -419,6 +419,8 @@ public class CivGUIView extends Application implements Observer{
 	 * Get icon for the character being spawned to display on the board
 	 * 
 	 * @param character the character that is spawned
+	 * 
+	 * @return the ImageView that is the image of the character spawned
 	 */
 	private ImageView getSpawnView(String character) {
 		character = character.toLowerCase();
@@ -447,6 +449,8 @@ public class CivGUIView extends Application implements Observer{
 
 	/**
 	 * Add the GridPane of the View and fill in the current theme color
+	 * 
+	 * @param primaryStage Stage object that is the primary stage for the GUI
 	 */
 	private void addGridPane(Stage primaryStage) {
 		bigGridPane.setMaxWidth(630);
@@ -594,6 +598,8 @@ public class CivGUIView extends Application implements Observer{
 	 * @param col col of the cell being clicked
 	 * 
 	 * @param rate determine cycle counts 
+	 * 
+	 * @return the Timeline to update the board
 	 */
 	private Timeline getTimeLineAttack(int row, int col, int rate) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
@@ -627,6 +633,8 @@ public class CivGUIView extends Application implements Observer{
 	 * @param row row of current cell
 	 * 
 	 * @param col col of current cell
+	 * 
+	 * @return the stats of the character at the cell as a String, null if the the cell is empty
 	 */
 	private String getStatsInfo(int row, int col) {
 		CivCharacter character = controller.displayStats(row, col);
@@ -687,10 +695,16 @@ public class CivGUIView extends Application implements Observer{
 	 */
 	private void addMenuBar(Stage primaryStage) {
 		// MenuItems
-		MenuItem newGame = new MenuItem("New Game");
+		Menu newGame = new Menu("New Game");
+		MenuItem theme0 = new MenuItem("Legionare Theme");
+		MenuItem theme1 = new MenuItem("Redeemed Theme");
+		MenuItem theme2 = new MenuItem("Hellion Theme");
 		MenuItem gameRule = new MenuItem("Game Rule");
 		MenuItem about = new MenuItem("About");
-
+		newGame.getItems().add(theme0);
+		newGame.getItems().add(theme1);
+		newGame.getItems().add(theme2);
+		
 		// Menu
 		Menu menu = new Menu("Menu");
 		menu.getItems().add(newGame);
@@ -700,9 +714,43 @@ public class CivGUIView extends Application implements Observer{
 
 		// Menu bar
 		menuBar.getMenus().add(menu);
-		newGame.setOnAction((ActionEvent ae) -> {
+		theme0.setOnAction((ActionEvent ae) -> {
 			model.deleteObserver(this);
-			model = new CivModel();
+			model = new CivModel(0);
+			controller = new CivController(model);
+			model.addObserver(this);
+			for (int i=0; i<DIMENSION; i++) {
+				for (int j=0; j<DIMENSION; j++) {
+					CivCell cell = controller.getCell(j, i);
+					updateCell(i, j, cell);
+				}
+			}
+			bigGridPane.setBackground(new Background(new 
+					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
+			addTilePane();
+			File file = new File("save_game.dat");
+			file.delete();
+		});
+		theme1.setOnAction((ActionEvent ae) -> {
+			model.deleteObserver(this);
+			model = new CivModel(1);
+			controller = new CivController(model);
+			model.addObserver(this);
+			for (int i=0; i<DIMENSION; i++) {
+				for (int j=0; j<DIMENSION; j++) {
+					CivCell cell = controller.getCell(j, i);
+					updateCell(i, j, cell);
+				}
+			}
+			bigGridPane.setBackground(new Background(new 
+					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
+			addTilePane();
+			File file = new File("save_game.dat");
+			file.delete();
+		});
+		theme2.setOnAction((ActionEvent ae) -> {
+			model.deleteObserver(this);
+			model = new CivModel(2);
 			controller = new CivController(model);
 			model.addObserver(this);
 			for (int i=0; i<DIMENSION; i++) {
@@ -754,11 +802,11 @@ public class CivGUIView extends Application implements Observer{
 	/**
 	 * Update a cell upon adding a character
 	 * 
-	 * @param col col of current cell
+	 * @param x col of current cell
 	 * 
-	 * @param row row of current cell
+	 * @param y row of current cell
 	 * 
-	 * @param type move type ("Attack" or "Move")
+	 * @param cell the cell at the current set of coordinates
 	 */
 	private void updateCell(int x, int y, CivCell cell) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
@@ -774,12 +822,21 @@ public class CivGUIView extends Application implements Observer{
 			ImageView imgView = getSpawnView(name);
 			stack.getChildren().clear();
 			stack.getChildren().add(imgView);
-			stack.setBackground(new Background(new BackgroundFill(color, new CornerRadii(0), Insets.EMPTY)));;
+			stack.setBackground(new Background(new BackgroundFill(color, new CornerRadii(0), Insets.EMPTY)));
 		} else {
-			ImageView imgView = (ImageView) stack.getChildren().get(0);
-			imgView.setVisible(false);
-			stack.setBackground(new Background(new 
-					BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), Insets.EMPTY)));;
+			if (cell.getObstacle() != null) {
+				String obstacle = cell.getObstacle();
+				System.out.println(obstacle);
+				ImageView imgView = getSpawnView(obstacle);
+				stack.getChildren().clear();
+				stack.getChildren().add(imgView);
+				stack.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), Insets.EMPTY)));
+			} else {
+				ImageView imgView = (ImageView) stack.getChildren().get(0);
+				imgView.setVisible(false);
+				stack.setBackground(new Background(new 
+						BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), Insets.EMPTY)));
+			}
 		}
 	}
 

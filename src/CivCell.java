@@ -42,29 +42,6 @@ public class CivCell implements Serializable{
 		this.obstacle = null;
 	}
 	
-	/**
-	 * Set current obstacle of the cell (type of character that is in the cell)
-	 * @param obstacle to be set
-	 *
-	 */
-	public void setObstacle(String obstacle) {
-		this.obstacle = obstacle;
-	}
-	
-	/**
-	 * Get current obstacle of the cell
-	 * @return obstacle that is currently in the cell
-	 *
-	 */
-	public String getObstacle() {
-		return obstacle;
-	}
-	
-	/**
-	 * Set current character of the cell (type of character that is in the cell)
-	 * @param character char to be set
-	 *
-	 */
 	public void setCharacter(CivCharacter character) {
 		this.character = character;
 	}
@@ -95,4 +72,23 @@ public class CivCell implements Serializable{
 	public String getPlayer() {
 		return player;
 	}
+	
+	/**
+	 * Set current player of the cell (human or computer)
+	 * @param player player to be set
+	 *
+	 */
+	public void setObstacle(String type) {
+		this.obstacle = type;
+	}
+	
+	/**
+	 * Get current player of the cell (human or computer)
+	 * @return player that is currently occupying the cell
+	 *
+	 */
+	public String getObstacle() {
+		return obstacle;
+	}
+
 }

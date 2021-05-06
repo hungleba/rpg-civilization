@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 
@@ -20,16 +21,20 @@ import characters.CivCharacter;
 
 @SuppressWarnings("deprecation")
 public class CivModel extends Observable implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
 	private CivCell[][] boardArr; 
-	private transient final int DIMENSION = 10; // the dimensions of the the map
-	private int curUnits; // the current number of units on the map
+	/** the dimension of the Civilization's map */
+	private transient final static int DIMENSION = 10; 
+	/** current unit count on the board */
+	private int curUnits; 
+	/** represent the human's side of the game */
 	private CivPlayer human;
 	private CivPlayer computer;
 	private String color;
-	private static Map<Integer, CivCell[][]> map;
-	
+	private Map<Integer, CivCell[][]> map = buildMap();
+
+
 	/**
 	 * Constructor. Creates an instance of CivModel with previously saved data
 	 * @param fileName name of the file where data is saved
@@ -57,7 +62,7 @@ public class CivModel extends Observable implements Serializable{
 	public CivModel() {
 		getDefaultModel();
 	}
-	
+
 	/**
 	 * Get default model (set up for the start of a new game)
 	 */
@@ -75,6 +80,25 @@ public class CivModel extends Observable implements Serializable{
 	}
 	
 	/**
+	 * Get default model (set up for the start of a new game)
+	 */
+	public CivModel(int num) {
+		human = new CivPlayer("Human");
+		computer = new CivPlayer("Computer");
+		curUnits = 0;
+		boardArr = map.get(num);
+		color = "Green";
+	}
+
+	public static Map<Integer, CivCell[][]> buildMap() {
+		Map<Integer, CivCell[][]> map = new HashMap<>();
+		map.put(0, buildMap0());
+		map.put(1, buildMap1());
+		map.put(2, buildMap2());
+		return map;
+	}
+
+	/**
 	 * Get player and their data from the model based on the given name
 	 * @param type the player's name ("Human" or "Computer")
 	 * @return the player that is asked for
@@ -82,7 +106,7 @@ public class CivModel extends Observable implements Serializable{
 	public CivPlayer getPlayer(String type) {
 		return type.equals("Human") ? human : computer;
 	}
-	
+
 	/**
 	 * Get human's current number of units
 	 * @return humans's unit count
@@ -90,7 +114,7 @@ public class CivModel extends Observable implements Serializable{
 	public int getHumanCurUnits() {
 		return human.getUnitCount();
 	}
-	
+
 	/**
 	 * Get computer's current number of units
 	 * @return computer's unit count
@@ -98,7 +122,7 @@ public class CivModel extends Observable implements Serializable{
 	public int getComputerCurUnits() {
 		return computer.getUnitCount();
 	}
-	
+
 	/**
 	 * Get the color theme
 	 * @return the color theme
@@ -106,7 +130,7 @@ public class CivModel extends Observable implements Serializable{
 	public String getColor() {
 		return color;
 	}
-	
+
 	/**
 	 * Set the color theme
 	 * @param color the new color theme to be set
@@ -114,7 +138,7 @@ public class CivModel extends Observable implements Serializable{
 	public void setColor(String color) {
 		this.color = color;
 	}
-	
+
 	/**
 	 * Get a cell data from the board
 	 * @param row row position of the cell to be returned 
@@ -124,7 +148,7 @@ public class CivModel extends Observable implements Serializable{
 	public CivCell getCell(int row, int col) {
 		return boardArr[row][col];
 	}
-	
+
 	/**
 	 * Update a cell on the board
 	 * @param row row position of the cell to be updated
@@ -138,6 +162,83 @@ public class CivModel extends Observable implements Serializable{
 		setChanged();
 		notifyObservers(null);
 	}
-	
-	
+
+	/**
+	 * build map number 1
+	 * 
+	 * @return map number 1
+	 */
+	private static CivCell[][] buildMap1() {
+		CivCell[][] arr = new CivCell[DIMENSION][DIMENSION]; 
+		for (int i = 0; i < DIMENSION; i++) {
+			for (int j = 0; j < DIMENSION; j++) {
+				arr[i][j] = new CivCell();
+			}
+		}
+		arr[6][4].setObstacle("Tree");
+		arr[5][9].setObstacle("Water");
+		arr[2][3].setObstacle("Tree");
+		arr[4][4].setObstacle("Tree");
+		arr[7][1].setObstacle("Water");
+		arr[6][0].setObstacle("Tree");
+		arr[3][9].setObstacle("Water");
+		arr[3][6].setObstacle("Tree");
+		arr[7][7].setObstacle("Water");
+		arr[5][0].setObstacle("Water");
+		return arr;
+	}
+
+	/**
+	 * build map number 2
+	 * 
+	 * @return map number 2
+	 */
+	private static CivCell[][] buildMap2() {
+		CivCell[][] arr = new CivCell[DIMENSION][DIMENSION]; 
+		for (int i = 0; i < DIMENSION; i++) {
+			for (int j = 0; j < DIMENSION; j++) {
+				arr[i][j] = new CivCell();
+			}
+		}
+		arr[6][4].setObstacle("Lava");
+		arr[5][3].setObstacle("Rock");
+		arr[4][0].setObstacle("Tree");
+		arr[3][4].setObstacle("Rock");
+		arr[2][9].setObstacle("Lava");
+		arr[6][8].setObstacle("Tree");
+		arr[5][7].setObstacle("Rock");
+		arr[4][6].setObstacle("Tree");
+		arr[3][9].setObstacle("Rock");
+		arr[2][2].setObstacle("Lava");
+		return arr;
+	}
+
+
+	/**
+	 * build map number 0
+	 * 
+	 * @return map number 0
+	 */
+	private static CivCell[][] buildMap0() {
+		CivCell[][] arr = new CivCell[DIMENSION][DIMENSION]; 
+		for (int i = 0; i < DIMENSION; i++) {
+			for (int j = 0; j < DIMENSION; j++) {
+				arr[i][j] = new CivCell();
+			}
+		}
+		arr[6][4].setObstacle("Water");
+		arr[5][4].setObstacle("Lava");
+		arr[2][4].setObstacle("Lava");
+		arr[3][4].setObstacle("Water");
+		arr[4][4].setObstacle("Water");
+		arr[4][4].setObstacle("Lava");
+		arr[5][4].setObstacle("Tree");
+		arr[7][4].setObstacle("Water");
+		arr[6][4].setObstacle("Tree");
+		arr[7][4].setObstacle("Water");
+		return arr;
+	}
+
+
+
 }
