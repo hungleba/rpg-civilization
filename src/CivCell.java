@@ -94,4 +94,5 @@ public class CivCell implements Serializable{
 	public String getObstacle() {
 		return obstacle;
 	}
+
 }
