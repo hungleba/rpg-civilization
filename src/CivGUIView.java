@@ -390,7 +390,7 @@ public class CivGUIView extends Application implements Observer{
 			}
 		}
 	}
-	
+
 	/**
 	 * Hide the spawn-able area (change it to current theme color)
 	 */
@@ -398,14 +398,11 @@ public class CivGUIView extends Application implements Observer{
 		for (int x = 0; x < 10; x++) {
 			for (int y = 8; y < 10; y++) {
 				isSpawnArea = false;
-				if (controller.getCell(y, x).getObstacle() == null 
-						&& controller.getCell(y, x).getCharacter() == null) {
-					GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
-					StackPane stack = (StackPane) rowPane.getChildren().get(y);
-					stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
-							BorderWidths.DEFAULT)));
-					stack.setEffect(null);
-				}
+				GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
+				StackPane stack = (StackPane) rowPane.getChildren().get(y);
+				stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
+						BorderWidths.DEFAULT)));
+				stack.setEffect(null);
 			}
 		}
 	}
@@ -604,7 +601,7 @@ public class CivGUIView extends Application implements Observer{
 			}
 		});
 	}
-	
+
 	/**
 	 * Add effect when a unit is attacked
 	 * 
@@ -620,7 +617,7 @@ public class CivGUIView extends Application implements Observer{
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(col);
 		StackPane stack = (StackPane) rowPane.getChildren().get(row);
 		Timeline timeline = new Timeline();
-		timeline.setCycleCount(66*rate); // Blink 3 times, 22 cycles/blink
+		timeline.setCycleCount(22*rate); // Blink 3 times, 22 cycles/blink
 		KeyFrame keyframe = new KeyFrame( Duration.millis(50 ),
 				(event) -> {
 					ImageView imgView = (ImageView) stack.getChildren().get(0);
@@ -721,7 +718,7 @@ public class CivGUIView extends Application implements Observer{
 		newGame.getItems().add(theme1);
 		newGame.getItems().add(theme2);
 		newGame.getItems().add(theme3);
-		
+
 		// Menu
 		Menu menu = new Menu("Menu");
 		menu.getItems().add(newGame);
@@ -744,6 +741,7 @@ public class CivGUIView extends Application implements Observer{
 			}
 			bigGridPane.setBackground(new Background(new 
 					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
+			hideSpawnArea();
 			addTilePane();
 			File file = new File("save_game.dat");
 			file.delete();
@@ -762,6 +760,7 @@ public class CivGUIView extends Application implements Observer{
 			bigGridPane.setBackground(new Background(new 
 					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
 			addTilePane();
+			hideSpawnArea();
 			File file = new File("save_game.dat");
 			file.delete();
 		});
@@ -779,6 +778,7 @@ public class CivGUIView extends Application implements Observer{
 			bigGridPane.setBackground(new Background(new 
 					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
 			addTilePane();
+			hideSpawnArea();
 			File file = new File("save_game.dat");
 			file.delete();
 		});
@@ -796,6 +796,7 @@ public class CivGUIView extends Application implements Observer{
 			bigGridPane.setBackground(new Background(new 
 					BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
 			addTilePane();
+			hideSpawnArea();
 			File file = new File("save_game.dat");
 			file.delete();
 		});
@@ -845,6 +846,8 @@ public class CivGUIView extends Application implements Observer{
 	private void updateCell(int x, int y, CivCell cell) {
 		GridPane rowPane = (GridPane) bigGridPane.getChildren().get(x);
 		StackPane stack = (StackPane) rowPane.getChildren().get(y);
+		stack.setBorder(new Border(new BorderStroke(Color.BLACK, 
+				BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		String player = cell.getPlayer();
 		if (player != null) {
 			Color color = Color.AQUA;
